@@ -1,0 +1,265 @@
+/* --- RESET Y ESTILOS GLOBALES --- */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: "Outfit", sans-serif;
+  background-color: #12121c;
+  color: #e0e0e0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  overflow: hidden;
+  padding: 2rem;
+}
+
+/* --- CONTENEDOR PRINCIPAL --- */
+.login-container {
+  display: flex;
+  width: 100%;
+  max-width: 900px;
+  background-color: #1a1a2e;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  padding: 2rem;
+}
+
+/* --- SECCIÓN DE INFORMACIÓN (IZQUIERDA EN LOGIN, DERECHA EN REGISTER) --- */
+.login-info {
+  flex-basis: 50%;
+  padding: 0 2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.login-info h1 {
+  font-size: 4rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  color: #ffffff;
+}
+
+.login-info .welcome-message {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  color: #a0a0b0;
+}
+
+.login-logo {
+  width: 100px;
+  height: auto;
+  margin-bottom: 1.5rem;
+<<<<<<< HEAD
+  /* margin-left: 5rem;
+   */
+=======
+  /* margin-left: 5rem; */
+>>>>>>> d78556a29b2867f2631a1338df38f5ff988c82da
+}
+
+/* Estilos para cuando la sección de info está a la derecha (en register.html) */
+.register-info {
+  align-items: flex-end;
+  text-align: right;
+}
+
+.register-info .login-logo {
+  align-self: flex-end; /* Asegura que el logo se alinee a la derecha también */
+}
+
+/* --- SECCIÓN DE FORMULARIO --- */
+.login-form-wrapper {
+  flex-basis: 50%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.form-container {
+  width: 27rem;
+  padding: 2.5rem; /* Padding generoso para evitar que los campos toquen el borde */
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 15px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+.input-group {
+  margin-bottom: 1.2rem;
+}
+
+.input-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+  color: #c0c0d0;
+}
+
+.input-group input {
+  width: 100%;
+  padding: 0.8rem 1rem;
+  background: linear-gradient(#1a1a2e, #1a1a2e) padding-box,
+    linear-gradient(to right, #2575fc, #6a11cb) border-box;
+  border: 2px solid transparent;
+  border-radius: 8px;
+  color: #ffffff;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.input-group input::placeholder {
+  color: #808090;
+}
+
+.input-group input:focus {
+  outline: none;
+  box-shadow: 0 0 15px rgba(37, 117, 252, 0.5);
+  background: linear-gradient(#12121c, #12121c) padding-box,
+    linear-gradient(to right, #2575fc, #6a11cb) border-box;
+}
+
+/* --- FILA HORIZONTAL PARA CAMPOS (NOMBRE/APELLIDO, ETC.) --- */
+.form-row {
+  display: flex;
+  gap: 1rem;
+}
+
+.form-row .input-group {
+  flex: 1;
+}
+
+/* --- BOTÓN PRINCIPAL Y ENLACES --- */
+.login-button {
+  width: 100%;
+  padding: 1rem;
+  border: none;
+  border-radius: 8px;
+  background-image: linear-gradient(to right, #6a11cb 0%, #2575fc 100%);
+  color: white;
+  font-size: 1.1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.login-button:hover {
+  box-shadow: 0 5px 15px rgba(37, 117, 252, 0.4);
+  transform: translateY(-2px);
+}
+
+/* Contenedor para alinear botón y enlace en register.html */
+.form-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 1.5rem;
+}
+
+.form-actions .login-button {
+  width: auto;
+  padding: 0.8rem 2rem;
+  font-size: 1rem;
+}
+
+.form-actions .signup-link {
+  margin: 0;
+}
+
+.signup-link {
+  margin-top: 1.5rem;
+  text-align: center;
+  color: #a0a0b0;
+}
+
+.signup-link a {
+  color: #2575fc;
+  font-weight: 700;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.signup-link a:hover {
+  color: #6a11cb;
+}
+
+/* --- FOOTER Y RESPONSIVE --- */
+.copyright {
+  position: absolute;
+  bottom: 1rem;
+  color: #505060;
+  font-size: 0.8rem;
+}
+
+@media (max-width: 768px) {
+  body {
+    padding: 1rem;
+    overflow: auto;
+  }
+  .login-container {
+    flex-direction: column;
+    padding: 1rem;
+  }
+  .login-info,
+  .register-info {
+    padding: 2rem 1rem;
+    align-items: center;
+    text-align: center;
+  }
+  .register-info .login-logo {
+    align-self: center;
+  }
+}
+<<<<<<< HEAD
+=======
+.register-logo {
+  margin-right: 7rem;
+}
+>>>>>>> d78556a29b2867f2631a1338df38f5ff988c82da
+
+/* --- NUEVOS ESTILOS PARA EL TEXTO GRADIENTE --- */
+.gradient-text {
+  background-image: linear-gradient(to right, #6a11cb 0%, #2575fc 100%);
+  -webkit-background-clip: text; /* Clip el fondo al texto para navegadores WebKit */
+  background-clip: text; /* Clip el fondo al texto para navegadores modernos */
+  color: transparent; /* Hace el color del texto transparente para que el fondo sea visible */
+  font-weight: 700; /* Opcional: Para que el texto degradado resalte más */
+}
+
+/* Ajustes para el título de registro, si es necesario, para que el texto "¡Hola, bienvenido a" no sea demasiado grande */
+.register-info h1 {
+  font-size: 3.5rem; /* Ajusta este tamaño si "Hola, bienvenido a" es demasiado grande */
+  line-height: 1.1; /* Ajusta el interlineado si es necesario */
+}
+
+.register-info .welcome-message {
+  font-size: 0.95rem; /* El texto descriptivo un poco más pequeño */
+  line-height: 1.5;
+  margin-top: 1.5rem; /* Más espacio entre el título y la descripción */
+}
+/* --- NUEVOS ESTILOS PARA EL SUBTÍTULO DEL LOGIN --- */
+.login-subheading {
+  font-size: 1.5rem; /* Tamaño de fuente para el subtítulo */
+  line-height: 1.4;
+  color: #a0a0b0;
+  margin-top: 1rem;
+}
+
+/* Aseguramos que el logo en el login esté centrado en su columna */
+.login-info .login-logo {
+  align-self: center; /* Centra el logo horizontalmente */
+  margin-bottom: 2rem; /* Más espacio debajo del logo */
+}
+
+/* Centramos todo el contenido de la columna de bienvenida */
+.login-info {
+  align-items: center;
+  text-align: center;
+}

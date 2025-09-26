@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="icon" type="image/png" href="assets/img/logoSchobrain.png" />
+    <link rel="stylesheet" href="assets/style.css" />
+    <title>Schobrain</title>
+  </head>
+  <body>
+    <nav class="border shadow-sm mb-5 bg-white">
+      <ul
+        class="nav-menu m-2 d-flex justify-content-between align-items-center"
+      >
+        <li>
+          <a
+            href="#"
+            class="text-dark text-decoration-none d-flex align-items-center"
+          >
+            <img
+              src="assets/img/logoSchobrain.png"
+              alt="Logo"
+              width="90"
+              height="80"
+            />
+            <span class="brand-name ms-2 fs-4 fw-bold">Schobrain</span>
+          </a>
+        </li>
+
+        <li class="d-flex align-items-center">
+          <a
+            href="#"
+            class="text-dark text-decoration-none d-flex flex-column align-items-center me-4"
+          >
+            <i class="bi bi-bag fs-3 mb-1 text-primary"></i>
+          </a>
+          <a
+            href="#"
+            class="text-dark text-decoration-none d-flex flex-column align-items-center"
+          >
+            <i class="bi bi-person-circle fs-3 me-4 text-primary"></i>
+          </a>
+             <button id="logout-button" class="btn btn-outline-danger me-4">Cerrar Sesión</button>
+        </li>
+      </ul>
+    </nav>
+
+    <div class="container-fluid pb-5">
+      <div class="row">
+        <div class="col-3 border-end">
+          <h5 class="mt-3">Asignaturas</h5>
+          <ul class="list-group">
+            <li class="list-group-item">
+              <i class="bi bi-calculator me-2"></i> Matemáticas
+            </li>
+            <li class="list-group-item">
+              <i class="bi bi-book me-2"></i> Lengua
+            </li>
+            <li class="list-group-item">
+              <i class="bi bi-flask"></i> Ciencias
+            </li>
+            <li class="list-group-item">
+              <i class="bi bi-journal-text me-2"></i> Historia
+            </li>
+            <li class="list-group-item">
+              <i class="bi bi-code-slash me-2"></i> Programación
+            </li>
+            <li class="list-group-item">
+              <i class="bi bi-bar-chart-line me-2"></i> Estadísticas y Cálculo
+            </li>
+            <li class="list-group-item">
+              <i class="bi bi-book-half me-2"></i> Castellano
+            </li>
+            <li class="list-group-item">
+              <i class="bi bi-translate me-2"></i> Inglés
+            </li>
+          </ul>
+        </div>
+        <!-- Columna derecha para contenido principal -->
+<div class="col-9" style="min-height: 60vh">
+  <div class="card shadow-sm mt-4 gradient-card" style="width: 40rem">
+    <div class="card-body text-center">
+      <h5 class="card-title"><strong>¿Qué preguntamos hoy?</strong></h5>
+      <button
+        class="btn btn-info custom-ask-btn rounded-pill d-block ms-0"
+        data-bs-toggle="modal"
+        data-bs-target="#preguntaModal"
+      >
+        Hacer una pregunta
+      </button>
+    </div>
+  </div>
+
+  <div id="lista-preguntas" class="mt-4">
+      </div>
+</div>
+    </div>
+    <!-- Modal -->
+    <div
+      class="modal fade"
+      id="preguntaModal"
+      tabindex="-1"
+      aria-labelledby="preguntaModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content modal_color">
+          <div class="modal-header">
+            <h5 class="modal-title" id="preguntaModalLabel">
+              <strong>Nueva Pregunta</strong>
+            </h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Cerrar"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <form id="formulario-pregunta">
+              <div class="mb-3">
+                <label
+                  for="descripcionPregunta"
+                  class="form-label text-center"
+                ></label>
+                <textarea
+                  class="form-control"
+                  id="descripcionPregunta"
+                  placeholder="Describe tu pregunta (de forma clara y facil para obtener la mejor respuesta)"
+                  rows="7"
+                  style="
+                    resize: vertical;
+                    padding: 10px;
+                    min-height: 120px;
+                    max-height: 300px m;
+                  "
+                ></textarea>
+                <!-- Botón de símbolos matemáticos -->
+                <button
+                  type="button"
+                  class="btn btn-outline-secondary mt-2 mb-2"
+                  id="btnSimbolosMatematicos"
+                  title="Insertar símbolo matemático"
+                >
+                  <i class="bi bi-superscript text-dark"></i>
+                </button>
+                <!-- Panel de símbolos matemáticos (solo el contenedor, sin botones) -->
+                <div
+                  id="panelSimbolos"
+                  class="border rounded p-2 mb-2"
+                  style="
+                    display: none;
+                    background: #f8f9fa;
+                    width: 100%;
+                    overflow-x: auto;
+                  "
+                >
+                  <!-- Los botones se generarán por JS -->
+                </div>
+              </div>
+              <div class="mb-3">
+                <label for="temaPregunta" class="form-label">Tema</label>
+                <select
+                  class="form-select form-select-sm rounded-pill custom-select-asignatura"
+                  id="temaPregunta"
+                >
+                  <option selected disabled>Selecciona una asignatura</option>
+                  <option>Matemáticas</option>
+                  <option>Lengua</option>
+                  <option>Ciencias</option>
+                  <option>Historia</option>
+                  <option>Programación</option>
+                  <option>Estadísticas y Cálculo</option>
+                  <option>Castellano</option>
+                  <option>Inglés</option>
+                </select>
+              </div>
+              <input
+                type="file"
+                id="imagenPregunta"
+                accept="image/*"
+                class="form-control mt-2"
+              />
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary rounded-pill"
+              data-bs-dismiss="modal"
+            >
+              Cerrar
+            </button>
+            <button
+              type="submit"
+              id="btn-preguntar"
+              form="formulario-pregunta"
+              class="btn bg-black text-light rounded-pill"
+            >
+              PREGUNTAR
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <footer class="bgFooter text-white pt-4 pb-4 mt-5">
+      <div class="container text-center text-md-start">
+        <div class="row text-center text-md-start">
+          <div class="col-md-3 col-lg-3 col-xl-3 mx-auto mt-3">
+            <h5 class="text-uppercase mb-4 fw-bold text-info">¿Qué Hacemos?</h5>
+            <p>
+              <a href="#" class="text-white" style="text-decoration: none">
+                Webs corporativas</a
+              >
+            </p>
+            <p>
+              <a href="#" class="text-white" style="text-decoration: none">
+                Desarrollo web a medida</a
+              >
+            </p>
+            <p>
+              <a href="#" class="text-white" style="text-decoration: none">
+                Tiendas online</a
+              >
+            </p>
+          </div>
+
+          <div class="col-md-2 col-lg-2 col-xl-2 mx-auto mt-3">
+            <h5 class="text-uppercase mb-4 fw-bold text-info">Enlaces</h5>
+            <p>
+              <a href="#" class="text-white" style="text-decoration: none">
+                Preguntas Frecuentes</a
+              >
+            </p>
+            <p>
+              <a href="#" class="text-white" style="text-decoration: none">
+                Ayuda</a
+              >
+            </p>
+            <p>
+              <a href="#" class="text-white" style="text-decoration: none">
+                Términos y Condiciones</a
+              >
+            </p>
+          </div>
+
+          <div class="col-md-4 col-lg-3 col-xl-3 mx-auto mt-3">
+            <h5 class="text-uppercase mb-4 fw-bold text-info">Contacto</h5>
+            <p>
+              <i class="bi bi-house-door-fill me-3"></i> Formosa, F3600,
+              Argentina
+            </p>
+            <p>
+              <i class="bi bi-envelope-fill me-3"></i>
+              schobrain.contacto@ejemplo.com
+            </p>
+            <p><i class="bi bi-telephone-fill me-3"></i> +54 370 4123456</p>
+          </div>
+        </div>
+
+        <hr class="mb-4" />
+
+        <div class="row align-items-center">
+          <div class="col-md-7 col-lg-8">
+            <p>
+              © 2025 Copyright:
+              <a href="#" class="text-info" style="text-decoration: none">
+                <strong>Schobrain.com</strong>
+              </a>
+            </p>
+          </div>
+
+          <div class="col-md-5 col-lg-4">
+            <div class="text-center text-md-end">
+              <ul class="list-unstyled list-inline">
+                <li class="list-inline-item">
+                  <a
+                    href="#"
+                    class="btn-floating btn-sm text-white"
+                    style="font-size: 23px"
+                    ><i class="bi bi-facebook"></i
+                  ></a>
+                </li>
+                <li class="list-inline-item">
+                  <a
+                    href="#"
+                    class="btn-floating btn-sm text-white"
+                    style="font-size: 23px"
+                    ><i class="bi bi-twitter-x"></i
+                  ></a>
+                </li>
+                <li class="list-inline-item">
+                  <a
+                    href="#"
+                    class="btn-floating btn-sm text-white"
+                    style="font-size: 23px"
+                    ><i class="bi bi-instagram"></i
+                  ></a>
+                </li>
+                <li class="list-inline-item">
+                  <a
+                    href="#"
+                    class="btn-floating btn-sm text-white"
+                    style="font-size: 23px"
+                    ><i class="bi bi-linkedin"></i
+                  ></a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </footer>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="./paginaPrincipal/simbolos.js"></script>
+    <script src="./cliente.js"></script>
+      <script type="module" src="/js/dashboard.js"></script>
+  </body>
+</html>

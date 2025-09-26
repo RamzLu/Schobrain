@@ -12,6 +12,8 @@ import { routeComment } from "./src/routes/comment.route.js";
 
 app.use(express.json());
 app.use(cookieParser());
+// Esta línea le dice a Express que la carpeta public contiene archivos que se deben enviar directamente al navegador.
+app.use(express.static("public"));
 
 app.use("/auth", authRouter);
 app.use("/api", routeUser);

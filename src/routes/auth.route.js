@@ -5,6 +5,7 @@ import {
   profile,
   register,
   updateProfile,
+  verifyToken,
 } from "../controllers/auth.controller.js";
 import { validateToken } from "../middlewares/authMiddleware.js";
 import {
@@ -25,3 +26,5 @@ authRouter.put(
   validator,
   updateProfile
 );
+
+authRouter.get("/verify", validateToken, verifyToken);
