@@ -31,7 +31,7 @@
 
       <div class="login-form-wrapper">
         <div class="form-container">
-          <form id="loginForm">
+          <form id="loginForm" novalidate>
             <div class="input-group">
               <label for="username">Nombre de usuario</label>
               <input
@@ -53,6 +53,7 @@
               />
             </div>
             <button type="submit" class="login-button">LOGIN</button>
+            <p id="error-message" class="error-text"></p>
           </form>
         </div>
         <p class="signup-link">

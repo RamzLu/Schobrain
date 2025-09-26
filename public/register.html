@@ -16,7 +16,7 @@
     <div class="login-container">
       <div class="login-form-wrapper">
         <div class="form-container">
-          <form id="registerForm">
+          <form id="registerForm" novalidate>
             <div class="input-group">
               <label for="username">Nombre de usuario</label>
               <input
@@ -87,6 +87,7 @@
                 ¿Ya tienes una cuenta? <a href="/login.html">Login</a>
               </p>
             </div>
+            <p id="error-message" class="error-text"></p>
           </form>
         </div>
       </div>

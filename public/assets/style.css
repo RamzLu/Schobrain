@@ -251,3 +251,17 @@ body {
   align-items: center;
   text-align: center;
 }
+/* --- ESTILOS PARA MENSAJES DE ERROR --- */
+
+.error-text {
+  color: #ff5c5c; /* Color rojo para errores */
+  font-size: 0.9rem;
+  text-align: center;
+  margin-top: 1rem;
+  display: none; /* Oculto por defecto */
+  transition: opacity 0.3s ease;
+}
+
+.error-text.visible {
+  display: block; /* Lo hacemos visible cuando tenga esta clase */
+}
