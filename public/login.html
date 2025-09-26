@@ -3,29 +3,66 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Login</title>
-    <link rel="stylesheet" href="style.css" />
+    <title>Login | Schobrain</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <link rel="stylesheet" href="assets/style.css" />
   </head>
   <body>
-    <div class="container">
-      <h2>Iniciar Sesión</h2>
-      <form id="loginForm">
-        <input
-          type="text"
-          id="username"
-          placeholder="Nombre de usuario"
-          required
+    <div class="login-container">
+      <div class="login-info">
+        <img
+          src="assets/img/logo schobrain blanco.png"
+          alt="Logo Schobrain"
+          class="login-logo"
         />
-        <input
-          type="password"
-          id="password"
-          placeholder="Contraseña"
-          required
-        />
-        <button type="submit">Ingresar</button>
-      </form>
-      <p>¿No tienes una cuenta? <a href="/register.html">Regístrate</a></p>
+        <h1>¡Bienvenido!</h1>
+        <p class="login-subheading">
+          ¿Listo para <span class="gradient-text">aprender</span> con
+          <span class="gradient-text">Schobrain</span>?
+        </p>
+      </div>
+
+      <div class="login-form-wrapper">
+        <div class="form-container">
+          <form id="loginForm">
+            <div class="input-group">
+              <label for="username">Nombre de usuario</label>
+              <input
+                type="text"
+                id="username"
+                name="username"
+                placeholder="Escribe tu nombre de usuario"
+                required
+              />
+            </div>
+            <div class="input-group">
+              <label for="password">Contraseña</label>
+              <input
+                type="password"
+                id="password"
+                name="password"
+                placeholder="Escribe tu contraseña"
+                required
+              />
+            </div>
+            <button type="submit" class="login-button">LOGIN</button>
+          </form>
+        </div>
+        <p class="signup-link">
+          ¿No eres miembro aún? <a href="/register.html">Regístrate</a>
+        </p>
+      </div>
     </div>
+
+    <footer class="copyright">© Copyright 2025</footer>
+
     <script type="module" src="/js/main.js"></script>
   </body>
 </html>
