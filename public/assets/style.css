@@ -54,16 +54,6 @@ body {
   width: 100px;
   height: auto;
   margin-bottom: 1.5rem;
-<<<<<<< HEAD
-<<<<<<< HEAD
-  /* margin-left: 5rem;
-   */
-=======
-  /* margin-left: 5rem; */
->>>>>>> d78556a29b2867f2631a1338df38f5ff988c82da
-=======
-  /* margin-left: 5rem; */
->>>>>>> d78556a29b2867f2631a1338df38f5ff988c82da
 }
 
 /* Estilos para cuando la sección de info está a la derecha (en register.html) */
@@ -221,19 +211,14 @@ body {
     align-self: center;
   }
 }
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-.register-logo {
-  margin-right: 7rem;
-}
->>>>>>> d78556a29b2867f2631a1338df38f5ff988c82da
-=======
-.register-logo {
-  margin-right: 7rem;
-}
->>>>>>> d78556a29b2867f2631a1338df38f5ff988c82da
 
+.register-logo {
+  margin-right: 7rem;
+}
+
+.register-logo {
+  margin-right: 7rem;
+}
 /* --- NUEVOS ESTILOS PARA EL TEXTO GRADIENTE --- */
 .gradient-text {
   background-image: linear-gradient(to right, #6a11cb 0%, #2575fc 100%);
