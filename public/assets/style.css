@@ -55,8 +55,12 @@ body {
   height: auto;
   margin-bottom: 1.5rem;
 <<<<<<< HEAD
+<<<<<<< HEAD
   /* margin-left: 5rem;
    */
+=======
+  /* margin-left: 5rem; */
+>>>>>>> d78556a29b2867f2631a1338df38f5ff988c82da
 =======
   /* margin-left: 5rem; */
 >>>>>>> d78556a29b2867f2631a1338df38f5ff988c82da
@@ -218,6 +222,12 @@ body {
   }
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+.register-logo {
+  margin-right: 7rem;
+}
+>>>>>>> d78556a29b2867f2631a1338df38f5ff988c82da
 =======
 .register-logo {
   margin-right: 7rem;
