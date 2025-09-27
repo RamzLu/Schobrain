@@ -684,3 +684,75 @@ body {
   background-color: #2575fc;
   color: #ffffff;
 }
+
+/* ==========================================================================
+   9. ESTILOS PARA MODALES
+   ========================================================================== */
+.modal-overlay {
+  position: fixed; /* Se superpone a todo */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(18, 18, 28, 0.7); /* Fondo oscuro semitransparente */
+  backdrop-filter: blur(5px); /* Efecto de desenfoque */
+  -webkit-backdrop-filter: blur(5px);
+  display: none; /* Oculto por defecto */
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+}
+
+.modal-overlay.visible {
+  display: flex; /* Se muestra con JS */
+}
+
+.modal-content {
+  background-color: #ffffff;
+  padding: 2.5rem;
+  border-radius: 15px;
+  box-shadow: 0 5px 25px rgba(0, 0, 0, 0.5);
+  text-align: center;
+  max-width: 450px;
+  width: 90%;
+}
+
+.modal-content h2 {
+  font-size: 1.5rem;
+  margin-bottom: 2rem;
+  color: #000000;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.modal-button {
+  border: none;
+  border-radius: 8px;
+  padding: 0.8rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.modal-button.secondary {
+  background-color: #4a4a6a;
+  color: #e0e0e0;
+}
+
+.modal-button.secondary:hover {
+  background-color: #6a6a8a;
+}
+
+.modal-button.danger {
+  background-color: #e63946;
+  color: #ffffff;
+}
+
+.modal-button.danger:hover {
+  background-color: #c62834;
+}

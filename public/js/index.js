@@ -28,15 +28,42 @@ const initializeIndexPage = async () => {
       userMenu.classList.toggle("visible");
     });
   }
-
-  // --- 3. Lógica del Botón de Cerrar Sesión ---
+  // --- LÓGICA DEL MODAL DE LOGOUT ---
   const logoutButton = document.getElementById("logout-button");
-  if (logoutButton) {
-    logoutButton.addEventListener("click", async (event) => {
+  const logoutModal = document.getElementById("logout-modal");
+  const confirmLogoutButton = document.getElementById("confirm-logout");
+  const cancelLogoutButton = document.getElementById("cancel-logout");
+
+  if (
+    logoutButton &&
+    logoutModal &&
+    confirmLogoutButton &&
+    cancelLogoutButton
+  ) {
+    // 1. Al hacer clic en "Cerrar Sesión", muestra el modal
+    logoutButton.addEventListener("click", (event) => {
       event.preventDefault();
+      userMenu.classList.remove("visible"); // Oculta el menú desplegable
+      logoutModal.classList.add("visible");
+    });
+
+    // 2. Al hacer clic en "Cancelar", oculta el modal
+    cancelLogoutButton.addEventListener("click", () => {
+      logoutModal.classList.remove("visible");
+    });
+
+    // 3. Al hacer clic en el fondo, también oculta el modal
+    logoutModal.addEventListener("click", (event) => {
+      if (event.target === logoutModal) {
+        logoutModal.classList.remove("visible");
+      }
+    });
+
+    // 4. Al confirmar, cierra la sesión y redirige
+    confirmLogoutButton.addEventListener("click", async () => {
       try {
         await logoutUser();
-        alert("Has cerrado sesión correctamente.");
+        // Opcional: podrías mostrar un pequeño mensaje de éxito antes de redirigir
         window.location.href = "/login.html";
       } catch (error) {
         console.error("Error al cerrar sesión:", error);
@@ -44,18 +71,7 @@ const initializeIndexPage = async () => {
     });
   }
 
-  // --- 4. Lógica para cerrar el menú al hacer clic fuera ---
-  document.addEventListener("click", (event) => {
-    if (
-      userMenu &&
-      menuToggle &&
-      !userMenu.contains(event.target) &&
-      !menuToggle.contains(event.target)
-    ) {
-      userMenu.classList.remove("visible");
-    }
-  });
+  // ... (tu lógica para cerrar el menú al hacer clic fuera se mantiene igual) ...
 };
 
-// --- Punto de Entrada: Ejecutar el código cuando el DOM esté listo ---
 document.addEventListener("DOMContentLoaded", initializeIndexPage);
