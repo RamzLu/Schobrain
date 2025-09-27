@@ -460,6 +460,27 @@ body {
   min-height: 200px;
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
 }
+.gradient-card {
+  background: linear-gradient(-45deg, #001f3f, #0074d9, #7fdbff, #c6cffa);
+  background-size: 400% 400%;
+  animation: gradientBG 15s ease infinite;
+  border: none; /* opcional, para que se vea más limpio */
+  border-radius: 15px;
+  color: white; /* asegura contraste */
+  width: 40rem;
+}
+
+@keyframes gradientBG {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
 
 .hero-content {
   text-align: center;
