@@ -31,17 +31,7 @@ export const createArticleValidation = [
     .withMessage(
       "El estado del artículo no es válido. Debe ser 'published' o 'archived'."
     ),
-  body("author")
-    .notEmpty()
-    .withMessage("el id del autor es obligatorio.")
-    .isMongoId()
-    .withMessage("el id del autor no es un ObjectId válido.")
-    .custom(async (value) => {
-      const user = await UserModel.findById(value);
-      if (!user) {
-        throw new Error("El autor referenciado no existe.");
-      }
-    }),
+  //!eliminamos las validaciones de author
   body("tags")
     .optional()
     .isArray()

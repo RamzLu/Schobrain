@@ -1,6 +1,7 @@
 import { ArticleModel } from "../models/article.model.js";
 
 export const createArticle = async (req, res) => {
+  const authorId = req.userLog.id;
   const { title, content, excerpt, status, author, tags } = req.body;
   try {
     console.log(req.body);
@@ -9,7 +10,7 @@ export const createArticle = async (req, res) => {
       content,
       excerpt,
       status,
-      author,
+      author: authorId, // al hacer una pregunta le asignamos el author automaticamente
       tags,
     });
     return res.status(201).json({
