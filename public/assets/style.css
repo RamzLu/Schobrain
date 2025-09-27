@@ -1,4 +1,6 @@
-/* --- RESET Y ESTILOS GLOBALES --- */
+/* ==========================================================================
+   1. RESET Y ESTILOS GLOBALES
+   ========================================================================== */
 * {
   box-sizing: border-box;
   margin: 0;
@@ -17,7 +19,9 @@ body {
   padding: 2rem;
 }
 
-/* --- CONTENEDOR PRINCIPAL --- */
+/* ==========================================================================
+   2. CONTENEDOR PRINCIPAL
+   ========================================================================== */
 .login-container {
   display: flex;
   width: 100%;
@@ -28,7 +32,9 @@ body {
   padding: 2rem;
 }
 
-/* --- SECCIÓN DE INFORMACIÓN (IZQUIERDA EN LOGIN, DERECHA EN REGISTER) --- */
+/* ==========================================================================
+   3. SECCIÓN DE INFORMACIÓN (LOGO Y TEXTOS)
+   ========================================================================== */
 .login-info {
   flex-basis: 50%;
   padding: 0 2rem;
@@ -42,12 +48,7 @@ body {
   font-weight: 700;
   margin-bottom: 1rem;
   color: #ffffff;
-}
-
-.login-info .welcome-message {
-  font-size: 1.1rem;
-  line-height: 1.6;
-  color: #a0a0b0;
+  line-height: 1.1;
 }
 
 .login-logo {
@@ -56,17 +57,49 @@ body {
   margin-bottom: 1.5rem;
 }
 
-/* Estilos para cuando la sección de info está a la derecha (en register.html) */
-.register-info {
-  align-items: flex-end;
-  text-align: right;
+/* --- Estilos específicos para Login --- */
+.login-info.login-page {
+  align-items: center;
+  text-align: center;
 }
 
-.register-info .login-logo {
-  align-self: flex-end; /* Asegura que el logo se alinee a la derecha también */
+.login-info.login-page .login-logo {
+  margin-bottom: 2rem;
 }
 
-/* --- SECCIÓN DE FORMULARIO --- */
+.login-subheading {
+  font-size: 1.5rem;
+  line-height: 1.4;
+  color: #a0a0b0;
+  margin-top: 1rem;
+}
+
+/* --- Estilos específicos para Register --- */
+.login-info.register-info {
+  align-items: center !important;
+  text-align: center !important;
+}
+
+.login-info.register-info .login-logo {
+  align-self: center;
+}
+
+.register-info .welcome-message {
+  font-size: 0.95rem;
+  line-height: 1.5;
+  margin-top: 1.5rem;
+}
+
+.gradient-text {
+  background-image: linear-gradient(to right, #6a11cb 0%, #2575fc 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* ==========================================================================
+   4. SECCIÓN DE FORMULARIO
+   ========================================================================== */
 .login-form-wrapper {
   flex-basis: 50%;
   display: flex;
@@ -77,7 +110,7 @@ body {
 
 .form-container {
   width: 27rem;
-  padding: 2.5rem; /* Padding generoso para evitar que los campos toquen el borde */
+  padding: 2.5rem;
   background: rgba(255, 255, 255, 0.05);
   border-radius: 15px;
   border: 1px solid rgba(255, 255, 255, 0.1);
@@ -97,7 +130,8 @@ body {
   color: #c0c0d0;
 }
 
-.input-group input {
+.input-group input,
+.role-select {
   width: 100%;
   padding: 0.8rem 1rem;
   background: linear-gradient(#1a1a2e, #1a1a2e) padding-box,
@@ -113,24 +147,33 @@ body {
   color: #808090;
 }
 
-.input-group input:focus {
+.input-group input:focus,
+.role-select:focus {
   outline: none;
   box-shadow: 0 0 15px rgba(37, 117, 252, 0.5);
   background: linear-gradient(#12121c, #12121c) padding-box,
     linear-gradient(to right, #2575fc, #6a11cb) border-box;
 }
 
-/* --- FILA HORIZONTAL PARA CAMPOS (NOMBRE/APELLIDO, ETC.) --- */
+/* --- Fila horizontal para campos --- */
 .form-row {
   display: flex;
   gap: 1rem;
+  align-items: flex-end; /* Alinea los campos por la base */
 }
 
 .form-row .input-group {
   flex: 1;
 }
 
-/* --- BOTÓN PRINCIPAL Y ENLACES --- */
+.form-row .input-group input,
+.form-row .input-group .role-select {
+  min-height: 51px; /* Altura consistente para alinear correctamente */
+}
+
+/* ==========================================================================
+   5. BOTONES Y ENLACES
+   ========================================================================== */
 .login-button {
   width: 100%;
   padding: 1rem;
@@ -149,7 +192,6 @@ body {
   transform: translateY(-2px);
 }
 
-/* Contenedor para alinear botón y enlace en register.html */
 .form-actions {
   display: flex;
   justify-content: space-between;
@@ -163,14 +205,14 @@ body {
   font-size: 1rem;
 }
 
-.form-actions .signup-link {
-  margin: 0;
-}
-
 .signup-link {
   margin-top: 1.5rem;
   text-align: center;
   color: #a0a0b0;
+}
+
+.form-actions .signup-link {
+  margin: 0;
 }
 
 .signup-link a {
@@ -184,7 +226,24 @@ body {
   color: #6a11cb;
 }
 
-/* --- FOOTER Y RESPONSIVE --- */
+/* --- Mensajes de error --- */
+.error-text {
+  color: #ff5c5c;
+  font-size: 0.9rem;
+  text-align: center;
+  margin-top: 1rem;
+  min-height: 1.2rem; /* Reserva espacio para el error */
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.error-text.visible {
+  opacity: 1;
+}
+
+/* ==========================================================================
+   6. FOOTER Y DISEÑO RESPONSIVE
+   ========================================================================== */
 .copyright {
   position: absolute;
   bottom: 1rem;
@@ -196,72 +255,25 @@ body {
   body {
     padding: 1rem;
     overflow: auto;
+    min-height: 100%;
+    align-items: flex-start;
   }
   .login-container {
     flex-direction: column;
     padding: 1rem;
+    margin-top: 2rem;
   }
-  .login-info,
-  .register-info {
+  .login-info {
     padding: 2rem 1rem;
     align-items: center;
     text-align: center;
   }
-  .register-info .login-logo {
+  .login-info.register-info {
+    align-items: center;
+    text-align: center;
+  }
+
+  .login-info.register-info .login-logo {
     align-self: center;
   }
-}
-
-/* --- NUEVOS ESTILOS PARA EL TEXTO GRADIENTE --- */
-.gradient-text {
-  background-image: linear-gradient(to right, #6a11cb 0%, #2575fc 100%);
-  -webkit-background-clip: text; /* Clip el fondo al texto para navegadores WebKit */
-  background-clip: text; /* Clip el fondo al texto para navegadores modernos */
-  color: transparent; /* Hace el color del texto transparente para que el fondo sea visible */
-  font-weight: 700; /* Opcional: Para que el texto degradado resalte más */
-}
-
-/* Ajustes para el título de registro, si es necesario, para que el texto "¡Hola, bienvenido a" no sea demasiado grande */
-.register-info h1 {
-  font-size: 3.5rem; /* Ajusta este tamaño si "Hola, bienvenido a" es demasiado grande */
-  line-height: 1.1; /* Ajusta el interlineado si es necesario */
-}
-
-.register-info .welcome-message {
-  font-size: 0.95rem; /* El texto descriptivo un poco más pequeño */
-  line-height: 1.5;
-  margin-top: 1.5rem; /* Más espacio entre el título y la descripción */
-}
-/* --- NUEVOS ESTILOS PARA EL SUBTÍTULO DEL LOGIN --- */
-.login-subheading {
-  font-size: 1.5rem; /* Tamaño de fuente para el subtítulo */
-  line-height: 1.4;
-  color: #a0a0b0;
-  margin-top: 1rem;
-}
-
-/* Aseguramos que el logo en el login esté centrado en su columna */
-.login-info .login-logo {
-  align-self: center; /* Centra el logo horizontalmente */
-  margin-bottom: 2rem; /* Más espacio debajo del logo */
-}
-
-/* Centramos todo el contenido de la columna de bienvenida */
-.login-info {
-  align-items: center;
-  text-align: center;
-}
-/* --- ESTILOS PARA MENSAJES DE ERROR --- */
-
-.error-text {
-  color: #ff5c5c; /* Color rojo para errores */
-  font-size: 0.9rem;
-  text-align: center;
-  margin-top: 1rem;
-  display: none; /* Oculto por defecto */
-  transition: opacity 0.3s ease;
-}
-
-.error-text.visible {
-  display: block; /* Lo hacemos visible cuando tenga esta clase */
 }

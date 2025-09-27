@@ -22,6 +22,7 @@ export const handleRegister = async (event) => {
     username: form.username.value,
     email: form.email.value,
     password: password,
+    role: form.role.value,
     profile: {
       firstName: form.firstName.value,
       lastName: form.lastName.value,
