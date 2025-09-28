@@ -15,7 +15,7 @@ body {
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  overflow: hidden;
+  /* overflow: hidden; <-- ELIMINAR ESTA LÍNEA */
   /* padding: 2rem; */
 }
 
@@ -243,7 +243,7 @@ body {
 
 /* ==========================================================================
    6. FOOTER Y DISEÑO RESPONSIVE
-   ========================================================================== */
+   =================================================  ========================= */
 .copyright {
   position: absolute;
   bottom: 1rem;
@@ -254,7 +254,7 @@ body {
 @media (max-width: 768px) {
   body {
     padding: 1rem;
-    overflow: auto;
+    overflow: auto; /* Esta línea estaba bien para móviles */
     min-height: 100%;
     align-items: flex-start;
   }
@@ -687,7 +687,7 @@ body {
 }
 
 /* ==========================================================================
-   9. ESTILOS PARA MODALES
+   9. ESTILOS PARA MODAL PREGUNTA 
    ========================================================================== */
 .modal-overlay {
   position: fixed; /* Se superpone a todo */
@@ -756,4 +756,101 @@ body {
 
 .modal-button.danger:hover {
   background-color: #c62834;
+}
+
+/* --- Estilos para el nuevo modal --- */
+.modal-content.question-modal-content {
+  max-width: 600px;
+}
+
+.modal-content.question-modal-content h2 {
+  color: #1a1a2e;
+}
+
+/* Estilos específicos para el textarea en el modal */
+.question-modal-content textarea {
+  width: 100%;
+  padding: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 1rem;
+  resize: vertical;
+}
+
+.question-modal-content textarea:focus {
+  outline: 2px solid #2575fc;
+  border-color: #2575fc;
+}
+
+.question-modal-content .input-group input,
+.question-modal-content .input-group textarea {
+  background: #f8f8f8;
+  color: #333;
+  border: 1px solid #ccc;
+  padding: 0.8rem 1rem;
+  width: 100%;
+  background: linear-gradient(to right, #ffffff, #ffffff) padding-box,
+    none border-box;
+  border: 1px solid #ccc;
+}
+
+.question-modal-content .input-group input:focus,
+.question-modal-content .input-group textarea:focus {
+  outline: none;
+  box-shadow: 0 0 5px rgba(37, 117, 252, 0.5);
+  border: 1px solid #2575fc;
+}
+
+/* Modificación del botón de publicar pregunta */
+.question-modal-content .modal-button:last-child {
+  background-image: linear-gradient(to right, #2575fc 0%, #6a11cb 100%);
+  color: white;
+}
+
+/* --- Estilos para las Tarjetas de Pregunta (Article Card) --- */
+.article-card {
+  background-color: #ffffff;
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  color: #333;
+  border-left: 5px solid #2575fc;
+  margin-bottom: 1.5rem;
+}
+
+.article-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid #f0f0f0;
+  padding-bottom: 0.5rem;
+}
+
+.article-author {
+  font-weight: 700;
+  color: #6a11cb;
+}
+
+.article-date {
+  font-size: 0.85rem;
+  color: #888;
+}
+
+.article-content {
+  font-size: 1rem;
+  line-height: 1.6;
+  margin-bottom: 1rem;
+  white-space: pre-wrap;
+}
+
+.article-actions a {
+  color: #2575fc;
+  text-decoration: none;
+  font-weight: 700;
+  transition: color 0.2s ease;
+}
+
+.article-actions a:hover {
+  color: #6a11cb;
 }

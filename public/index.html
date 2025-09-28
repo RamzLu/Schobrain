@@ -98,7 +98,9 @@
           <div class="hero-section gradient-card">
             <div class="hero-content">
               <h2>¿Qué preguntamos<br />hoy?</h2>
-              <button class="ask-question-button">Hacer una pregunta</button>
+              <button class="ask-question-button" id="ask-question-button">
+                Hacer una pregunta
+              </button>
             </div>
           </div>
 
@@ -111,6 +113,38 @@
             <p>Próximamente...</p>
           </div>
         </aside>
+      </div>
+    </div>
+    <div id="ask-question-modal" class="modal-overlay">
+      <div class="modal-content question-modal-content">
+        <h2>Haz tu pregunta a la comunidad</h2>
+        <form id="askQuestionForm" novalidate>
+          <div class="input-group">
+            <label for="question-content">Contenido de la pregunta</label>
+            <textarea
+              id="question-content"
+              name="content"
+              placeholder="Escribe tu pregunta aquí (mínimo 10 caracteres)..."
+              rows="5"
+              minlength="10"
+              required
+            ></textarea>
+          </div>
+          <p id="question-error-message" class="error-text"></p>
+
+          <div class="modal-actions">
+            <button
+              type="button"
+              id="cancel-question"
+              class="modal-button secondary"
+            >
+              Cancelar
+            </button>
+            <button type="submit" class="modal-button danger">
+              Publicar Pregunta
+            </button>
+          </div>
+        </form>
       </div>
     </div>
 

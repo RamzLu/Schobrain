@@ -2,18 +2,25 @@ import { ArticleModel } from "../models/article.model.js";
 
 export const createArticle = async (req, res) => {
   const authorId = req.userLog.id;
-  const { content, status, author, tags } = req.body;
+  const { content, status, tags } = req.body; // Solo toma los campos que se esperan
   try {
-    console.log(req.body);
     const article = await ArticleModel.create({
       content,
+      // status y tags se establecen si se envían, o toman el valor por defecto del esquema (ej. status: 'published')
       status,
-      author: authorId, // al hacer una pregunta le asignamos el author automaticamente
+      author: authorId, // Asignamos el autor logeado automáticamente
       tags,
     });
+
+    // Poblamos los datos del autor (nombre y perfil)
+    const populatedArticle = await ArticleModel.findById(article._id).populate(
+      "author",
+      "-password" // Trae todos los campos del usuario excepto la contraseña
+    );
+
     return res.status(201).json({
       msg: "Articulo creado correctamente",
-      data: article,
+      data: populatedArticle, // Devolvemos el artículo con el autor poblado
     });
   } catch (error) {
     console.log(error);
@@ -25,16 +32,22 @@ export const createArticle = async (req, res) => {
 
 export const getAllArticles = async (req, res) => {
   try {
-    const article = await ArticleModel.find().populate([
-      {
-        path: "comments",
-        populate: {
+    const article = await ArticleModel.find()
+      .populate([
+        {
           path: "author",
-          model: "User",
-          select: "-password",
+          select: "-password", // traé los datos del autor
         },
-      },
-    ]);
+        {
+          path: "comments",
+          populate: {
+            path: "author",
+            model: "User",
+            select: "-password",
+          },
+        },
+      ])
+      .sort({ createdAt: -1 });
     return res.status(200).json(article);
   } catch (error) {
     console.log(error);
