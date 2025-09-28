@@ -10,6 +10,22 @@ import {
   initializeArticleFeed,
 } from "./article/article.handler.js";
 
+// Función para renderizar la opción de Admin
+const renderAdminMenuOption = () => {
+  const userMenu = document.getElementById("user-menu");
+  if (userMenu) {
+    const adminHtml = `
+            <a href="/admin.html" id="admin-config-button">Configuración de administrador</a>
+        `;
+    const logoutButton = document.getElementById("logout-button");
+    if (logoutButton) {
+      logoutButton.insertAdjacentHTML("beforebegin", adminHtml);
+    } else {
+      userMenu.insertAdjacentHTML("beforeend", adminHtml);
+    }
+  }
+};
+
 // --- Esta es la función principal que se ejecuta cuando el HTML está listo ---
 const initializeIndexPage = async () => {
   // 1. Verifica la autenticación y actualiza el saludo
@@ -19,14 +35,20 @@ const initializeIndexPage = async () => {
     const usernameSpan = document.getElementById("logged-in-username");
     if (usernameSpan && authData && authData.data) {
       usernameSpan.textContent = authData.data.firstName;
+
+      // Lógica para mostrar la opción de Admin
+      if (authData.data.role === "admin") {
+        renderAdminMenuOption();
+      }
     }
   } catch (error) {
-    // verifyAuth ya redirige si la autenticación falla
-    console.error("Error de autenticación, serás redirigido.", error);
-    return; // Detiene la ejecución si no está autenticado
+    // ⬇️ CORRECCIÓN: Redirección explícita si el token no es válido o está ausente.
+    console.error("Error de autenticación, redirigiendo a login:", error);
+    window.location.href = "/login.html";
+    return;
   }
 
-  // 2. Inicializa el feed de artículos/preguntas (NEW)
+  // 2. Inicializa el feed de artículos/preguntas
   await initializeArticleFeed();
 
   // --- 3. Lógica del Menú Desplegable (Existente) ---
@@ -34,24 +56,27 @@ const initializeIndexPage = async () => {
   const userMenu = document.getElementById("user-menu");
 
   if (menuToggle && userMenu) {
-    menuToggle.addEventListener("click", (event) => {
-      event.stopPropagation();
+    menuToggle.addEventListener("click", () => {
       userMenu.classList.toggle("visible");
+    });
+    // Cierra el menú si se hace clic fuera
+    document.addEventListener("click", (event) => {
+      if (
+        !menuToggle.contains(event.target) &&
+        !userMenu.contains(event.target)
+      ) {
+        userMenu.classList.remove("visible");
+      }
     });
   }
 
-  // --- LÓGICA DEL MODAL DE LOGOUT (Existente) ---
+  // --- 3.1 Lógica de Cerrar Sesión (Existente) ---
   const logoutButton = document.getElementById("logout-button");
   const logoutModal = document.getElementById("logout-modal");
-  const confirmLogoutButton = document.getElementById("confirm-logout");
   const cancelLogoutButton = document.getElementById("cancel-logout");
+  const confirmLogoutButton = document.getElementById("confirm-logout");
 
-  if (
-    logoutButton &&
-    logoutModal &&
-    confirmLogoutButton &&
-    cancelLogoutButton
-  ) {
+  if (logoutButton && logoutModal) {
     logoutButton.addEventListener("click", (event) => {
       event.preventDefault();
       userMenu.classList.remove("visible");
@@ -78,7 +103,7 @@ const initializeIndexPage = async () => {
     });
   }
 
-  // --- 4. Lógica del Modal de Pregunta (NEW) ---
+  // --- 4. Lógica del Modal de Pregunta (Existente) ---
   const askQuestionButton = document.getElementById("ask-question-button");
   const askQuestionForm = document.getElementById("askQuestionForm");
   const askQuestionModal = document.getElementById("ask-question-modal");

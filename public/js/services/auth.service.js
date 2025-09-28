@@ -64,7 +64,7 @@ export const verifyAuth = async () => {
     }
     return await response.json();
   } catch (error) {
-    // Redirigir al login si hay un error de autenticación
-    window.location.href = "/login.html";
+    // ⬇️ CORRECCIÓN: Se elimina la redirección interna. Solo se lanza el error.
+    throw error;
   }
 };
