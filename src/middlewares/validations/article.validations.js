@@ -5,13 +5,6 @@ import { UserModel } from "../../models/user.model.js";
 import { body, param } from "express-validator";
 
 export const createArticleValidation = [
-  body("title")
-    .notEmpty()
-    .withMessage("El título del artículo es obligatorio.")
-    .isString()
-    .withMessage("El título debe ser una cadena de texto.")
-    .isLength({ min: 3, max: 200 })
-    .withMessage("El título debe tener entre 3 y 200 caracteres."),
   body("content")
     .notEmpty()
     .withMessage("El contenido del artículo es obligatorio.")
@@ -19,12 +12,6 @@ export const createArticleValidation = [
     .withMessage("El contenido debe ser una cadena de texto.")
     .isLength({ min: 10 })
     .withMessage("El contenido debe tener al menos 10 caracteres."),
-  body("excerpt")
-    .optional()
-    .isString()
-    .withMessage("El extracto debe ser una cadena de texto.")
-    .isLength({ min: 10 })
-    .withMessage("El extracto debe tener al menos 10 caracteres."),
   body("status")
     .optional()
     .isIn(["published", "archived"])
@@ -61,24 +48,14 @@ export const updateArticleValidation = [
         throw new Error("El artículo que intenta actualizar no existe.");
       }
     }),
-  body("title")
-    .optional()
-    .isString()
-    .withMessage("El título debe ser una cadena de texto.")
-    .isLength({ min: 3, max: 200 })
-    .withMessage("El título debe tener entre 3 y 200 caracteres."),
+  // ! Eliminé el title
   body("content")
     .optional()
     .isString()
     .withMessage("El contenido debe ser una cadena de texto.")
     .isLength({ min: 10 })
     .withMessage("El contenido debe tener al menos 10 caracteres."),
-  body("excerpt")
-    .optional()
-    .isString()
-    .withMessage("El extracto debe ser una cadena de texto.")
-    .isLength({ min: 10 })
-    .withMessage("El extracto debe tener al menos 10 caracteres."),
+  // ! Eliminé el excerpt
   body("status")
     .optional()
     .isIn(["published", "archived"])

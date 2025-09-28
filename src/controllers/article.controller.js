@@ -2,13 +2,11 @@ import { ArticleModel } from "../models/article.model.js";
 
 export const createArticle = async (req, res) => {
   const authorId = req.userLog.id;
-  const { title, content, excerpt, status, author, tags } = req.body;
+  const { content, status, author, tags } = req.body;
   try {
     console.log(req.body);
     const article = await ArticleModel.create({
-      title,
       content,
-      excerpt,
       status,
       author: authorId, // al hacer una pregunta le asignamos el author automaticamente
       tags,
@@ -86,14 +84,12 @@ export const deleteArticle = async (req, res) => {
 
 export const updateArticle = async (req, res) => {
   const { id } = req.params;
-  const { title, content, excerpt, status, tags } = req.body;
+  const { content, status, tags } = req.body;
   try {
     const article = await ArticleModel.findByIdAndUpdate(
       id,
       {
-        title,
         content,
-        excerpt,
         status,
         tags,
       },

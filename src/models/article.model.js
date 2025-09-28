@@ -5,20 +5,10 @@ import { CommentModel } from "./comment.model.js";
 
 const articleSchema = new Schema(
   {
-    title: {
-      type: String,
-      minlength: 3,
-      maxlength: 200,
-      required: true,
-    },
     content: {
       type: String,
       minlength: 10,
       required: true,
-    },
-    excerpt: {
-      type: String,
-      minlength: 10,
     },
     status: {
       type: String,
