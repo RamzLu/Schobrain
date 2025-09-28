@@ -297,8 +297,8 @@ body {
   justify-content: space-between;
   align-items: center;
   padding: 1rem 2rem;
-  background-color: #1a1a2e; /* Color similar al contenedor de login */
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  background-color: #ebedf8; /* Color similar al contenedor de login */
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
   color: #e0e0e0;
 }
@@ -311,14 +311,14 @@ body {
 .header-center {
   flex-grow: 1;
   display: flex;
-  justify-content: center;
+  /* justify-content: center; */
   padding: 0 2rem;
 }
 
 .search-bar {
   display: flex;
   align-items: center;
-  background-color: #2a2a4a; /* Fondo de la barra de búsqueda */
+  background-color: #dcdcf7; /* Fondo de la barra de búsqueda */
   border-radius: 25px;
   padding: 0.5rem 1rem;
   max-width: 500px; /* Ancho máximo para la barra */
@@ -332,7 +332,7 @@ body {
   font-size: 1rem;
   padding: 0.3rem;
   flex-grow: 1;
-  outline: none;
+  /* outline: none; */
 }
 
 .search-bar input::placeholder {
@@ -342,7 +342,7 @@ body {
 .search-button {
   background: transparent;
   border: none;
-  color: #e0e0e0;
+  color: #6f81e4;
   cursor: pointer;
   font-size: 1rem;
   margin-left: 0.5rem;
@@ -361,13 +361,14 @@ body {
 
 .welcome-user {
   font-size: 1rem;
-  color: #c0c0d0;
+  font: normal bold 1rem/1.5rem "Outfit", sans-serif;
+  color: #5b5bf0;
 }
 
 .menu-toggle {
   background-color: transparent;
   border: none;
-  color: #e0e0e0;
+  color: #536fe7;
   font-size: 1.5rem;
   cursor: pointer;
   padding: 0.5rem;
@@ -376,7 +377,7 @@ body {
 }
 
 .menu-toggle:hover {
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: rgba(126, 144, 247, 0.1);
 }
 
 /* --- ÁREA DE CONTENIDO PRINCIPAL (sidebar + feed) --- */
