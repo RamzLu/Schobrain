@@ -1,6 +1,7 @@
 // File: ramzlu/schobrain/Schobrain-dev-lu/public/js/admin/tag.handler.js
 
-import { createTagApi } from "../services/tag.service.js";
+import { createTagApi, fetchAllTags } from "../services/tag.service.js"; // ⬅️ IMPORTADO fetchAllTags
+import { loadExistingTags } from "./tag.ui.js"; // ⬅️ IMPORTADO loadExistingTags
 
 const form = document.getElementById("createTagForm");
 const errorMessageElement = document.getElementById("tag-error-message");
@@ -36,6 +37,23 @@ const clearMessages = () => {
   successMessageElement.textContent = "";
 };
 
+/**
+ * Inicializa la sección de etiquetas: obtiene y renderiza las existentes.
+ */
+export const initializeTagSection = async () => {
+  try {
+    const tags = await fetchAllTags();
+    loadExistingTags(tags);
+  } catch (error) {
+    console.error("Error al cargar las etiquetas existentes:", error);
+    // Mostrar un mensaje de error en la lista si falla
+    const listContainer = document.getElementById("existing-tags-list");
+    if (listContainer) {
+      listContainer.innerHTML = `<p class="error-text visible" style="color: #ff5c5c; text-align: center;">Error al cargar las etiquetas: ${error.message}</p>`;
+    }
+  }
+};
+
 export const handleCreateTag = async (event) => {
   event.preventDefault();
   clearMessages();
@@ -61,6 +79,9 @@ export const handleCreateTag = async (event) => {
     // Limpiar el formulario después del éxito
     form.name.value = "";
     form.description.value = "";
+
+    // Actualizar la lista de tags
+    await initializeTagSection(); // ⬅️ Recargar la lista tras crear uno nuevo
   } catch (error) {
     console.error("Error al crear la etiqueta:", error);
     displayError(`Error: ${error.message}`);

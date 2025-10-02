@@ -15,7 +15,6 @@ body {
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  /* overflow: hidden; <-- ELIMINAR ESTA LÍNEA */
   /* padding: 2rem; */
 }
 
@@ -243,7 +242,7 @@ body {
 
 /* ==========================================================================
    6. FOOTER Y DISEÑO RESPONSIVE
-   =================================================  ========================= */
+   ========================================================================== */
 .copyright {
   position: absolute;
   bottom: 1rem;
@@ -354,6 +353,7 @@ body {
 }
 
 .header-right {
+  position: relative; /* Clave para posicionar el menú desplegable */
   display: flex;
   align-items: center;
   gap: 1.5rem;
@@ -386,23 +386,23 @@ body {
   flex-grow: 1;
   padding: 1.5rem 2rem;
   gap: 2rem;
+  /* ---> NUEVO COLOR DE FONDO PARA EL ÁREA DE CONTENIDO <--- */
+  background-color: #f0f2f5;
 }
 
-/* --- SIDEBAR (ASIGNATURAS) --- */
+/* --- SIDEBARS (IZQUIERDA Y DERECHA) --- */
 .sidebar {
   flex-basis: 250px; /* Ancho fijo para el sidebar */
   flex-shrink: 0;
-  background-color: #1a1a2e;
+  background-color: #ffffff; /* Fondo blanco para las barras laterales */
   border-radius: 10px;
   padding: 1.5rem;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  color: #333; /* Texto oscuro para contraste */
 }
 
 .sidebar h2 {
-  font-size: 1.3rem;
-  font-weight: 700;
-  margin-bottom: 1.5rem;
-  color: #ffffff;
+  color: #111; /* Títulos más oscuros */
 }
 
 .filter-list {
@@ -418,7 +418,7 @@ body {
   align-items: center;
   gap: 1rem;
   text-decoration: none;
-  color: #c0c0d0;
+  color: #555; /* Enlaces más oscuros */
   font-size: 1rem;
   padding: 0.6rem 0.8rem;
   border-radius: 8px;
@@ -427,19 +427,26 @@ body {
 
 .filter-list a i {
   font-size: 1.1rem;
-  color: #a0a0b0; /* Color de icono por defecto */
+  color: #888;
 }
 
 .filter-list a:hover {
-  background-color: rgba(37, 117, 252, 0.2); /* Fondo más claro en hover */
-  color: #2575fc; /* Color del texto en hover */
+  background-color: #e9ecef;
+  color: #007bff;
 }
 
 .filter-list a:hover i {
-  color: #2575fc; /* Color del icono en hover */
+  color: #007bff;
 }
 
-/* --- SECCIÓN DE PREGUNTAS (MAIN CONTENT) --- */
+/* --- Estilos para la nueva barra de contribuyentes --- */
+
+.contributors-list p {
+  color: #888;
+  font-style: italic;
+}
+
+/* --- SECCIÓN DE PREGUNTAS (Contenido central) --- */
 .question-feed {
   flex-grow: 1;
   display: flex;
@@ -512,6 +519,39 @@ body {
   transform: translateY(-2px);
 }
 
+/* --- ESTILOS PARA EL MENÚ DE USUARIO DESPLEGABLE --- */
+
+/* --- Estilos para el menú de usuario desplegable --- */
+.user-menu {
+  display: none; /* Oculto por defecto */
+  position: absolute;
+  top: calc(100% + 10px); /* Posición: Debajo del header + 10px de espacio */
+  right: 0;
+  background-color: #1a1a2e;
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+  width: 180px;
+  overflow: hidden;
+  z-index: 1000;
+}
+
+.user-menu.visible {
+  display: block; /* Se muestra con JavaScript */
+}
+
+.user-menu a {
+  display: block;
+  padding: 0.8rem 1.2rem;
+  color: #e0e0e0;
+  text-decoration: none; /* Elimina el subrayado */
+  transition: background-color 0.2s ease-in-out;
+}
+
+.user-menu a:hover {
+  background-color: #2575fc;
+  color: #ffffff;
+}
+
 /* ==========================================================================
    8. MEDIA QUERIES (RESPONSIVE DESIGN) para INDEX
    ========================================================================== */
@@ -573,121 +613,7 @@ body {
   }
 }
 /* ==========================================================================
-   7. ESTILOS PARA LA PÁGINA PRINCIPAL (INDEX.HTML)
-   ========================================================================== */
-
-/* --- Contenedor principal y fondo --- */
-.main-container {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-  width: 100%;
-  background-color: #12121c;
-}
-
-/* --- ÁREA DE CONTENIDO PRINCIPAL (sidebar + feed + contributors) --- */
-.content-area {
-  display: flex;
-  flex-grow: 1;
-  padding: 1.5rem 2rem;
-  gap: 2rem;
-  /* ---> NUEVO COLOR DE FONDO PARA EL ÁREA DE CONTENIDO <--- */
-  background-color: #f0f2f5;
-}
-
-/* --- SIDEBARS (IZQUIERDA Y DERECHA) --- */
-.sidebar {
-  flex-basis: 250px;
-  flex-shrink: 0;
-  background-color: #ffffff; /* Fondo blanco para las barras laterales */
-  border-radius: 10px;
-  padding: 1.5rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-  color: #333; /* Texto oscuro para contraste */
-}
-
-.sidebar h2 {
-  color: #111; /* Títulos más oscuros */
-}
-
-.filter-list a {
-  color: #555; /* Enlaces más oscuros */
-}
-
-.filter-list a i {
-  color: #888;
-}
-
-.filter-list a:hover {
-  background-color: #e9ecef;
-  color: #007bff;
-}
-
-.filter-list a:hover i {
-  color: #007bff;
-}
-
-/* --- Estilos para la nueva barra de contribuyentes --- */
-/* .contributors-sidebar { */
-/* Hereda los estilos de .sidebar */
-/* } */
-
-.contributors-list p {
-  color: #888;
-  font-style: italic;
-}
-
-/* --- SECCIÓN DE PREGUNTAS (Contenido central) --- */
-.question-feed {
-  flex-grow: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
-}
-/* --- ESTILOS PARA EL MENÚ DE USUARIO DESPLEGABLE --- */
-
-/* Posicionamos el contenedor para el menú */
-/* --- Estilos para la sección derecha del header --- */
-.header-right {
-  position: relative; /* Clave para posicionar el menú desplegable */
-  display: flex;
-  align-items: center;
-  gap: 1.5rem;
-}
-
-/* --- Estilos para el menú de usuario desplegable --- */
-.user-menu {
-  display: none; /* Oculto por defecto */
-  position: absolute;
-  top: calc(100% + 10px); /* Posición: Debajo del header + 10px de espacio */
-  right: 0;
-  background-color: #1a1a2e;
-  border-radius: 8px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
-  width: 180px;
-  overflow: hidden;
-  z-index: 1000;
-}
-
-.user-menu.visible {
-  display: block; /* Se muestra con JavaScript */
-}
-
-.user-menu a {
-  display: block;
-  padding: 0.8rem 1.2rem;
-  color: #e0e0e0;
-  text-decoration: none; /* Elimina el subrayado */
-  transition: background-color 0.2s ease-in-out;
-}
-
-.user-menu a:hover {
-  background-color: #2575fc;
-  color: #ffffff;
-}
-
-/* ==========================================================================
-   9. ESTILOS PARA MODAL PREGUNTA 
+   9. ESTILOS PARA MODAL Y ARTICLE CARD
    ========================================================================== */
 .modal-overlay {
   position: fixed; /* Se superpone a todo */
@@ -783,7 +709,9 @@ body {
 }
 
 .question-modal-content .input-group input,
-.question-modal-content .input-group textarea {
+.question-modal-content .input-group textarea,
+.question-modal-content .input-group select {
+  /* ⬅️ AÑADIDO SELECT */
   background: #f8f8f8;
   color: #333;
   border: 1px solid #ccc;
@@ -792,10 +720,13 @@ body {
   background: linear-gradient(to right, #ffffff, #ffffff) padding-box,
     none border-box;
   border: 1px solid #ccc;
+  min-height: 51px; /* Consistencia con otros inputs */
 }
 
 .question-modal-content .input-group input:focus,
-.question-modal-content .input-group textarea:focus {
+.question-modal-content .input-group textarea:focus,
+.question-modal-content .input-group select:focus {
+  /* ⬅️ AÑADIDO SELECT */
   outline: none;
   box-shadow: 0 0 5px rgba(37, 117, 252, 0.5);
   border: 1px solid #2575fc;
@@ -840,7 +771,7 @@ body {
 .article-content {
   font-size: 1rem;
   line-height: 1.6;
-  margin-bottom: 1rem;
+  margin-bottom: 0.5rem; /* Ajustado para dejar espacio al footer */
   white-space: pre-wrap;
 }
 
@@ -854,57 +785,8 @@ body {
 .article-actions a:hover {
   color: #6a11cb;
 }
-/* ... (El resto del CSS hasta la sección de Estilos para el nuevo modal) ... */
 
-/* Estilos específicos para el textarea y select en el modal */
-.question-modal-content textarea {
-  width: 100%;
-  padding: 1rem;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  font-size: 1rem;
-  resize: vertical;
-}
-
-.question-modal-content textarea:focus {
-  outline: 2px solid #2575fc;
-  border-color: #2575fc;
-}
-
-.question-modal-content .input-group input,
-.question-modal-content .input-group textarea,
-.question-modal-content .input-group select {
-  /* ⬅️ AÑADIDO SELECT */
-  background: #f8f8f8;
-  color: #333;
-  border: 1px solid #ccc;
-  padding: 0.8rem 1rem;
-  width: 100%;
-  background: linear-gradient(to right, #ffffff, #ffffff) padding-box,
-    none border-box;
-  border: 1px solid #ccc;
-  min-height: 51px; /* Consistencia con otros inputs */
-}
-
-.question-modal-content .input-group input:focus,
-.question-modal-content .input-group textarea:focus,
-.question-modal-content .input-group select:focus {
-  /* ⬅️ AÑADIDO SELECT */
-  outline: none;
-  box-shadow: 0 0 5px rgba(37, 117, 252, 0.5);
-  border: 1px solid #2575fc;
-}
-
-/* ... (El resto del CSS hasta la sección de Artículos) ... */
-
-.article-content {
-  font-size: 1rem;
-  line-height: 1.6;
-  margin-bottom: 0.5rem; /* Ajustado para dejar espacio al footer */
-  white-space: pre-wrap;
-}
-
-/* --- NUEVOS ESTILOS: Footer de Tarjeta y Tags --- */
+/* --- Footer de Tarjeta y Tags --- */
 
 .article-footer-actions {
   display: flex;
@@ -932,16 +814,7 @@ body {
   color: white;
 }
 
-.article-actions a {
-  color: #2575fc;
-  text-decoration: none;
-  font-weight: 700;
-  transition: color 0.2s ease;
-}
-
-.article-actions a:hover {
-  color: #6a11cb;
-}
+/* --- Colores de Tags --- */
 
 .tag-blue {
   background-color: #2575fc; /* Matemáticas */
@@ -966,4 +839,116 @@ body {
 }
 .tag-gray {
   background-color: #6c757d; /* Default/Otros */
+}
+
+/* ==========================================================================
+   10. ESTILOS ESPECÍFICOS PARA EL PANEL DE ADMINISTRACIÓN
+   ========================================================================== */
+
+/* Ajustes para el contenedor principal a ancho completo y fondo oscuro */
+.admin-container {
+  flex-grow: 1;
+  padding: 3rem 2rem;
+  max-width: none !important; /* Elimina la restricción de ancho */
+  margin: 0 !important; /* Elimina los márgenes laterales */
+  background-color: #12121c; /* Fondo que coincide con el body */
+  color: #e0e0e0;
+}
+
+.admin-container h1 {
+  color: #e0e0e0;
+  border-bottom-color: #2575fc;
+}
+
+/* Diseño de dos columnas para las secciones de tags */
+.tags-management-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* Dos columnas de igual ancho */
+  gap: 2rem; /* Espacio entre las columnas */
+  align-items: flex-start; /* Alinea las secciones en la parte superior */
+}
+
+/* Estilos de las secciones (card) en el panel de admin */
+.admin-section {
+  background-color: #ffffff; /* Fondo blanco para las secciones (como en el Login) */
+  color: #333; /* Texto oscuro para el interior de la sección */
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  margin-bottom: 2rem;
+}
+
+.admin-section h2 {
+  color: #6a11cb; /* Título morado */
+  margin-bottom: 1.5rem;
+}
+
+/* Estilos de formulario e inputs dentro de la sección Admin */
+.form-admin .input-group label {
+  color: #333; /* Etiquetas oscuras */
+}
+
+.form-admin .input-group input,
+.form-admin .input-group textarea {
+  background: #f8f8f8;
+  color: #333;
+  border: 1px solid #ccc;
+  padding: 0.8rem 1rem;
+  width: 100%;
+  margin-top: 0.5rem;
+  border-radius: 6px;
+}
+
+.form-admin button {
+  background-color: #6a11cb; /* Botón con el color morado principal */
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.form-admin button:hover {
+  background-color: #8c42ed;
+}
+
+/* --- Estilos de las Tarjetas de Tags existentes --- */
+
+.admin-section .tag-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid #eee;
+  background-color: #f8f8f8; /* Fondo claro para las tarjetas */
+  border-radius: 8px;
+  margin-bottom: 0.8rem;
+  transition: background-color 0.2s ease;
+}
+
+.admin-section .tag-card:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+}
+
+.admin-section .tag-card:hover {
+  background-color: #e9ecef; /* Hover en tarjetas de tag */
+}
+
+.tag-name {
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: #1a1a2e; /* Nombre de tag oscuro */
+}
+
+.tag-description {
+  font-size: 0.9rem;
+  color: #6c757d; /* Descripción de tag gris */
+  margin-top: 0.2rem;
+}
+
+/* Media query para hacer el diseño responsivo en pantallas más pequeñas */
+@media (max-width: 992px) {
+  .tags-management-grid {
+    grid-template-columns: 1fr; /* Una sola columna en pantallas pequeñas */
+  }
 }
