@@ -120,6 +120,13 @@
         <h2>Haz tu pregunta a la comunidad</h2>
         <form id="askQuestionForm" novalidate>
           <div class="input-group">
+            <label for="tag-select">Etiqueta Principal</label>
+            <select id="tag-select" name="tags" class="role-select">
+              <option value="">(Opcional) Selecciona una etiqueta</option>
+            </select>
+          </div>
+
+          <div class="input-group">
             <label for="question-content">Contenido de la pregunta</label>
             <textarea
               id="question-content"
@@ -153,6 +160,7 @@
     <script type="module" src="./js/services/article.service.js"></script>
     <script type="module" src="./js/article/article.ui.js"></script>
     <script type="module" src="./js/article/article.handler.js"></script>
+    <script type="module" src="./js/services/tag.service.js"></script>
 
     <div id="logout-modal" class="modal-overlay">
       <div class="modal-content">
