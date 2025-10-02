@@ -42,3 +42,20 @@ export const fetchAllTags = async () => {
   }
   return await response.json();
 };
+/**
+ * Elimina una etiqueta (Tag) del backend. ⬅️ NUEVA FUNCIÓN
+ * @param {string} tagId - El ID de la etiqueta a eliminar.
+ * @returns {Promise<Object>} La respuesta de confirmación.
+ */
+export const deleteTagApi = async (tagId) => {
+  const response = await fetch(`${API_URL}/${tagId}`, {
+    method: "DELETE",
+    headers: { "Content-Type": "application/json" },
+  });
+
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data.msg || "Error al eliminar la etiqueta.");
+  }
+  return data;
+};

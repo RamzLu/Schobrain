@@ -15,7 +15,12 @@ const renderTagCard = (tag) => {
         <p class="tag-description">${tag.description || "Sin descripción."}</p>
       </div>
       <div class="tag-actions">
-        </div>
+        <button class="delete-tag-btn" data-tag-id="${
+          tag._id
+        }" title="Eliminar etiqueta">
+            <i class="fas fa-trash-alt"></i> 
+        </button>
+      </div>
     </div>
   `;
 };
