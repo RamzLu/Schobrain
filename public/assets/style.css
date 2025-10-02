@@ -854,6 +854,32 @@ body {
   background-color: #12121c; /* Fondo que coincide con el body */
   color: #e0e0e0;
 }
+#existing-tags-list {
+  max-height: 400px; /* Define la altura máxima antes de que aparezca el scroll */
+  overflow-y: auto; /* Habilita la barra de desplazamiento vertical si el contenido excede el max-height */
+  padding-right: 15px; /* Añade un pequeño padding para que el scroll no se pegue al borde de la tarjeta */
+}
+/* ⬅️ INICIO ESTILOS DE BARRA DE SCROLL (WebKit) ⬅️ */
+
+#existing-tags-list::-webkit-scrollbar {
+  width: 8px; /* Ancho total de la barra */
+}
+
+#existing-tags-list::-webkit-scrollbar-track {
+  background: #f1f1f1; /* Color de fondo de la pista de scroll */
+  border-radius: 10px;
+}
+
+#existing-tags-list::-webkit-scrollbar-thumb {
+  background: #6a11cb; /* Color del deslizador (thumb) */
+  border-radius: 10px;
+}
+
+#existing-tags-list::-webkit-scrollbar-thumb:hover {
+  background: #2575fc; /* Color al pasar el ratón (un poco de azul para el hover) */
+}
+
+/* ⬅️ FIN ESTILOS DE BARRA DE SCROLL ⬅️ */
 
 .admin-container h1 {
   color: #e0e0e0;
