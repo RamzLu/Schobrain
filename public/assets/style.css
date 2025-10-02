@@ -854,3 +854,116 @@ body {
 .article-actions a:hover {
   color: #6a11cb;
 }
+/* ... (El resto del CSS hasta la sección de Estilos para el nuevo modal) ... */
+
+/* Estilos específicos para el textarea y select en el modal */
+.question-modal-content textarea {
+  width: 100%;
+  padding: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 1rem;
+  resize: vertical;
+}
+
+.question-modal-content textarea:focus {
+  outline: 2px solid #2575fc;
+  border-color: #2575fc;
+}
+
+.question-modal-content .input-group input,
+.question-modal-content .input-group textarea,
+.question-modal-content .input-group select {
+  /* ⬅️ AÑADIDO SELECT */
+  background: #f8f8f8;
+  color: #333;
+  border: 1px solid #ccc;
+  padding: 0.8rem 1rem;
+  width: 100%;
+  background: linear-gradient(to right, #ffffff, #ffffff) padding-box,
+    none border-box;
+  border: 1px solid #ccc;
+  min-height: 51px; /* Consistencia con otros inputs */
+}
+
+.question-modal-content .input-group input:focus,
+.question-modal-content .input-group textarea:focus,
+.question-modal-content .input-group select:focus {
+  /* ⬅️ AÑADIDO SELECT */
+  outline: none;
+  box-shadow: 0 0 5px rgba(37, 117, 252, 0.5);
+  border: 1px solid #2575fc;
+}
+
+/* ... (El resto del CSS hasta la sección de Artículos) ... */
+
+.article-content {
+  font-size: 1rem;
+  line-height: 1.6;
+  margin-bottom: 0.5rem; /* Ajustado para dejar espacio al footer */
+  white-space: pre-wrap;
+}
+
+/* --- NUEVOS ESTILOS: Footer de Tarjeta y Tags --- */
+
+.article-footer-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 1rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid #f0f0f0;
+}
+
+.article-tags-container {
+  /* Posición abajo a la izquierda dentro del footer */
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.article-tag {
+  display: inline-block;
+  padding: 0.3rem 0.8rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: capitalize;
+  color: white;
+}
+
+.article-actions a {
+  color: #2575fc;
+  text-decoration: none;
+  font-weight: 700;
+  transition: color 0.2s ease;
+}
+
+.article-actions a:hover {
+  color: #6a11cb;
+}
+
+.tag-blue {
+  background-color: #2575fc; /* Matemáticas */
+}
+.tag-green {
+  background-color: #28a745; /* Lengua */
+}
+.tag-red {
+  background-color: #dc3545; /* Ciencias */
+}
+.tag-purple {
+  background-color: #6a11cb; /* Programación */
+}
+.tag-orange {
+  background-color: #ff8c00; /* Historia */
+}
+.tag-teal {
+  background-color: #008080; /* Inglés */
+}
+.tag-violet {
+  background-color: #8f00ff; /* Castellano */
+}
+.tag-gray {
+  background-color: #6c757d; /* Default/Otros */
+}

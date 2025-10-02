@@ -30,26 +30,70 @@ const formatArticleDate = (dateString) => {
   return new Date(dateString).toLocaleDateString("es-ES", options);
 };
 
+// Utility function to get a consistent color based on tag name (NUEVO)
+const getTagColor = (tagName) => {
+  const colors = {
+    matemáticas: "tag-blue",
+    lengua: "tag-green",
+    ciencias: "tag-red",
+    programación: "tag-purple",
+    historia: "tag-orange",
+    inglés: "tag-teal",
+    castellano: "tag-violet",
+  };
+  // Usamos la primera palabra del tag en minúsculas
+  const key = tagName.toLowerCase().split(" ")[0];
+  return colors[key] || "tag-gray"; // Default a gris si no se encuentra
+};
+
+/**
+ * Rellena el selector de tags en el modal. (NUEVO)
+ * @param {Array<Object>} tags - Lista de tags { _id, name }
+ */
+export const populateTagSelector = (tags) => {
+  const tagSelect = document.getElementById("tag-select");
+  if (tagSelect) {
+    // Guardamos y clonamos la opción por defecto
+    const defaultOption = tagSelect
+      .querySelector('option[value=""]')
+      .cloneNode(true);
+    tagSelect.innerHTML = ""; // Limpiamos las opciones anteriores
+    tagSelect.appendChild(defaultOption);
+
+    tags.forEach((tag) => {
+      const option = document.createElement("option");
+      option.value = tag._id;
+      option.textContent = tag.name;
+      tagSelect.appendChild(option);
+    });
+  }
+};
+
 // Genera el HTML para una sola tarjeta de pregunta
 const renderArticleCard = (article) => {
   let authorName = "Usuario Desconocido";
   const author = article.author;
 
-  // 1. Verificamos que el autor sea un objeto poblado
+  // Lógica de autor (sin cambios)
   if (author && typeof author === "object") {
-    const profile = author.profile; // Obtenemos el objeto profile
-
-    // 2. Intenta obtener el nombre y apellido si el perfil y sus campos existen
+    const profile = author.profile;
     if (profile && profile.firstName && profile.lastName) {
       authorName = `${profile.firstName} ${profile.lastName}`;
-    }
-    // 3. Fallback al Username
-    else if (author.username) {
+    } else if (author.username) {
       authorName = author.username;
     }
   }
 
   const formattedDate = formatArticleDate(article.createdAt);
+
+  // Lógica de Renderizado de Tag (NUEVO)
+  const tag = article.tags && article.tags.length > 0 ? article.tags[0] : null;
+  let tagHtml = "";
+
+  if (tag && tag.name) {
+    const tagColorClass = getTagColor(tag.name);
+    tagHtml = `<span class="article-tag ${tagColorClass}">${tag.name}</span>`;
+  }
 
   return `
     <article class="article-card" data-id="${article._id}">
@@ -60,9 +104,16 @@ const renderArticleCard = (article) => {
       <div class="article-content">
         <p>${article.content}</p>
       </div>
-      <div class="article-actions">
-        <a href="#">Ver discusión y responder</a>
+      
+      <div class="article-footer-actions">
+          <div class="article-tags-container">
+              ${tagHtml}
+          </div>
+          <div class="article-actions">
+            <a href="#">Ver discusión y responder</a>
+          </div>
       </div>
+      
     </article>
   `;
 };

@@ -13,10 +13,12 @@ export const createArticle = async (req, res) => {
     });
 
     // Poblamos los datos del autor (nombre y perfil)
-    const populatedArticle = await ArticleModel.findById(article._id).populate(
-      "author",
-      "-password" // Trae todos los campos del usuario excepto la contraseña
-    );
+    const populatedArticle = await ArticleModel.findById(article._id)
+      .populate(
+        "author",
+        "-password" // Trae todos los campos del usuario excepto la contraseña
+      )
+      .populate("tags", "name"); // poblamos solo el nombre del tag
 
     return res.status(201).json({
       msg: "Articulo creado correctamente",
@@ -33,20 +35,9 @@ export const createArticle = async (req, res) => {
 export const getAllArticles = async (req, res) => {
   try {
     const article = await ArticleModel.find()
-      .populate([
-        {
-          path: "author",
-          select: "-password", // traé los datos del autor
-        },
-        {
-          path: "comments",
-          populate: {
-            path: "author",
-            model: "User",
-            select: "-password",
-          },
-        },
-      ])
+      .populate("author", "-password")
+      .populate("tags", "name")
+      .select("content author createdAt tags")
       .sort({ createdAt: -1 });
     return res.status(200).json(article);
   } catch (error) {
