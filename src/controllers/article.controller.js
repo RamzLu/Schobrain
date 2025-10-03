@@ -3,6 +3,14 @@ import { ArticleModel } from "../models/article.model.js";
 export const createArticle = async (req, res) => {
   const authorId = req.userLog.id;
   const { content, status, tags } = req.body; // Solo toma los campos que se esperan
+
+  //  Obtener la URL de la imagen si se subió
+  let imageUrl = null;
+  if (req.file) {
+    // La URL es la ruta relativa a la carpeta 'public'
+    imageUrl = `/uploads/${req.file.filename}`;
+  }
+
   try {
     const article = await ArticleModel.create({
       content,
@@ -10,6 +18,7 @@ export const createArticle = async (req, res) => {
       status,
       author: authorId, // Asignamos el autor logeado automáticamente
       tags,
+      imageUrl, // Guardar la URL de la imagen
     });
 
     // Poblamos los datos del autor (nombre y perfil)
@@ -37,7 +46,8 @@ export const getAllArticles = async (req, res) => {
     const article = await ArticleModel.find()
       .populate("author", "-password")
       .populate("tags", "name")
-      .select("content author createdAt tags")
+      // Se añade 'imageUrl' a la selección para que se envíe al frontend
+      .select("content author createdAt tags imageUrl")
       .sort({ createdAt: -1 });
     return res.status(200).json(article);
   } catch (error) {

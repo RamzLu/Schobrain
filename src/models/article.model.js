@@ -33,6 +33,10 @@ const articleSchema = new Schema(
       type: [Types.ObjectId],
       ref: "Tag",
     },
+    imageUrl: {
+      type: String,
+      required: false,
+    },
   },
   {
     versionKey: false,

@@ -33,7 +33,8 @@ export const handlePostQuestion = async (event) => {
   event.preventDefault();
   const form = event.target;
   const content = form["content"].value.trim();
-  const tagId = form["tags"].value; // ⬅️ NUEVO: Obtener ID de la etiqueta
+  const tagId = form["tags"].value;
+  const imageFile = form["imageFile"].files[0]; // ⬅️ NUEVO: Obtener el archivo de imagen
   const errorMessageElement = document.getElementById("question-error-message");
 
   errorMessageElement.classList.remove("visible");
@@ -55,14 +56,22 @@ export const handlePostQuestion = async (event) => {
   }
 
   try {
-    // Construir el cuerpo de la petición: tags debe ser un array
-    const requestBody = {
-      content: content,
-      tags: tagId ? [tagId] : [], // Enviar como array con el ID si se seleccionó
-    };
+    // ⬅️ NUEVO: Construir FormData para enviar archivos
+    const formData = new FormData();
+    formData.append("content", content);
+
+    // Añadir tags como un array de un solo elemento si existe
+    if (tagId) {
+      formData.append("tags[]", tagId);
+    }
+
+    // Añadir la imagen si se seleccionó un archivo
+    if (imageFile) {
+      formData.append("imageFile", imageFile); // 'imageFile' es el nombre que espera Multer
+    }
 
     // 1. Publica la pregunta
-    await postQuestion(requestBody); // ⬅️ Enviar el cuerpo de la petición
+    await postQuestion(formData); // ⬅️ Enviar el objeto FormData
 
     // 2. Vuelve a cargar el feed para mostrar la nueva pregunta
     await initializeArticleFeed();
@@ -71,7 +80,7 @@ export const handlePostQuestion = async (event) => {
     alert("¡Tu pregunta ha sido publicada!");
   } catch (error) {
     console.error("Error al publicar la pregunta:", error);
-    // Mostrar error de validación del backend
+    // Mostrar error de validación del backend o de Multer
     errorMessageElement.textContent = error.message;
     errorMessageElement.classList.add("visible");
   }

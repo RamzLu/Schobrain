@@ -772,7 +772,7 @@ body {
   font-size: 1rem;
   line-height: 1.6;
   margin-bottom: 0.5rem; /* Ajustado para dejar espacio al footer */
-  white-space: pre-wrap;
+  /* white-space: pre-wrap; */
 }
 
 .article-actions a {
@@ -998,4 +998,58 @@ body {
 .delete-tag-btn:hover {
   background-color: rgba(220, 53, 69, 0.1);
   color: #c82333;
+}
+/* ... (omitted existing styles) */
+
+/* --- Estilos para las Tarjetas de Pregunta (Article Card) --- */
+.article-card {
+  background-color: #ffffff;
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  color: #333;
+  border-left: 5px solid #2575fc;
+  margin-bottom: 1.5rem;
+}
+
+/* ⬅️ NUEVO: Estilos para la imagen adjunta */
+.article-image-container {
+  margin: 1rem 0;
+  max-height: 400px; /* Limitar altura del contenedor */
+  overflow: hidden; /* Ocultar partes de la imagen si excede el max-height */
+  border-radius: 8px;
+}
+
+.article-image {
+  width: 100%; /* La imagen ocupa todo el ancho del contenedor */
+  height: auto;
+  object-fit: cover; /* Asegura que la imagen cubra el área sin distorsionarse */
+  display: block;
+}
+
+/* NUEVOS ESTILOS PARA LA IMAGEN ADJUNTA EN LA TARJETA DE ARTÍCULO  */
+
+.article-image-container {
+  /* Contenedor que limita el espacio de la imagen */
+  margin: 1.5rem 0;
+  width: 100%;
+  max-height: 450px; /* Altura máxima razonable para el feed */
+  overflow: hidden; /* Asegura que no se desborde si la imagen es muy grande */
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  display: flex;
+  justify-content: center; /* Centra la imagen si es más pequeña que el contenedor */
+  align-items: center;
+  background-color: #f0f2f5; /* Fondo ligero para la zona de la imagen */
+}
+
+.article-image {
+  /* La imagen real se adapta */
+  max-width: 100%; /* CRÍTICO: Asegura que nunca exceda el ancho de la tarjeta */
+  height: auto; /* Mantiene la proporción */
+  max-height: 450px; /* La imagen no superará la altura máxima del contenedor */
+  display: block;
+  /* CRÍTICO: Ajusta la imagen dentro del contenedor sin recortarla, manteniendo su relación de aspecto */
+  object-fit: contain;
+  border-radius: 8px;
 }

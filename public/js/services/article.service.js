@@ -4,14 +4,15 @@ const API_URL = "/api/articles";
 
 /**
  * Publica una nueva pregunta.
- * @param {Object} requestBody - Contiene content y tags (array de IDs).
+ * @param {FormData} formData - Contiene content, tags, e imageFile.
  * @returns {Promise<Object>} El artículo creado.
  */
-export const postQuestion = async (requestBody) => {
+export const postQuestion = async (formData) => {
   const response = await fetch(API_URL, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(requestBody), // Usa el objeto completo
+    // CRÍTICO: Eliminar 'Content-Type: application/json'.
+    // El navegador lo establece automáticamente como multipart/form-data cuando se usa FormData.
+    body: formData,
   });
 
   const data = await response.json();

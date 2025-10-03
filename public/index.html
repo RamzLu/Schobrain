@@ -119,12 +119,22 @@
     <div id="ask-question-modal" class="modal-overlay">
       <div class="modal-content question-modal-content">
         <h2>Haz tu pregunta a la comunidad</h2>
-        <form id="askQuestionForm" novalidate>
+        <form id="askQuestionForm" novalidate enctype="multipart/form-data">
           <div class="input-group">
             <label for="tag-select">Etiqueta Principal</label>
             <select id="tag-select" name="tags" class="role-select">
               <option value="">(Opcional) Selecciona una etiqueta</option>
             </select>
+          </div>
+
+          <div class="input-group">
+            <label for="image-file">Adjuntar Imagen (Opcional - Máx 5MB)</label>
+            <input
+              type="file"
+              id="image-file"
+              name="imageFile"
+              accept="image/jpeg, image/png, image/gif"
+            />
           </div>
 
           <div class="input-group">

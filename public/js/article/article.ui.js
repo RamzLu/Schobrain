@@ -7,6 +7,7 @@ export const showAskQuestionModal = () => {
   if (askQuestionModal) {
     askQuestionModal.classList.add("visible");
     document.getElementById("question-content").value = ""; // Limpiar contenido
+    document.getElementById("image-file").value = ""; // ⬅️ NUEVO: Limpiar input de archivo
     document
       .getElementById("question-error-message")
       .classList.remove("visible");
@@ -95,17 +96,30 @@ const renderArticleCard = (article) => {
     tagHtml = `<span class="article-tag ${tagColorClass}">${tag.name}</span>`;
   }
 
+  // ⬅️ Renderizado de la imagen
+  let imageHtml = "";
+  if (article.imageUrl) {
+    imageHtml = `
+      <div class="article-image-container">
+        <a href="${article.imageUrl}" target="_blank">
+          <img src="${article.imageUrl}" alt="Imagen adjunta a la pregunta" class="article-image"/>
+        </a>
+      </div>
+    `;
+  }
+
   return `
     <article class="article-card" data-id="${article._id}">
       <div class="article-card-header">
         <span class="article-author">${authorName}</span>
         <span class="article-date">Publicado el ${formattedDate}</span>
       </div>
+      
       <div class="article-content">
         <p>${article.content}</p>
       </div>
       
-      <div class="article-footer-actions">
+      ${imageHtml} <div class="article-footer-actions">
           <div class="article-tags-container">
               ${tagHtml}
           </div>

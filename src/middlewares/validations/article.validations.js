@@ -1,7 +1,24 @@
+import { uploadImage } from "../uploadMiddleware.js";
+const handleMulterErrors = (req, res, next) => {
+  uploadImage(req, res, (err) => {
+    if (err instanceof multer.MulterError) {
+      if (err.code === "LIMIT_FILE_SIZE") {
+        return res
+          .status(400)
+          .json({ msg: "El archivo es demasiado grande (máx 5MB)." });
+      }
+      return res.status(400).json({ msg: err.message });
+    } else if (err) {
+      // Error de tipo de archivo u otros errores generales
+      return res.status(400).json({ msg: err.message });
+    }
+    // Si no hay errores de Multer, continuamos
+    next();
+  });
+};
 import { ArticleModel } from "../../models/article.model.js";
 import { TagModel } from "../../models/tag.model.js";
 import { UserModel } from "../../models/user.model.js";
-
 import { body, param } from "express-validator";
 
 export const createArticleValidation = [
