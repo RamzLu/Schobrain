@@ -8,6 +8,7 @@ import {
 import {
   handlePostQuestion,
   initializeArticleFeed,
+  filterArticlesByTag,
 } from "./article/article.handler.js";
 
 // Función para renderizar la opción de Admin
@@ -123,6 +124,19 @@ const initializeIndexPage = async () => {
         }
       });
     }
+  }
+
+  // --- 5. Lógica de Filtrado por Asignatura ---
+  const subjectFilterList = document.getElementById("subject-filter-list");
+  if (subjectFilterList) {
+    subjectFilterList.addEventListener("click", (event) => {
+      event.preventDefault();
+      const link = event.target.closest("a");
+      if (link && link.dataset.tagName) {
+        const tagName = link.dataset.tagName;
+        filterArticlesByTag(tagName);
+      }
+    });
   }
 };
 

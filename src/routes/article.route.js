@@ -4,6 +4,7 @@ import {
   deleteArticle,
   getAllArticles,
   getArticleById,
+  getArticlesByTag,
   getUserLogArticles,
   updateArticle,
 } from "../controllers/article.controller.js";
@@ -29,7 +30,9 @@ routeArticle.post(
   validator,
   createArticle
 );
-routeArticle.get("/articles", validateToken, getAllArticles);
+routeArticle.get("/articles", getAllArticles);
+
+routeArticle.get("/articles/tag/:tagName", getArticlesByTag);
 
 routeArticle.get(
   "/articles/:id",

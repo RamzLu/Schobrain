@@ -1,4 +1,5 @@
 import { ArticleModel } from "../models/article.model.js";
+import { TagModel } from "../models/tag.model.js";
 
 export const createArticle = async (req, res) => {
   const authorId = req.userLog.id;
@@ -139,6 +140,29 @@ export const getUserLogArticles = async (req, res) => {
       msg: "Tus articulos:",
       data: article,
     });
+  } catch (error) {
+    console.log(error);
+    return res.status(501).json({
+      msg: "Error interno del servidor",
+    });
+  }
+};
+
+export const getArticlesByTag = async (req, res) => {
+  const { tagName } = req.params;
+  try {
+    const tag = await TagModel.findOne({ name: tagName });
+    if (!tag) {
+      return res.status(404).json({ msg: "Asignatura no encontrada" });
+    }
+
+    const articles = await ArticleModel.find({ tags: tag._id })
+      .populate("author", "-password")
+      .populate("tags", "name")
+      .select("content author createdAt tags imageUrl")
+      .sort({ createdAt: -1 });
+
+    return res.status(200).json(articles);
   } catch (error) {
     console.log(error);
     return res.status(501).json({

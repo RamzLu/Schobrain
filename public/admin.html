@@ -42,54 +42,6 @@
         color: #6a11cb;
         margin-bottom: 1.5rem;
       }
-      .form-admin .input-group input,
-      .form-admin .input-group textarea {
-        background: #f8f8f8;
-        color: #333;
-        border: 1px solid #ccc;
-        padding: 0.8rem 1rem;
-        width: 100%;
-        margin-top: 0.5rem;
-        border-radius: 6px;
-      }
-      .form-admin button {
-        margin-top: 1.5rem;
-        padding: 0.8rem 2rem;
-      }
-      /* Estilos para la lista de tags */
-      .admin-section .tag-card {
-        /* ⬅️ NUEVO ESTILO (mover a style.css) */
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 1rem 1.5rem;
-        border-bottom: 1px solid #eee;
-        background-color: #f8f8f8;
-        border-radius: 8px;
-        margin-bottom: 0.8rem;
-        transition: background-color 0.2s ease;
-      }
-      .admin-section .tag-card:last-child {
-        /* ⬅️ NUEVO ESTILO (mover a style.css) */
-        border-bottom: none;
-        margin-bottom: 0;
-      }
-      .admin-section .tag-card:hover {
-        /* ⬅️ NUEVO ESTILO (mover a style.css) */
-        background-color: #e9ecef;
-      }
-      .tag-name {
-        /* ⬅️ NUEVO ESTILO (mover a style.css) */
-        font-weight: 700;
-        font-size: 1.1rem;
-        color: #1a1a2e;
-      }
-      .tag-description {
-        /* ⬅️ NUEVO ESTILO (mover a style.css) */
-        font-size: 0.9rem;
-        color: #6c757d;
-        margin-top: 0.2rem;
-      }
     </style>
   </head>
   <body>
@@ -122,55 +74,16 @@
 
       <div class="admin-container">
         <h1>Configuración de Administrador</h1>
-
-        <div class="tags-management-grid">
-          <div class="admin-section">
-            <h2>Crear Nueva Etiqueta (Tag)</h2>
-            <form id="createTagForm" class="form-admin" novalidate>
-              <div class="input-group">
-                <label for="tagName"
-                  >Nombre de la Etiqueta (sin espacios):</label
-                >
-                <input
-                  type="text"
-                  id="tagName"
-                  name="name"
-                  placeholder="Ej: matematicas"
-                  required
-                />
-              </div>
-              <div class="input-group">
-                <label for="tagDescription">Descripción:</label>
-                <textarea
-                  id="tagDescription"
-                  name="description"
-                  rows="3"
-                  placeholder="Una breve descripción de la etiqueta..."
-                ></textarea>
-              </div>
-              <button type="submit" class="login-button secondary">
-                Crear Tag
-              </button>
-              <p id="tag-error-message" class="error-text"></p>
-              <p
-                id="tag-success-message"
-                class="error-text"
-                style="color: #28a745"
-              ></p>
-            </form>
-          </div>
-
-          <div class="admin-section">
-            <h2>Etiquetas Existentes</h2>
-            <div id="existing-tags-list"></div>
-          </div>
+        <div class="admin-section">
+          <h2>Gestión de Asignaturas (Tags)</h2>
+          <p>
+            Las asignaturas ahora son fijas y se gestionan desde el código. No
+            se pueden crear o eliminar desde esta interfaz :).
+          </p>
         </div>
       </div>
     </div>
 
-    <script type="module" src="./js/services/tag.service.js"></script>
-    <script type="module" src="./js/admin/tag.ui.js"></script>
-    <script type="module" src="./js/admin/tag.handler.js"></script>
     <script type="module" src="./js/admin.js"></script>
   </body>
 </html>

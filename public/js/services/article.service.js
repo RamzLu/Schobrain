@@ -44,3 +44,16 @@ export const fetchAllArticles = async () => {
   }
   return await response.json();
 };
+
+export const fetchArticlesByTag = async (tagName) => {
+  const response = await fetch(`${API_URL}/tag/${tagName}`, {
+    method: "GET",
+    headers: { "Content-Type": "application/json" },
+  });
+
+  if (!response.ok) {
+    const data = await response.json();
+    throw new Error(data.msg || `Error al obtener artículos de ${tagName}.`);
+  }
+  return await response.json();
+};

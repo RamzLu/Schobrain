@@ -1,6 +1,10 @@
 // File: ramzlu/schobrain/Schobrain-dev-lu/public/js/article/article.handler.js
 
-import { postQuestion, fetchAllArticles } from "../services/article.service.js";
+import {
+  postQuestion,
+  fetchAllArticles,
+  fetchArticlesByTag,
+} from "../services/article.service.js";
 import { fetchAllTags } from "../services/tag.service.js"; // ⬅️ NUEVO: Importamos fetchAllTags
 import {
   hideAskQuestionModal,
@@ -83,5 +87,23 @@ export const handlePostQuestion = async (event) => {
     // Mostrar error de validación del backend o de Multer
     errorMessageElement.textContent = error.message;
     errorMessageElement.classList.add("visible");
+  }
+};
+
+export const filterArticlesByTag = async (tagName) => {
+  try {
+    let articles;
+    if (tagName === "all") {
+      articles = await fetchAllArticles();
+    } else {
+      articles = await fetchArticlesByTag(tagName);
+    }
+    loadArticles(articles);
+  } catch (error) {
+    console.error(`Error al filtrar por ${tagName}:`, error);
+    const questionsList = document.getElementById("questions-list");
+    if (questionsList) {
+      questionsList.innerHTML = `<p class="error-text visible" style="color: #ff5c5c; text-align: center;">Error al cargar las preguntas: ${error.message}</p>`;
+    }
   }
 };
