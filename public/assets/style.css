@@ -836,6 +836,9 @@ body {
 .tag-violet {
   background-color: #8f00ff; /* Castellano */
 }
+.tag-cyan {
+  background-color: #00bcd4; /* Estadísticas */
+}
 .tag-gray {
   background-color: #6c757d; /* Default/Otros */
 }

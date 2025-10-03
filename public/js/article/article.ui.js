@@ -41,6 +41,7 @@ const getTagColor = (tagName) => {
     historia: "tag-orange",
     inglés: "tag-teal",
     castellano: "tag-violet",
+    estadísticas: "tag-cyan",
   };
   // Usamos la primera palabra del tag en minúsculas
   const key = tagName.toLowerCase().split(" ")[0];
