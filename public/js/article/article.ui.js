@@ -26,17 +26,11 @@ export const hideAskQuestionModal = () => {
   }
 };
 
-/**
- * Convierte una fecha en formato ISO a un string de tiempo relativo (ej: "hace 5 minutos").
- * @param {string} dateString - La fecha en formato string (ISO 8601).
- * @returns {string} El tiempo relativo formateado.
- */
 const formatRelativeTime = (dateString) => {
   const now = new Date();
   const past = new Date(dateString);
   const secondsElapsed = Math.floor((now - past) / 1000);
 
-  // Menos de un minuto
   if (secondsElapsed < 60) {
     return "hace un momento";
   }
@@ -126,6 +120,7 @@ export const populateTagSelector = (tags) => {
 
 const renderArticleCard = (article) => {
   let authorName = "Usuario Desconocido";
+  let adminBadge = ""; // Variable para la etiqueta de admin
   const author = article.author;
 
   if (author && typeof author === "object") {
@@ -135,9 +130,14 @@ const renderArticleCard = (article) => {
     } else if (author.username) {
       authorName = author.username;
     }
+
+    // === INICIO: LÓGICA PARA LA ETIQUETA DE ADMIN ===
+    if (author.role === "admin") {
+      adminBadge = `<span class="admin-badge">Administrador</span>`;
+    }
+    // === FIN: LÓGICA PARA LA ETIQUETA DE ADMIN ===
   }
 
-  // Usamos la nueva función para obtener el tiempo relativo
   const relativeTime = formatRelativeTime(article.createdAt);
 
   const tag = article.tags && article.tags.length > 0 ? article.tags[0] : null;
@@ -162,7 +162,10 @@ const renderArticleCard = (article) => {
   return `
     <article class="article-card" data-id="${article._id}">
       <div class="article-card-header">
-        <span class="article-author">${authorName}</span>
+        <div class="author-info">
+          <span class="article-author">${authorName}</span>
+          ${adminBadge}
+        </div>
         <span class="article-date">Publicado ${relativeTime}</span>
       </div>
       

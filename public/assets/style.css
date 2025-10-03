@@ -1369,3 +1369,23 @@ body {
 .custom-modal .modal-actions {
   margin-top: 0.5rem; /* Antes era 1rem */
 }
+/* ==========================================================================
+   13. ESTILOS PARA LA ETIQUETA DE ADMINISTRADOR
+   ========================================================================== */
+
+.author-info {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem; /* Espacio entre el nombre y la etiqueta */
+}
+
+.admin-badge {
+  background-color: #6a11cb; /* Un color morado que combine con tu paleta */
+  color: #ffffff;
+  padding: 0.2rem 0.6rem;
+  border-radius: 12px; /* Bordes redondeados */
+  font-size: 0.75rem; /* Tamaño de letra pequeño */
+  font-weight: 600;
+  text-transform: uppercase; /* Opcional: para que se vea más como una etiqueta */
+  letter-spacing: 0.5px; /* Opcional: ligero espaciado de letras */
+}
