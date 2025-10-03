@@ -1,13 +1,19 @@
-// File: ramzlu/schobrain/Schobrain-dev-lu/public/js/article/article.ui.js
-
 const askQuestionModal = document.getElementById("ask-question-modal");
 const questionsList = document.getElementById("questions-list");
+// Referencia al botón de cierre en el header del modal
+const closeQuestionModalButton = document.getElementById(
+  "close-question-modal"
+);
+// Referencias para el input de archivo personalizado
+const imageFileInput = document.getElementById("image-file");
+const fileNameDisplay = document.getElementById("file-name-display");
 
 export const showAskQuestionModal = () => {
   if (askQuestionModal) {
     askQuestionModal.classList.add("visible");
     document.getElementById("question-content").value = ""; // Limpiar contenido
-    document.getElementById("image-file").value = ""; // ⬅️ NUEVO: Limpiar input de archivo
+    imageFileInput.value = ""; // Limpiar input de archivo
+    fileNameDisplay.textContent = "Ningún archivo seleccionado"; // Restablecer texto
     document
       .getElementById("question-error-message")
       .classList.remove("visible");
@@ -33,6 +39,7 @@ const formatArticleDate = (dateString) => {
 
 const getTagColor = (tagName) => {
   const colors = {
+    // Colores existentes
     matemáticas: "tag-blue",
     lengua: "tag-green",
     ciencias: "tag-red",
@@ -41,6 +48,7 @@ const getTagColor = (tagName) => {
     inglés: "tag-teal",
     castellano: "tag-violet",
     "estadísticas y cálculo": "tag-cyan",
+    // Nuevos colores
     "ciencias sociales": "tag-brown",
     geografía: "tag-earth",
     derecho: "tag-navy",
@@ -69,7 +77,7 @@ const getTagColor = (tagName) => {
 };
 
 /**
- * Rellena el selector de tags en el modal. (NUEVO)
+ * Rellena el selector de tags en el modal.
  * @param {Array<Object>} tags - Lista de tags { _id, name }
  */
 export const populateTagSelector = (tags) => {
@@ -108,7 +116,7 @@ const renderArticleCard = (article) => {
 
   const formattedDate = formatArticleDate(article.createdAt);
 
-  // Lógica de Renderizado de Tag (NUEVO)
+  // Lógica de Renderizado de Tag
   const tag = article.tags && article.tags.length > 0 ? article.tags[0] : null;
   let tagHtml = "";
 
@@ -117,7 +125,7 @@ const renderArticleCard = (article) => {
     tagHtml = `<span class="article-tag ${tagColorClass}">${tag.name}</span>`;
   }
 
-  // ⬅️ Renderizado de la imagen
+  // Renderizado de la imagen
   let imageHtml = "";
   if (article.imageUrl) {
     imageHtml = `
@@ -140,7 +148,9 @@ const renderArticleCard = (article) => {
         <p>${article.content}</p>
       </div>
       
-      ${imageHtml} <div class="article-footer-actions">
+      ${imageHtml}
+      
+      <div class="article-footer-actions">
           <div class="article-tags-container">
               ${tagHtml}
           </div>
@@ -148,7 +158,6 @@ const renderArticleCard = (article) => {
             <a href="#">Ver discusión y responder</a>
           </div>
       </div>
-      
     </article>
   `;
 };
@@ -165,10 +174,26 @@ export const loadArticles = (articles) => {
   }
 };
 
-// Cierra el modal al hacer clic en el botón de cancelar
+// Cierra el modal al hacer clic en el botón de cancelar, el nuevo botón de cerrar en el header y maneja el input de archivo.
 export const setupCancelButton = () => {
   const cancelButton = document.getElementById("cancel-question");
   if (cancelButton) {
     cancelButton.addEventListener("click", hideAskQuestionModal);
+  }
+
+  // Event listener para el botón de cerrar en el header del modal
+  if (closeQuestionModalButton) {
+    closeQuestionModalButton.addEventListener("click", hideAskQuestionModal);
+  }
+
+  // Lógica para el input de archivo personalizado
+  if (imageFileInput && fileNameDisplay) {
+    imageFileInput.addEventListener("change", (event) => {
+      const fileName =
+        event.target.files.length > 0
+          ? event.target.files[0].name
+          : "Ningún archivo seleccionado";
+      fileNameDisplay.textContent = fileName;
+    });
   }
 };

@@ -317,31 +317,39 @@ body {
 .search-bar {
   display: flex;
   align-items: center;
-  background-color: #dcdcf7; /* Fondo de la barra de búsqueda */
+  background-color: #e9ecef; /* Un gris más neutro y profesional */
   border-radius: 25px;
   padding: 0.5rem 1rem;
-  max-width: 500px; /* Ancho máximo para la barra */
+  max-width: 500px;
   width: 100%;
+  border: 1px solid transparent; /* Borde inicial sutil */
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Efecto visual cuando haces clic dentro de la barra */
+.search-bar:focus-within {
+  border-color: #c1c9d2;
+  box-shadow: 0 0 8px rgba(37, 117, 252, 0.2);
 }
 
 .search-bar input {
   border: none;
   background: transparent;
-  color: #e0e0e0;
+  color: #343a40; /* Texto oscuro para mejor legibilidad */
   font-size: 1rem;
   padding: 0.3rem;
   flex-grow: 1;
-  /* outline: none; */
+  outline: none; /* Quitamos el outline por defecto */
 }
 
 .search-bar input::placeholder {
-  color: #808090;
+  color: #6c757d; /* Placeholder un poco más oscuro */
 }
 
 .search-button {
   background: transparent;
   border: none;
-  color: #6f81e4;
+  color: #6c757d; /* Icono de lupa gris */
   cursor: pointer;
   font-size: 1rem;
   margin-left: 0.5rem;
@@ -349,7 +357,7 @@ body {
 }
 
 .search-button:hover {
-  color: #6a11cb; /* Color de hover para el botón de búsqueda */
+  color: #2575fc; /* Color azul al pasar el ratón */
 }
 
 .header-right {
@@ -1121,4 +1129,243 @@ body {
   /* CRÍTICO: Ajusta la imagen dentro del contenedor sin recortarla, manteniendo su relación de aspecto */
   object-fit: contain;
   border-radius: 8px;
+}
+/* ==========================================================================
+   11. ESTILOS PARA EL MODAL DE PREGUNTA PERSONALIZADO (AÑADIDOS)
+   ========================================================================== */
+
+/* Se usa .custom-modal para que estos estilos solo apliquen al nuevo modal */
+.question-modal-content.custom-modal {
+  width: 650px;
+  max-width: 90%;
+  padding: 0; /* Anula el padding del .modal-content general */
+  border-radius: 15px;
+  overflow: hidden; /* Necesario para que el border-radius del header funcione */
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  text-align: left; /* Anula el text-align: center del .modal-content general */
+}
+
+.custom-modal .modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+  padding: 1.2rem 2rem;
+  color: white;
+}
+
+.custom-modal .modal-header h2 {
+  margin: 0;
+  color: white;
+  font-size: 1.3em;
+  font-weight: 700;
+}
+
+.close-modal-button {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 1.5em;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.close-modal-button:hover {
+  transform: rotate(90deg);
+}
+
+.custom-modal form {
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* Anulamos el margin-bottom del .input-group general dentro de nuestro form */
+.custom-modal form .input-group {
+  margin-bottom: 0;
+}
+
+.custom-modal .input-group label {
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 0.6rem;
+  display: block;
+  font-size: 0.95em;
+}
+
+.custom-modal textarea#question-content {
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 1rem 1.2rem;
+  font-size: 1em;
+  color: #333;
+  background-color: #f8faff;
+  resize: vertical;
+  min-height: 120px;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.custom-modal textarea#question-content:focus {
+  border-color: #6a11cb;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.08),
+    0 0 0 3px rgba(106, 17, 203, 0.2);
+  outline: none;
+}
+
+.custom-modal .custom-select {
+  width: 100%;
+  padding: 0.8rem 1.2rem;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  background-color: #f8faff;
+  font-size: 1em;
+  color: #333;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%236a11cb'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  background-size: 1.2em;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.custom-modal .custom-select:focus {
+  border-color: #6a11cb;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.08),
+    0 0 0 3px rgba(106, 17, 203, 0.2);
+  outline: none;
+}
+
+.file-input-group {
+  display: flex;
+  align-items: center;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  background-color: #f8faff;
+  padding: 0.5rem;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.file-input-group:focus-within {
+  border-color: #6a11cb;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.08),
+    0 0 0 3px rgba(106, 17, 203, 0.2);
+}
+
+.file-input-label {
+  background-color: #e9ecef;
+  color: #495057;
+  padding: 0.7rem 1.2rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s, color 0.2s;
+  white-space: nowrap;
+  margin-right: 1rem;
+  font-weight: 600;
+}
+
+.file-input-label:hover {
+  background-color: #d8dee3;
+  color: #212529;
+}
+
+.file-name-display {
+  flex-grow: 1;
+  color: #6c757d;
+  font-size: 0.95em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.hidden-file-input {
+  display: none;
+}
+
+.file-size-info {
+  font-size: 0.8em;
+  color: #999;
+  text-align: right;
+  margin-top: -0.8rem;
+  padding-right: 0.5rem;
+}
+
+.custom-modal .modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.custom-cancel-button {
+  background-color: #e9ecef;
+  color: #495057;
+  border: none;
+  padding: 0.8rem 1.5rem;
+  border-radius: 8px;
+  font-size: 1em;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.custom-cancel-button:hover {
+  background-color: #d8dee3;
+  color: #212529;
+}
+
+.custom-submit-button {
+  background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+  color: white;
+  border: none;
+  padding: 0.8rem 1.5rem;
+  border-radius: 8px;
+  font-size: 1em;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s, transform 0.2s;
+}
+
+.custom-submit-button:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+.custom-submit-button:active {
+  opacity: 0.8;
+  transform: translateY(0);
+}
+/* Reduce la altura mínima y el padding del área de texto */
+.custom-modal textarea#question-content {
+  min-height: 90px; /* Antes era 120px */
+}
+
+/* Reduce el espaciado general dentro del formulario */
+.custom-modal form {
+  padding-top: 1.5rem; /* Antes era 2rem */
+  padding-bottom: 1.5rem; /* Antes era 2rem */
+  gap: 1.2rem; /* Antes era 1.5rem */
+}
+
+/* Reduce un poco el padding del header del modal */
+.custom-modal .modal-header {
+  padding-top: 1rem; /* Antes era 1.2rem */
+  padding-bottom: 1rem; /* Antes era 1.2rem */
+}
+
+/* Reduce el padding de los botones de acción */
+.custom-cancel-button,
+.custom-submit-button {
+  padding-top: 0.7rem; /* Antes era 0.8rem */
+  padding-bottom: 0.7rem; /* Antes era 0.8rem */
+}
+
+/* Reduce el espaciado sobre los botones */
+.custom-modal .modal-actions {
+  margin-top: 0.5rem; /* Antes era 1rem */
 }

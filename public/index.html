@@ -226,33 +226,29 @@
         </aside>
       </div>
     </div>
+
     <div id="ask-question-modal" class="modal-overlay">
-      <div class="modal-content question-modal-content">
-        <h2>Haz tu pregunta a la comunidad</h2>
+      <div class="modal-content question-modal-content custom-modal">
+        <div class="modal-header">
+          <h2>Nueva Pregunta</h2>
+          <button
+            type="button"
+            class="close-modal-button"
+            id="close-question-modal"
+          >
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
         <form id="askQuestionForm" novalidate enctype="multipart/form-data">
           <div class="input-group">
-            <label for="tag-select">Etiqueta Principal</label>
-            <select id="tag-select" name="tags" class="role-select">
-              <option value="">(Opcional) Selecciona una etiqueta</option>
-            </select>
-          </div>
-
-          <div class="input-group">
-            <label for="image-file">Adjuntar Imagen (Opcional - Máx 5MB)</label>
-            <input
-              type="file"
-              id="image-file"
-              name="imageFile"
-              accept="image/jpeg, image/png, image/gif"
-            />
-          </div>
-
-          <div class="input-group">
-            <label for="question-content">Contenido de la pregunta</label>
+            <label for="question-content"
+              >Describe tu pregunta (de forma clara y fácil para obtener la
+              mejor respuesta)</label
+            >
             <textarea
               id="question-content"
               name="content"
-              placeholder="Escribe tu pregunta aquí (mínimo 10 caracteres)..."
+              placeholder="Haz tu pregunta aquí..."
               rows="5"
               minlength="10"
               required
@@ -260,22 +256,48 @@
           </div>
           <p id="question-error-message" class="error-text"></p>
 
+          <div class="input-group">
+            <label for="tag-select">Tema</label>
+            <select id="tag-select" name="tags" class="custom-select">
+              <option value="">Selecciona una asignatura</option>
+            </select>
+          </div>
+
+          <div class="input-group file-input-group">
+            <label for="image-file" class="file-input-label"
+              >Seleccionar archivo</label
+            >
+            <span id="file-name-display" class="file-name-display"
+              >Ningún archivo seleccionado</span
+            >
+            <input
+              type="file"
+              id="image-file"
+              name="imageFile"
+              accept="image/jpeg, image/png, image/gif"
+              class="hidden-file-input"
+            />
+          </div>
+          <p class="file-size-info">Tamaño máximo 5MB</p>
+
           <div class="modal-actions">
             <button
               type="button"
               id="cancel-question"
-              class="modal-button secondary"
+              class="modal-button secondary custom-cancel-button"
             >
-              Cancelar
+              Cerrar
             </button>
-            <button type="submit" class="modal-button danger">
-              Publicar Pregunta
+            <button
+              type="submit"
+              class="modal-button danger custom-submit-button"
+            >
+              PREGUNTAR
             </button>
           </div>
         </form>
       </div>
     </div>
-
     <script type="module" src="./js/main.js"></script>
     <script type="module" src="./js/index.js"></script>
     <script type="module" src="./js/services/article.service.js"></script>
