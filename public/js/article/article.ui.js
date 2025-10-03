@@ -1,19 +1,19 @@
+// File: ramzlu/schobrain/Schobrain-dev-lu/public/js/article/article.ui.js
+
 const askQuestionModal = document.getElementById("ask-question-modal");
 const questionsList = document.getElementById("questions-list");
-// Referencia al botón de cierre en el header del modal
 const closeQuestionModalButton = document.getElementById(
   "close-question-modal"
 );
-// Referencias para el input de archivo personalizado
 const imageFileInput = document.getElementById("image-file");
 const fileNameDisplay = document.getElementById("file-name-display");
 
 export const showAskQuestionModal = () => {
   if (askQuestionModal) {
     askQuestionModal.classList.add("visible");
-    document.getElementById("question-content").value = ""; // Limpiar contenido
-    imageFileInput.value = ""; // Limpiar input de archivo
-    fileNameDisplay.textContent = "Ningún archivo seleccionado"; // Restablecer texto
+    document.getElementById("question-content").value = "";
+    imageFileInput.value = "";
+    fileNameDisplay.textContent = "Ningún archivo seleccionado";
     document
       .getElementById("question-error-message")
       .classList.remove("visible");
@@ -26,20 +26,52 @@ export const hideAskQuestionModal = () => {
   }
 };
 
-const formatArticleDate = (dateString) => {
-  const options = {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-  };
-  return new Date(dateString).toLocaleDateString("es-ES", options);
+/**
+ * Convierte una fecha en formato ISO a un string de tiempo relativo (ej: "hace 5 minutos").
+ * @param {string} dateString - La fecha en formato string (ISO 8601).
+ * @returns {string} El tiempo relativo formateado.
+ */
+const formatRelativeTime = (dateString) => {
+  const now = new Date();
+  const past = new Date(dateString);
+  const secondsElapsed = Math.floor((now - past) / 1000);
+
+  // Menos de un minuto
+  if (secondsElapsed < 60) {
+    return "hace un momento";
+  }
+
+  const minutesElapsed = Math.floor(secondsElapsed / 60);
+  if (minutesElapsed < 60) {
+    return `hace ${minutesElapsed} minuto${minutesElapsed > 1 ? "s" : ""}`;
+  }
+
+  const hoursElapsed = Math.floor(minutesElapsed / 60);
+  if (hoursElapsed < 24) {
+    return `hace ${hoursElapsed} hora${hoursElapsed > 1 ? "s" : ""}`;
+  }
+
+  const daysElapsed = Math.floor(hoursElapsed / 24);
+  if (daysElapsed < 7) {
+    return `hace ${daysElapsed} día${daysElapsed > 1 ? "s" : ""}`;
+  }
+
+  const weeksElapsed = Math.floor(daysElapsed / 7);
+  if (weeksElapsed < 4) {
+    return `hace ${weeksElapsed} semana${weeksElapsed > 1 ? "s" : ""}`;
+  }
+
+  const monthsElapsed = Math.floor(daysElapsed / 30);
+  if (monthsElapsed < 12) {
+    return `hace ${monthsElapsed} mes${monthsElapsed > 1 ? "es" : ""}`;
+  }
+
+  const yearsElapsed = Math.floor(daysElapsed / 365);
+  return `hace ${yearsElapsed} año${yearsElapsed > 1 ? "s" : ""}`;
 };
 
 const getTagColor = (tagName) => {
   const colors = {
-    // Colores existentes
     matemáticas: "tag-blue",
     lengua: "tag-green",
     ciencias: "tag-red",
@@ -48,7 +80,6 @@ const getTagColor = (tagName) => {
     inglés: "tag-teal",
     castellano: "tag-violet",
     "estadísticas y cálculo": "tag-cyan",
-    // Nuevos colores
     "ciencias sociales": "tag-brown",
     geografía: "tag-earth",
     derecho: "tag-navy",
@@ -71,23 +102,17 @@ const getTagColor = (tagName) => {
     "análisis de la materia y la energía": "tag-fire",
     "tratamiento de datos y azar": "tag-night",
   };
-  // Usamos el nombre completo del tag en minúsculas como clave
   const key = tagName.toLowerCase();
-  return colors[key] || "tag-gray"; // Default a gris si no se encuentra
+  return colors[key] || "tag-gray";
 };
 
-/**
- * Rellena el selector de tags en el modal.
- * @param {Array<Object>} tags - Lista de tags { _id, name }
- */
 export const populateTagSelector = (tags) => {
   const tagSelect = document.getElementById("tag-select");
   if (tagSelect) {
-    // Guardamos y clonamos la opción por defecto
     const defaultOption = tagSelect
       .querySelector('option[value=""]')
       .cloneNode(true);
-    tagSelect.innerHTML = ""; // Limpiamos las opciones anteriores
+    tagSelect.innerHTML = "";
     tagSelect.appendChild(defaultOption);
 
     tags.forEach((tag) => {
@@ -99,12 +124,10 @@ export const populateTagSelector = (tags) => {
   }
 };
 
-// Genera el HTML para una sola tarjeta de pregunta
 const renderArticleCard = (article) => {
   let authorName = "Usuario Desconocido";
   const author = article.author;
 
-  // Lógica de autor (sin cambios)
   if (author && typeof author === "object") {
     const profile = author.profile;
     if (profile && profile.firstName && profile.lastName) {
@@ -114,9 +137,9 @@ const renderArticleCard = (article) => {
     }
   }
 
-  const formattedDate = formatArticleDate(article.createdAt);
+  // Usamos la nueva función para obtener el tiempo relativo
+  const relativeTime = formatRelativeTime(article.createdAt);
 
-  // Lógica de Renderizado de Tag
   const tag = article.tags && article.tags.length > 0 ? article.tags[0] : null;
   let tagHtml = "";
 
@@ -125,7 +148,6 @@ const renderArticleCard = (article) => {
     tagHtml = `<span class="article-tag ${tagColorClass}">${tag.name}</span>`;
   }
 
-  // Renderizado de la imagen
   let imageHtml = "";
   if (article.imageUrl) {
     imageHtml = `
@@ -141,7 +163,7 @@ const renderArticleCard = (article) => {
     <article class="article-card" data-id="${article._id}">
       <div class="article-card-header">
         <span class="article-author">${authorName}</span>
-        <span class="article-date">Publicado el ${formattedDate}</span>
+        <span class="article-date">Publicado ${relativeTime}</span>
       </div>
       
       <div class="article-content">
@@ -162,7 +184,6 @@ const renderArticleCard = (article) => {
   `;
 };
 
-// Renderiza todas las preguntas
 export const loadArticles = (articles) => {
   if (questionsList) {
     if (articles.length === 0) {
@@ -174,19 +195,16 @@ export const loadArticles = (articles) => {
   }
 };
 
-// Cierra el modal al hacer clic en el botón de cancelar, el nuevo botón de cerrar en el header y maneja el input de archivo.
 export const setupCancelButton = () => {
   const cancelButton = document.getElementById("cancel-question");
   if (cancelButton) {
     cancelButton.addEventListener("click", hideAskQuestionModal);
   }
 
-  // Event listener para el botón de cerrar en el header del modal
   if (closeQuestionModalButton) {
     closeQuestionModalButton.addEventListener("click", hideAskQuestionModal);
   }
 
-  // Lógica para el input de archivo personalizado
   if (imageFileInput && fileNameDisplay) {
     imageFileInput.addEventListener("change", (event) => {
       const fileName =
