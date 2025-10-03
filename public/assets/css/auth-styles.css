@@ -1,0 +1,260 @@
+/*Estilos específicos para Login y Registro.*/
+
+/* ==========================================================================
+   2. CONTENEDOR PRINCIPAL
+   ========================================================================== */
+.login-container {
+  display: flex;
+  width: 100%;
+  max-width: 900px;
+  background-color: #1a1a2e;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  padding: 2rem;
+}
+
+/* ==========================================================================
+   3. SECCIÓN DE INFORMACIÓN (LOGO Y TEXTOS)
+   ========================================================================== */
+.login-info {
+  flex-basis: 50%;
+  padding: 0 2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.login-info h1 {
+  font-size: 4rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  color: #ffffff;
+  line-height: 1.1;
+}
+
+.login-logo {
+  width: 100px;
+  height: auto;
+  margin-bottom: 1.5rem;
+}
+
+/* --- Estilos específicos para Login --- */
+.login-info.login-page {
+  align-items: center;
+  text-align: center;
+}
+
+.login-info.login-page .login-logo {
+  margin-bottom: 2rem;
+}
+
+.login-subheading {
+  font-size: 1.5rem;
+  line-height: 1.4;
+  color: #a0a0b0;
+  margin-top: 1rem;
+}
+
+/* --- Estilos específicos para Register --- */
+.login-info.register-info {
+  align-items: center !important;
+  text-align: center !important;
+}
+
+.login-info.register-info .login-logo {
+  align-self: center;
+}
+
+.register-info .welcome-message {
+  font-size: 0.95rem;
+  line-height: 1.5;
+  margin-top: 1.5rem;
+}
+
+.gradient-text {
+  background-image: linear-gradient(to right, #6a11cb 0%, #2575fc 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* ==========================================================================
+   4. SECCIÓN DE FORMULARIO
+   ========================================================================== */
+.login-form-wrapper {
+  flex-basis: 50%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.form-container {
+  width: 27rem;
+  padding: 2.5rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 15px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+.input-group {
+  margin-bottom: 1.2rem;
+}
+
+.input-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+  color: #c0c0d0;
+}
+
+.input-group input,
+.role-select {
+  width: 100%;
+  padding: 0.8rem 1rem;
+  background: linear-gradient(#1a1a2e, #1a1a2e) padding-box,
+    linear-gradient(to right, #2575fc, #6a11cb) border-box;
+  border: 2px solid transparent;
+  border-radius: 8px;
+  color: #ffffff;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.input-group input::placeholder {
+  color: #808090;
+}
+
+.input-group input:focus,
+.role-select:focus {
+  outline: none;
+  box-shadow: 0 0 15px rgba(37, 117, 252, 0.5);
+  background: linear-gradient(#12121c, #12121c) padding-box,
+    linear-gradient(to right, #2575fc, #6a11cb) border-box;
+}
+
+/* --- Fila horizontal para campos --- */
+.form-row {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-end; /* Alinea los campos por la base */
+}
+
+.form-row .input-group {
+  flex: 1;
+}
+
+.form-row .input-group input,
+.form-row .input-group .role-select {
+  min-height: 51px; /* Altura consistente para alinear correctamente */
+}
+
+/* ==========================================================================
+   5. BOTONES Y ENLACES
+   ========================================================================== */
+.login-button {
+  width: 100%;
+  padding: 1rem;
+  border: none;
+  border-radius: 8px;
+  background-image: linear-gradient(to right, #6a11cb 0%, #2575fc 100%);
+  color: white;
+  font-size: 1.1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.login-button:hover {
+  box-shadow: 0 5px 15px rgba(37, 117, 252, 0.4);
+  transform: translateY(-2px);
+}
+
+.form-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 1.5rem;
+}
+
+.form-actions .login-button {
+  width: auto;
+  padding: 0.8rem 2rem;
+  font-size: 1rem;
+}
+
+.signup-link {
+  margin-top: 1.5rem;
+  text-align: center;
+  color: #a0a0b0;
+}
+
+.form-actions .signup-link {
+  margin: 0;
+}
+
+.signup-link a {
+  color: #2575fc;
+  font-weight: 700;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.signup-link a:hover {
+  color: #6a11cb;
+}
+
+/* --- Mensajes de error --- */
+.error-text {
+  color: #ff5c5c;
+  font-size: 0.9rem;
+  text-align: center;
+  margin-top: 1rem;
+  min-height: 1.2rem; /* Reserva espacio para el error */
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.error-text.visible {
+  opacity: 1;
+}
+
+/* ==========================================================================
+   6. FOOTER Y DISEÑO RESPONSIVE
+   ========================================================================== */
+.copyright {
+  position: absolute;
+  bottom: 1rem;
+  color: #505060;
+  font-size: 0.8rem;
+}
+
+@media (max-width: 768px) {
+  body {
+    padding: 1rem;
+    overflow: auto; /* Esta línea estaba bien para móviles */
+    min-height: 100%;
+    align-items: flex-start;
+  }
+  .login-container {
+    flex-direction: column;
+    padding: 1rem;
+    margin-top: 2rem;
+  }
+  .login-info {
+    padding: 2rem 1rem;
+    align-items: center;
+    text-align: center;
+  }
+  .login-info.register-info {
+    align-items: center;
+    text-align: center;
+  }
+
+  .login-info.register-info .login-logo {
+    align-self: center;
+  }
+}

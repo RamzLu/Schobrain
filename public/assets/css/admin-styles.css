@@ -1,0 +1,133 @@
+/*Estilos específicos del panel de administrador.*/
+
+/* ==========================================================================
+   10. ESTILOS ESPECÍFICOS PARA EL PANEL DE ADMINISTRACIÓN
+   ========================================================================== */
+
+/* Ajustes para el contenedor principal a ancho completo y fondo oscuro */
+.admin-container {
+  flex-grow: 1;
+  padding: 3rem 2rem;
+  max-width: none !important; /* Elimina la restricción de ancho */
+  margin: 0 !important; /* Elimina los márgenes laterales */
+  background-color: #12121c; /* Fondo que coincide con el body */
+  color: #e0e0e0;
+}
+
+.admin-container h1 {
+  color: #e0e0e0;
+  border-bottom-color: #2575fc;
+}
+
+/* Diseño de dos columnas para las secciones de tags */
+.tags-management-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* Dos columnas de igual ancho */
+  gap: 2rem; /* Espacio entre las columnas */
+  align-items: flex-start; /* Alinea las secciones en la parte superior */
+}
+
+/* Estilos de las secciones (card) en el panel de admin */
+.admin-section {
+  background-color: #ffffff; /* Fondo blanco para las secciones (como en el Login) */
+  color: #333; /* Texto oscuro para el interior de la sección */
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  margin-bottom: 2rem;
+}
+
+.admin-section h2 {
+  color: #6a11cb; /* Título morado */
+  margin-bottom: 1.5rem;
+}
+
+/* Estilos de formulario e inputs dentro de la sección Admin */
+.form-admin .input-group label {
+  color: #333; /* Etiquetas oscuras */
+}
+
+.form-admin .input-group input,
+.form-admin .input-group textarea {
+  background: #f8f8f8;
+  color: #333;
+  border: 1px solid #ccc;
+  padding: 0.8rem 1rem;
+  width: 100%;
+  margin-top: 0.5rem;
+  border-radius: 6px;
+}
+
+.form-admin button {
+  background-color: #6a11cb; /* Botón con el color morado principal */
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.form-admin button:hover {
+  background-color: #8c42ed;
+}
+
+/* --- Estilos de las Tarjetas de Tags existentes --- */
+
+.admin-section .tag-card {
+  display: flex;
+  justify-content: space-between; /* Añadido para espaciar el texto del botón */
+  align-items: center;
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid #eee;
+  background-color: #f8f8f8;
+  border-radius: 8px;
+  margin-bottom: 0.8rem;
+  transition: background-color 0.2s ease;
+}
+
+.admin-section .tag-card:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+}
+
+.admin-section .tag-card:hover {
+  background-color: #e9ecef; /* Hover en tarjetas de tag */
+}
+
+.tag-name {
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: #1a1a2e; /* Nombre de tag oscuro */
+}
+
+.tag-description {
+  font-size: 0.9rem;
+  color: #6c757d; /* Descripción de tag gris */
+  margin-top: 0.2rem;
+}
+
+@media (max-width: 992px) {
+  .tags-management-grid {
+    grid-template-columns: 1fr; /* Una sola columna en pantallas pequeñas */
+  }
+}
+.tag-actions {
+  /* Contenedor de botones (si agregamos más) */
+  display: flex;
+  gap: 10px;
+}
+
+.delete-tag-btn {
+  background: none;
+  border: none;
+  color: #dc3545; /* Rojo de peligro */
+  cursor: pointer;
+  font-size: 1.1rem;
+  padding: 5px;
+  border-radius: 5px;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.delete-tag-btn:hover {
+  background-color: rgba(220, 53, 69, 0.1);
+  color: #c82333;
+}

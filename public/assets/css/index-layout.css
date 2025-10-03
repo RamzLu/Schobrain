@@ -1,280 +1,24 @@
-/* ==========================================================================
-   1. RESET Y ESTILOS GLOBALES
-   ========================================================================== */
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
+/*Estilos de diseño, header, feed, scroll fijo y tarjetas de artículo para la página principal.*/
 
+/* ==========================================================================
+   LAYOUT FIJO GENERAL
+   ========================================================================== */
 body {
-  font-family: "Outfit", sans-serif;
-  background-color: #12121c;
-  color: #e0e0e0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  /* padding: 2rem; */
+    /* Forzamos el layout fijo en el body para que solo el feed scrollee */
+    height: 100vh;
+    overflow: hidden;
+    display: block;
+    padding: 0;
 }
-
-/* ==========================================================================
-   2. CONTENEDOR PRINCIPAL
-   ========================================================================== */
-.login-container {
-  display: flex;
-  width: 100%;
-  max-width: 900px;
-  background-color: #1a1a2e;
-  border-radius: 20px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-  padding: 2rem;
+.main-container {
+    height: 100%;
 }
-
-/* ==========================================================================
-   3. SECCIÓN DE INFORMACIÓN (LOGO Y TEXTOS)
-   ========================================================================== */
-.login-info {
-  flex-basis: 50%;
-  padding: 0 2rem;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
+.content-area {
+    min-height: 0; /* Clave para el scroll de columna */
 }
-
-.login-info h1 {
-  font-size: 4rem;
-  font-weight: 700;
-  margin-bottom: 1rem;
-  color: #ffffff;
-  line-height: 1.1;
-}
-
-.login-logo {
-  width: 100px;
-  height: auto;
-  margin-bottom: 1.5rem;
-}
-
-/* --- Estilos específicos para Login --- */
-.login-info.login-page {
-  align-items: center;
-  text-align: center;
-}
-
-.login-info.login-page .login-logo {
-  margin-bottom: 2rem;
-}
-
-.login-subheading {
-  font-size: 1.5rem;
-  line-height: 1.4;
-  color: #a0a0b0;
-  margin-top: 1rem;
-}
-
-/* --- Estilos específicos para Register --- */
-.login-info.register-info {
-  align-items: center !important;
-  text-align: center !important;
-}
-
-.login-info.register-info .login-logo {
-  align-self: center;
-}
-
-.register-info .welcome-message {
-  font-size: 0.95rem;
-  line-height: 1.5;
-  margin-top: 1.5rem;
-}
-
-.gradient-text {
-  background-image: linear-gradient(to right, #6a11cb 0%, #2575fc 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-}
-
-/* ==========================================================================
-   4. SECCIÓN DE FORMULARIO
-   ========================================================================== */
-.login-form-wrapper {
-  flex-basis: 50%;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-}
-
-.form-container {
-  width: 27rem;
-  padding: 2.5rem;
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 15px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-}
-
-.input-group {
-  margin-bottom: 1.2rem;
-}
-
-.input-group label {
-  display: block;
-  margin-bottom: 0.5rem;
-  font-size: 0.9rem;
-  color: #c0c0d0;
-}
-
-.input-group input,
-.role-select {
-  width: 100%;
-  padding: 0.8rem 1rem;
-  background: linear-gradient(#1a1a2e, #1a1a2e) padding-box,
-    linear-gradient(to right, #2575fc, #6a11cb) border-box;
-  border: 2px solid transparent;
-  border-radius: 8px;
-  color: #ffffff;
-  font-size: 1rem;
-  transition: all 0.3s ease;
-}
-
-.input-group input::placeholder {
-  color: #808090;
-}
-
-.input-group input:focus,
-.role-select:focus {
-  outline: none;
-  box-shadow: 0 0 15px rgba(37, 117, 252, 0.5);
-  background: linear-gradient(#12121c, #12121c) padding-box,
-    linear-gradient(to right, #2575fc, #6a11cb) border-box;
-}
-
-/* --- Fila horizontal para campos --- */
-.form-row {
-  display: flex;
-  gap: 1rem;
-  align-items: flex-end; /* Alinea los campos por la base */
-}
-
-.form-row .input-group {
-  flex: 1;
-}
-
-.form-row .input-group input,
-.form-row .input-group .role-select {
-  min-height: 51px; /* Altura consistente para alinear correctamente */
-}
-
-/* ==========================================================================
-   5. BOTONES Y ENLACES
-   ========================================================================== */
-.login-button {
-  width: 100%;
-  padding: 1rem;
-  border: none;
-  border-radius: 8px;
-  background-image: linear-gradient(to right, #6a11cb 0%, #2575fc 100%);
-  color: white;
-  font-size: 1.1rem;
-  font-weight: 700;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.login-button:hover {
-  box-shadow: 0 5px 15px rgba(37, 117, 252, 0.4);
-  transform: translateY(-2px);
-}
-
-.form-actions {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: 1.5rem;
-}
-
-.form-actions .login-button {
-  width: auto;
-  padding: 0.8rem 2rem;
-  font-size: 1rem;
-}
-
-.signup-link {
-  margin-top: 1.5rem;
-  text-align: center;
-  color: #a0a0b0;
-}
-
-.form-actions .signup-link {
-  margin: 0;
-}
-
-.signup-link a {
-  color: #2575fc;
-  font-weight: 700;
-  text-decoration: none;
-  transition: color 0.3s ease;
-}
-
-.signup-link a:hover {
-  color: #6a11cb;
-}
-
-/* --- Mensajes de error --- */
-.error-text {
-  color: #ff5c5c;
-  font-size: 0.9rem;
-  text-align: center;
-  margin-top: 1rem;
-  min-height: 1.2rem; /* Reserva espacio para el error */
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-
-.error-text.visible {
-  opacity: 1;
-}
-
-/* ==========================================================================
-   6. FOOTER Y DISEÑO RESPONSIVE
-   ========================================================================== */
-.copyright {
-  position: absolute;
-  bottom: 1rem;
-  color: #505060;
-  font-size: 0.8rem;
-}
-
-@media (max-width: 768px) {
-  body {
-    padding: 1rem;
-    overflow: auto; /* Esta línea estaba bien para móviles */
-    min-height: 100%;
-    align-items: flex-start;
-  }
-  .login-container {
-    flex-direction: column;
-    padding: 1rem;
-    margin-top: 2rem;
-  }
-  .login-info {
-    padding: 2rem 1rem;
-    align-items: center;
-    text-align: center;
-  }
-  .login-info.register-info {
-    align-items: center;
-    text-align: center;
-  }
-
-  .login-info.register-info .login-logo {
-    align-self: center;
-  }
+.sidebar, .question-feed {
+    height: 100%;
+    overflow-y: auto;
 }
 /* ==========================================================================
    7. ESTILOS PARA LA PÁGINA PRINCIPAL (INDEX.HTML)
@@ -284,9 +28,9 @@ body {
 .main-container {
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
+  /* min-height: 100vh; */
   width: 100%;
-  padding: 0; /* Elimina el padding del body si lo tienes aquí */
+  padding: 0;
   background-color: #12121c; /* Fondo general */
 }
 
@@ -452,6 +196,7 @@ body {
   display: flex;
   flex-direction: column;
   gap: 2rem;
+  width: 45rem;
 }
 
 .hero-section {
@@ -475,7 +220,8 @@ body {
   border: none; /* opcional, para que se vea más limpio */
   border-radius: 15px;
   color: white; /* asegura contraste */
-  width: 40rem;
+  width: 100%; /* FIX: Para que ocupe todo el ancho del feed */
+  margin-top: 20px;
 }
 
 @keyframes gradientBG {
@@ -591,9 +337,17 @@ body {
   .content-area {
     flex-direction: column;
   }
+  /* Deshacer el fixed layout en móvil */
   .sidebar {
     flex-basis: auto;
     width: 100%;
+    height: auto;
+    overflow-y: visible;
+  }
+  /* Deshacer el scroll interno en móvil */
+  .question-feed {
+    height: auto;
+    overflow-y: visible;
   }
   .hero-content h2 {
     font-size: 2.5rem;
@@ -612,6 +366,7 @@ body {
     font-size: 2rem;
   }
 }
+
 /* ==========================================================================
    9. ESTILOS PARA MODAL Y ARTICLE CARD
    ========================================================================== */
@@ -839,137 +594,4 @@ body {
 }
 .tag-gray {
   background-color: #6c757d; /* Default/Otros */
-}
-
-/* ==========================================================================
-   10. ESTILOS ESPECÍFICOS PARA EL PANEL DE ADMINISTRACIÓN
-   ========================================================================== */
-
-/* Ajustes para el contenedor principal a ancho completo y fondo oscuro */
-.admin-container {
-  flex-grow: 1;
-  padding: 3rem 2rem;
-  max-width: none !important; /* Elimina la restricción de ancho */
-  margin: 0 !important; /* Elimina los márgenes laterales */
-  background-color: #12121c; /* Fondo que coincide con el body */
-  color: #e0e0e0;
-}
-
-.admin-container h1 {
-  color: #e0e0e0;
-  border-bottom-color: #2575fc;
-}
-
-/* Diseño de dos columnas para las secciones de tags */
-.tags-management-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr; /* Dos columnas de igual ancho */
-  gap: 2rem; /* Espacio entre las columnas */
-  align-items: flex-start; /* Alinea las secciones en la parte superior */
-}
-
-/* Estilos de las secciones (card) en el panel de admin */
-.admin-section {
-  background-color: #ffffff; /* Fondo blanco para las secciones (como en el Login) */
-  color: #333; /* Texto oscuro para el interior de la sección */
-  padding: 2rem;
-  border-radius: 10px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-  margin-bottom: 2rem;
-}
-
-.admin-section h2 {
-  color: #6a11cb; /* Título morado */
-  margin-bottom: 1.5rem;
-}
-
-/* Estilos de formulario e inputs dentro de la sección Admin */
-.form-admin .input-group label {
-  color: #333; /* Etiquetas oscuras */
-}
-
-.form-admin .input-group input,
-.form-admin .input-group textarea {
-  background: #f8f8f8;
-  color: #333;
-  border: 1px solid #ccc;
-  padding: 0.8rem 1rem;
-  width: 100%;
-  margin-top: 0.5rem;
-  border-radius: 6px;
-}
-
-.form-admin button {
-  background-color: #6a11cb; /* Botón con el color morado principal */
-  color: white;
-  border: none;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.form-admin button:hover {
-  background-color: #8c42ed;
-}
-
-/* --- Estilos de las Tarjetas de Tags existentes --- */
-
-.admin-section .tag-card {
-  display: flex;
-  justify-content: space-between; /* Añadido para espaciar el texto del botón */
-  align-items: center;
-  padding: 1rem 1.5rem;
-  border-bottom: 1px solid #eee;
-  background-color: #f8f8f8;
-  border-radius: 8px;
-  margin-bottom: 0.8rem;
-  transition: background-color 0.2s ease;
-}
-
-.admin-section .tag-card:last-child {
-  border-bottom: none;
-  margin-bottom: 0;
-}
-
-.admin-section .tag-card:hover {
-  background-color: #e9ecef; /* Hover en tarjetas de tag */
-}
-
-.tag-name {
-  font-weight: 700;
-  font-size: 1.1rem;
-  color: #1a1a2e; /* Nombre de tag oscuro */
-}
-
-.tag-description {
-  font-size: 0.9rem;
-  color: #6c757d; /* Descripción de tag gris */
-  margin-top: 0.2rem;
-}
-
-/* Media query para hacer el diseño responsivo en pantallas más pequeñas */
-@media (max-width: 992px) {
-  .tags-management-grid {
-    grid-template-columns: 1fr; /* Una sola columna en pantallas pequeñas */
-  }
-}
-.tag-actions {
-  /* Contenedor de botones (si agregamos más) */
-  display: flex;
-  gap: 10px;
-}
-
-.delete-tag-btn {
-  background: none;
-  border: none;
-  color: #dc3545; /* Rojo de peligro */
-  cursor: pointer;
-  font-size: 1.1rem;
-  padding: 5px;
-  border-radius: 5px;
-  transition: background-color 0.2s ease, color 0.2s ease;
-}
-
-.delete-tag-btn:hover {
-  background-color: rgba(220, 53, 69, 0.1);
-  color: #c82333;
 }
