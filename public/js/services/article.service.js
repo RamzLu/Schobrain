@@ -10,14 +10,11 @@ const API_URL = "/api/articles";
 export const postQuestion = async (formData) => {
   const response = await fetch(API_URL, {
     method: "POST",
-    // CRÍTICO: Eliminar 'Content-Type: application/json'.
-    // El navegador lo establece automáticamente como multipart/form-data cuando se usa FormData.
     body: formData,
   });
 
   const data = await response.json();
   if (!response.ok) {
-    // Mapea los errores de validación para mostrarlos
     const errorMsg = data.errors
       ? Object.values(data.errors)
           .map((e) => e.msg)
@@ -45,6 +42,11 @@ export const fetchAllArticles = async () => {
   return await response.json();
 };
 
+/**
+ * Obtiene artículos filtrados por una etiqueta específica.
+ * @param {string} tagName
+ * @returns {Promise<Array<Object>>}
+ */
 export const fetchArticlesByTag = async (tagName) => {
   const response = await fetch(`${API_URL}/tag/${tagName}`, {
     method: "GET",
@@ -55,5 +57,26 @@ export const fetchArticlesByTag = async (tagName) => {
     const data = await response.json();
     throw new Error(data.msg || `Error al obtener artículos de ${tagName}.`);
   }
+  return await response.json();
+};
+
+/**
+ * Elimina un artículo por su ID.
+ * @param {string} articleId - El ID del artículo a eliminar.
+ * @returns {Promise<Object>} La respuesta del servidor.
+ */
+export const deleteArticle = async (articleId) => {
+  const response = await fetch(`${API_URL}/${articleId}`, {
+    method: "DELETE",
+  });
+
+  if (!response.ok) {
+    const data = await response.json();
+    throw new Error(
+      data.msg ||
+        "No tienes permiso para eliminar esta pregunta o ha ocurrido un error."
+    );
+  }
+
   return await response.json();
 };

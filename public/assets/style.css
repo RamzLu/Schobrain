@@ -1384,8 +1384,101 @@ body {
   color: #ffffff;
   padding: 0.2rem 0.6rem;
   border-radius: 12px; /* Bordes redondeados */
-  font-size: 0.75rem; /* Tamaño de letra pequeño */
+  font-size: 0.6rem; /* Tamaño de letra pequeño */
   font-weight: 600;
   text-transform: uppercase; /* Opcional: para que se vea más como una etiqueta */
   letter-spacing: 0.5px; /* Opcional: ligero espaciado de letras */
+}
+/* ==========================================================================
+   15. ESTILOS PARA LA ETIQUETA DE AUTOR ("TÚ")
+   ========================================================================== */
+
+.author-badge {
+  background-color: #2575fc; /* Un color azul para diferenciarlo del admin */
+  color: #ffffff;
+  padding: 0.2rem 0.6rem;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+/* ==========================================================================
+   14. ESTILOS PARA MENÚ DE OPCIONES DE LA PREGUNTA
+   ========================================================================== */
+
+.article-card-header {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.header-right-controls {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.article-options-menu {
+  position: relative;
+}
+
+.options-toggle-btn {
+  background: none;
+  border: none;
+  color: #808090;
+  cursor: pointer;
+  padding: 0.3rem 0.5rem;
+  border-radius: 50%;
+  font-size: 1rem;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.options-toggle-btn:hover {
+  background-color: #f0f2f5;
+  color: #333;
+}
+
+.options-dropdown {
+  display: none;
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+  z-index: 5;
+  overflow: hidden;
+  width: 150px;
+}
+
+.options-dropdown.visible {
+  display: block;
+}
+
+.options-dropdown .dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  background: none;
+  border: none;
+  width: 100%;
+  text-align: left;
+  padding: 0.8rem 1rem;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.options-dropdown .dropdown-item:hover {
+  background-color: #f0f2f5;
+}
+
+.options-dropdown .dropdown-item.delete-btn {
+  color: #dc3545;
+}
+.warning-text-deleteQuestion {
+  color: #dc3545;
+  font-size: 0.9rem;
+  margin-top: 0.4rem;
+  margin-bottom: 0.5rem;
 }

@@ -118,10 +118,31 @@ export const populateTagSelector = (tags) => {
   }
 };
 
-const renderArticleCard = (article) => {
+const renderArticleCard = (article, currentUser) => {
   let authorName = "Usuario Desconocido";
-  let adminBadge = ""; // Variable para la etiqueta de admin
+  let statusBadges = ""; // Variable unificada para las etiquetas de estado
   const author = article.author;
+
+  // Lógica para determinar si se debe mostrar el menú de opciones
+  const canDelete =
+    currentUser &&
+    (currentUser.role === "admin" || currentUser.id === author?._id);
+
+  let optionsMenu = "";
+  if (canDelete) {
+    optionsMenu = `
+      <div class="article-options-menu">
+        <button class="options-toggle-btn">
+          <i class="fas fa-ellipsis-v"></i>
+        </button>
+        <div class="options-dropdown">
+          <button class="dropdown-item delete-btn" data-id="${article._id}">
+            <i class="fas fa-trash-alt"></i> Eliminar
+          </button>
+        </div>
+      </div>
+    `;
+  }
 
   if (author && typeof author === "object") {
     const profile = author.profile;
@@ -131,11 +152,16 @@ const renderArticleCard = (article) => {
       authorName = author.username;
     }
 
-    // === INICIO: LÓGICA PARA LA ETIQUETA DE ADMIN ===
+    // === INICIO: LÓGICA MODIFICADA PARA ACUMULAR ETIQUETAS ===
+    // Primero, comprueba si es admin
     if (author.role === "admin") {
-      adminBadge = `<span class="admin-badge">Administrador</span>`;
+      statusBadges += `<span class="admin-badge">Administrador</span>`;
     }
-    // === FIN: LÓGICA PARA LA ETIQUETA DE ADMIN ===
+    // Luego, comprueba si es el autor de la pregunta
+    if (currentUser && currentUser.id === author._id) {
+      statusBadges += `<span class="author-badge">Tú</span>`;
+    }
+    // === FIN: LÓGICA MODIFICADA ===
   }
 
   const relativeTime = formatRelativeTime(article.createdAt);
@@ -164,9 +190,12 @@ const renderArticleCard = (article) => {
       <div class="article-card-header">
         <div class="author-info">
           <span class="article-author">${authorName}</span>
-          ${adminBadge}
+          ${statusBadges}
         </div>
-        <span class="article-date">Publicado ${relativeTime}</span>
+        <div class="header-right-controls">
+          <span class="article-date">Publicado ${relativeTime}</span>
+          ${optionsMenu}
+        </div>
       </div>
       
       <div class="article-content">
@@ -187,13 +216,15 @@ const renderArticleCard = (article) => {
   `;
 };
 
-export const loadArticles = (articles) => {
+export const loadArticles = (articles, currentUser) => {
   if (questionsList) {
     if (articles.length === 0) {
       questionsList.innerHTML = `<p style="text-align: center; color: #808090; padding: 2rem;">No hay preguntas para esta asignatura. ¡Sé el primero!</p>`;
       return;
     }
-    const articlesHtml = articles.map(renderArticleCard).join("");
+    const articlesHtml = articles
+      .map((article) => renderArticleCard(article, currentUser))
+      .join("");
     questionsList.innerHTML = articlesHtml;
   }
 };
