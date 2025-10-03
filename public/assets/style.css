@@ -839,6 +839,73 @@ body {
 .tag-cyan {
   background-color: #00bcd4; /* Estadísticas */
 }
+.tag-brown {
+  background-color: #a52a2a;
+}
+.tag-earth {
+  background-color: #8b4513;
+}
+.tag-navy {
+  background-color: #000080;
+}
+.tag-olive {
+  background-color: #808000;
+}
+.tag-sky {
+  background-color: #87ceeb;
+}
+.tag-lime {
+  background-color: #00ff00;
+}
+.tag-pink {
+  background-color: #ffc0cb;
+}
+.tag-leaf {
+  background-color: #228b22;
+}
+.tag-steel {
+  background-color: #4682b4;
+}
+.tag-electric {
+  background-color: #00ffff;
+  color: #333;
+} /* Color claro, texto oscuro */
+.tag-gold {
+  background-color: #ffd700;
+  color: #333;
+} /* Color claro, texto oscuro */
+.tag-indigo {
+  background-color: #4b0082;
+}
+.tag-salmon {
+  background-color: #fa8072;
+}
+.tag-grass {
+  background-color: #7cfc00;
+  color: #333;
+} /* Color claro, texto oscuro */
+.tag-maroon {
+  background-color: #800000;
+}
+.tag-coral {
+  background-color: #ff7f50;
+}
+.tag-lightblue {
+  background-color: #add8e6;
+  color: #333;
+} /* Color claro, texto oscuro */
+.tag-darkred {
+  background-color: #8b0000;
+}
+.tag-sand {
+  background-color: #f4a460;
+}
+.tag-fire {
+  background-color: #ff4500;
+}
+.tag-night {
+  background-color: #191970;
+}
 .tag-gray {
   background-color: #6c757d; /* Default/Otros */
 }

@@ -31,7 +31,6 @@ const formatArticleDate = (dateString) => {
   return new Date(dateString).toLocaleDateString("es-ES", options);
 };
 
-// Utility function to get a consistent color based on tag name (NUEVO)
 const getTagColor = (tagName) => {
   const colors = {
     matemáticas: "tag-blue",
@@ -41,10 +40,31 @@ const getTagColor = (tagName) => {
     historia: "tag-orange",
     inglés: "tag-teal",
     castellano: "tag-violet",
-    estadísticas: "tag-cyan",
+    "estadísticas y cálculo": "tag-cyan",
+    "ciencias sociales": "tag-brown",
+    geografía: "tag-earth",
+    derecho: "tag-navy",
+    contabilidad: "tag-olive",
+    física: "tag-sky",
+    química: "tag-lime",
+    salud: "tag-pink",
+    biología: "tag-leaf",
+    informática: "tag-steel",
+    "tecnología y electrónica": "tag-electric",
+    religión: "tag-gold",
+    filosofía: "tag-indigo",
+    psicología: "tag-salmon",
+    "educ. fisica": "tag-grass",
+    arte: "tag-maroon",
+    musica: "tag-coral",
+    francés: "tag-lightblue",
+    alemán: "tag-darkred",
+    "latín / griego": "tag-sand",
+    "análisis de la materia y la energía": "tag-fire",
+    "tratamiento de datos y azar": "tag-night",
   };
-  // Usamos la primera palabra del tag en minúsculas
-  const key = tagName.toLowerCase().split(" ")[0];
+  // Usamos el nombre completo del tag en minúsculas como clave
+  const key = tagName.toLowerCase();
   return colors[key] || "tag-gray"; // Default a gris si no se encuentra
 };
 
@@ -137,7 +157,7 @@ const renderArticleCard = (article) => {
 export const loadArticles = (articles) => {
   if (questionsList) {
     if (articles.length === 0) {
-      questionsList.innerHTML = `<p style="text-align: center; color: #808090; padding: 2rem;">Aún no hay preguntas publicadas. ¡Sé el primero!</p>`;
+      questionsList.innerHTML = `<p style="text-align: center; color: #808090; padding: 2rem;">No hay preguntas para esta asignatura. ¡Sé el primero!</p>`;
       return;
     }
     const articlesHtml = articles.map(renderArticleCard).join("");
