@@ -3,12 +3,36 @@ import { fetchArticleById } from "./services/article.service.js";
 import { postComment } from "./services/comment.service.js";
 import { renderArticleCard } from "./article/article.ui.js"; // Reutilizamos el renderizador
 
+const formatRelativeTime = (dateString) => {
+  const now = new Date();
+  const past = new Date(dateString);
+  const secondsElapsed = Math.floor((now - past) / 1000);
+
+  if (secondsElapsed < 60) return "hace un momento";
+  const minutesElapsed = Math.floor(secondsElapsed / 60);
+  if (minutesElapsed < 60)
+    return `hace ${minutesElapsed} minuto${minutesElapsed > 1 ? "s" : ""}`;
+  const hoursElapsed = Math.floor(minutesElapsed / 60);
+  if (hoursElapsed < 24)
+    return `hace ${hoursElapsed} hora${hoursElapsed > 1 ? "s" : ""}`;
+  const daysElapsed = Math.floor(hoursElapsed / 24);
+  if (daysElapsed < 7)
+    return `hace ${daysElapsed} día${daysElapsed > 1 ? "s" : ""}`;
+  const weeksElapsed = Math.floor(daysElapsed / 7);
+  if (weeksElapsed < 4)
+    return `hace ${weeksElapsed} semana${weeksElapsed > 1 ? "s" : ""}`;
+  const monthsElapsed = Math.floor(daysElapsed / 30);
+  if (monthsElapsed < 12)
+    return `hace ${monthsElapsed} mes${monthsElapsed > 1 ? "es" : ""}`;
+  const yearsElapsed = Math.floor(daysElapsed / 365);
+  return `hace ${yearsElapsed} año${yearsElapsed > 1 ? "s" : ""}`;
+};
+
 // --- Renderizadores específicos para esta página ---
 
 const renderMainQuestion = (article, currentUser) => {
   const container = document.getElementById("main-question-container");
   if (container) {
-    // Reutilizamos la función de renderizado pero quitamos el enlace de "responder" y la tarjeta de fondo
     let cardHtml = renderArticleCard(article, currentUser);
     cardHtml = cardHtml.replace(
       /<a href="\/pregunta\.html\?id=.*">Ver discusión y responder<\/a>/,
@@ -28,7 +52,7 @@ const renderComments = (comments) => {
     return;
   }
 
-  // ✅ ESTRUCTURA DE COMENTARIO ACTUALIZADA
+  // ✅ CAMBIO: Se usa formatRelativeTime para la fecha del comentario
   container.innerHTML = comments
     .map(
       (comment) => `
@@ -37,9 +61,9 @@ const renderComments = (comments) => {
                 <span class="comment-author">${
                   comment.author.profile.firstName
                 } ${comment.author.profile.lastName}</span>
-                <span class="comment-date">${new Date(
+                <span class="comment-date">${formatRelativeTime(
                   comment.createdAt
-                ).toLocaleDateString()}</span>
+                )}</span>
             </div>
             <div class="comment-content">
                 <p>${comment.content}</p>
