@@ -230,7 +230,6 @@ body {
   color: #ff5c5c;
   font-size: 0.9rem;
   text-align: center;
-  margin-top: 1rem;
   min-height: 1.2rem; /* Reserva espacio para el error */
   opacity: 0;
   transition: opacity 0.3s ease;
@@ -1183,6 +1182,7 @@ body {
 
 /* Anulamos el margin-bottom del .input-group general dentro de nuestro form */
 .custom-modal form .input-group {
+  position: relative;
   margin-bottom: 0;
 }
 
@@ -1515,4 +1515,78 @@ body {
   height: 120px; /* Altura fija para todas las miniaturas */
   object-fit: cover; /* Asegura que la imagen cubra el espacio sin deformarse */
   display: block;
+}
+
+/* ==========================================================================
+   17. ESTILOS PARA EL PANEL DE SÍMBOLOS MATEMÁTICOS
+   ========================================================================== */
+
+.textarea-toolbar {
+  display: flex;
+  justify-content: flex-start;
+  margin-top: 0.5rem;
+}
+
+.toolbar-btn {
+  background: none;
+  border: 1px solid transparent;
+  border-radius: 5px;
+  padding: 0.2rem 0.5rem;
+  font-size: 1rem;
+  color: #888;
+  cursor: pointer;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.toolbar-btn:hover {
+  background-color: #e9ecef;
+  color: #333;
+}
+
+.symbols-panel {
+  display: none;
+
+  /* ✅ CAMBIO CLAVE: Posicionamiento absoluto para que no afecte el layout */
+  position: absolute;
+  top: 100%; /* Se posiciona justo debajo de su contenedor padre (el input-group) */
+  left: 0;
+  width: 100%;
+  z-index: 10; /* Se asegura de que esté por encima de otros elementos */
+
+  grid-template-columns: repeat(auto-fill, minmax(38px, 1fr));
+  gap: 6px;
+  background-color: #f8faff;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 0.8rem;
+  margin-top: 0.5rem;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Sombra para que destaque */
+
+  max-height: 150px;
+  overflow-y: auto;
+}
+
+.symbols-panel.visible {
+  display: grid;
+}
+
+.symbol-char {
+  background-color: #fff;
+  border: 1px solid #dcdfe6;
+  color: #000;
+  border-radius: 5px;
+  padding: 0.5rem 0;
+  text-align: center;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s, transform 0.1s;
+}
+
+.symbol-char:hover {
+  background-color: #e9ecef;
+  border-color: #b0b6be;
+}
+
+.symbol-char:active {
+  transform: scale(0.95);
 }

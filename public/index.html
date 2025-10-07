@@ -241,10 +241,7 @@
         </div>
         <form id="askQuestionForm" novalidate enctype="multipart/form-data">
           <div class="input-group">
-            <label for="question-content"
-              >Describe tu pregunta (de forma clara y fácil para obtener la
-              mejor respuesta)</label
-            >
+            <label for="question-content">Describe tu pregunta</label>
             <textarea
               id="question-content"
               name="content"
@@ -253,7 +250,20 @@
               minlength="10"
               required
             ></textarea>
+
+            <div class="textarea-toolbar">
+              <button
+                type="button"
+                id="toggle-symbols-btn"
+                class="toolbar-btn"
+                title="Símbolos"
+              >
+                <i class="fas fa-square-root-alt"></i>
+              </button>
+            </div>
+            <div id="math-symbols-panel" class="symbols-panel"></div>
           </div>
+
           <p id="question-error-message" class="error-text"></p>
 
           <div class="input-group">
