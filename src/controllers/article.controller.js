@@ -3,36 +3,35 @@ import { TagModel } from "../models/tag.model.js";
 
 export const createArticle = async (req, res) => {
   const authorId = req.userLog.id;
-  const { content, status, tags } = req.body; // Solo toma los campos que se esperan
+  const { content, status, tags } = req.body;
 
-  //  Obtener la URL de la imagen si se subió
-  let imageUrl = null;
-  if (req.file) {
-    // La URL es la ruta relativa a la carpeta 'public'
-    imageUrl = `/uploads/${req.file.filename}`;
+  // Obtener las URLs de las imágenes si se subieron
+  let imageUrls = [];
+  if (req.files && req.files.length > 0) {
+    console.log(
+      "Archivos recibidos:",
+      req.files.map((f) => f.originalname)
+    );
+    // req.files será un array de archivos
+    imageUrls = req.files.map((file) => `/uploads/${file.filename}`);
   }
 
   try {
     const article = await ArticleModel.create({
       content,
-      // status y tags se establecen si se envían, o toman el valor por defecto del esquema (ej. status: 'published')
       status,
-      author: authorId, // Asignamos el autor logeado automáticamente
+      author: authorId,
       tags,
-      imageUrl, // Guardar la URL de la imagen
+      imageUrls, // Guardar el array de URLs
     });
 
-    // Poblamos los datos del autor (nombre y perfil)
     const populatedArticle = await ArticleModel.findById(article._id)
-      .populate(
-        "author",
-        "-password" // Trae todos los campos del usuario excepto la contraseña
-      )
-      .populate("tags", "name"); // poblamos solo el nombre del tag
+      .populate("author", "-password")
+      .populate("tags", "name");
 
     return res.status(201).json({
       msg: "Articulo creado correctamente",
-      data: populatedArticle, // Devolvemos el artículo con el autor poblado
+      data: populatedArticle,
     });
   } catch (error) {
     console.log(error);
@@ -44,13 +43,13 @@ export const createArticle = async (req, res) => {
 
 export const getAllArticles = async (req, res) => {
   try {
-    const article = await ArticleModel.find()
+    const articles = await ArticleModel.find()
       .populate("author", "-password")
       .populate("tags", "name")
-      // Se añade 'imageUrl' a la selección para que se envíe al frontend
-      .select("content author createdAt tags imageUrl")
+      // Se añade 'imageUrls' a la selección
+      .select("content author createdAt tags imageUrls")
       .sort({ createdAt: -1 });
-    return res.status(200).json(article);
+    return res.status(200).json(articles);
   } catch (error) {
     console.log(error);
     return res.status(501).json({
@@ -84,7 +83,7 @@ export const getArticleById = async (req, res) => {
 export const deleteArticle = async (req, res) => {
   const { id } = req.params;
   try {
-    const article = await ArticleModel.findOneAndDelete(id);
+    const article = await ArticleModel.findOneAndDelete({ _id: id });
     return res.status(200).json({
       msg: "Articulo eliminado",
       data: article,
@@ -134,7 +133,6 @@ export const updateArticle = async (req, res) => {
 export const getUserLogArticles = async (req, res) => {
   const user = req.userLog;
   try {
-    console.log(user);
     const article = await ArticleModel.find({ author: user.id });
     return res.status(200).json({
       msg: "Tus articulos:",
@@ -159,7 +157,7 @@ export const getArticlesByTag = async (req, res) => {
     const articles = await ArticleModel.find({ tags: tag._id })
       .populate("author", "-password")
       .populate("tags", "name")
-      .select("content author createdAt tags imageUrl")
+      .select("content author createdAt tags imageUrls")
       .sort({ createdAt: -1 });
 
     return res.status(200).json(articles);

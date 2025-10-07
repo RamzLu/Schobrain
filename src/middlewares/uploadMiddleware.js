@@ -5,17 +5,14 @@ import fs from "fs";
 // 1. Configuración del almacenamiento
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    // La carpeta de uploads debe estar en 'public' para ser accesible
     const uploadPath = path.join(process.cwd(), "public", "uploads");
 
-    // Crear la carpeta si no existe
     if (!fs.existsSync(uploadPath)) {
       fs.mkdirSync(uploadPath, { recursive: true });
     }
     cb(null, uploadPath);
   },
   filename: (req, file, cb) => {
-    // Renombra el archivo para evitar colisiones: campo_timestamp.ext
     const extension = path.extname(file.originalname);
     const filename = `${file.fieldname}_${Date.now()}${extension}`;
     cb(null, filename);
@@ -31,11 +28,11 @@ const fileFilter = (req, file, cb) => {
   }
 };
 
-// 3. Inicializar Multer para una sola imagen con el campo 'imageFile'
-export const uploadImage = multer({
+// 3. Inicializar Multer para múltiples imágenes
+export const uploadImages = multer({
   storage: storage,
   fileFilter: fileFilter,
   limits: {
-    fileSize: 1024 * 1024 * 5, // Límite de 5MB
+    fileSize: 1024 * 1024 * 5, // Límite de 5MB por archivo
   },
-}).single("imageFile"); // 'imageFile' es el nombre del campo en el formulario
+}).array("imageFiles", 5); // 'imageFiles' es el nombre del campo, y 5 es el máximo de archivos

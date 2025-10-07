@@ -1,21 +1,3 @@
-import { uploadImage } from "../uploadMiddleware.js";
-const handleMulterErrors = (req, res, next) => {
-  uploadImage(req, res, (err) => {
-    if (err instanceof multer.MulterError) {
-      if (err.code === "LIMIT_FILE_SIZE") {
-        return res
-          .status(400)
-          .json({ msg: "El archivo es demasiado grande (máx 5MB)." });
-      }
-      return res.status(400).json({ msg: err.message });
-    } else if (err) {
-      // Error de tipo de archivo u otros errores generales
-      return res.status(400).json({ msg: err.message });
-    }
-    // Si no hay errores de Multer, continuamos
-    next();
-  });
-};
 import { ArticleModel } from "../../models/article.model.js";
 import { TagModel } from "../../models/tag.model.js";
 import { UserModel } from "../../models/user.model.js";
@@ -35,21 +17,34 @@ export const createArticleValidation = [
     .withMessage(
       "El estado del artículo no es válido. Debe ser 'published' o 'archived'."
     ),
-  //!eliminamos las validaciones de author
   body("tags")
     .optional()
-    .isArray()
-    .withMessage("Los tags deben ser un array.")
-    .custom(async (tagIds) => {
-      // si el array de tags esta vacio, se permite
+    .toArray()
+    .custom(async (tagIds = []) => {
       if (tagIds.length === 0) {
         return true;
       }
-
       const existingTags = await TagModel.find({ _id: { $in: tagIds } });
       if (existingTags.length !== tagIds.length) {
         throw new Error("Al menos uno de los tags referenciados no existe.");
       }
+    }),
+
+  body("imageFiles")
+    .optional()
+    .isArray()
+    .withMessage("El campo de imágenes debe ser un arreglo.")
+    .custom((files, { req }) => {
+      // 'files' es el array de archivos que multer nos da en req.files
+      const uploadedFiles = req.files;
+      if (uploadedFiles) {
+        for (const file of uploadedFiles) {
+          if (!file.mimetype.startsWith("image/")) {
+            throw new Error("Todos los archivos subidos deben ser imágenes.");
+          }
+        }
+      }
+      return true;
     }),
 ];
 
@@ -65,14 +60,12 @@ export const updateArticleValidation = [
         throw new Error("El artículo que intenta actualizar no existe.");
       }
     }),
-  // ! Eliminé el title
   body("content")
     .optional()
     .isString()
     .withMessage("El contenido debe ser una cadena de texto.")
     .isLength({ min: 10 })
     .withMessage("El contenido debe tener al menos 10 caracteres."),
-  // ! Eliminé el excerpt
   body("status")
     .optional()
     .isIn(["published", "archived"])

@@ -1482,3 +1482,35 @@ body {
   margin-top: 0.4rem;
   margin-bottom: 0.5rem;
 }
+
+/* ==========================================================================
+   16. ESTILOS PARA LA GALERÍA DE IMÁGENES
+   ========================================================================== */
+
+.article-images-gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 10px; /* Espacio entre las imágenes */
+  margin-top: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.article-image-link {
+  display: block;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.article-image-link:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.article-image {
+  width: 100%;
+  height: 120px; /* Altura fija para todas las miniaturas */
+  object-fit: cover; /* Asegura que la imagen cubra el espacio sin deformarse */
+  display: block;
+}

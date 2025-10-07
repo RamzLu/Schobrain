@@ -18,18 +18,22 @@ import {
   getArticleByIdValidation,
   updateArticleValidation,
 } from "../middlewares/validations/article.validations.js";
-import { uploadImage } from "../middlewares/uploadMiddleware.js";
+
+import { uploadImages } from "../middlewares/uploadMiddleware.js";
+
 export const routeArticle = Router();
 
 routeArticle.get("/articles/my", validateToken, getUserLogArticles);
+
 routeArticle.post(
   "/articles",
   validateToken,
-  uploadImage,
+  uploadImages,
   createArticleValidation,
   validator,
   createArticle
 );
+
 routeArticle.get("/articles", getAllArticles);
 
 routeArticle.get("/articles/tag/:tagName", getArticlesByTag);
