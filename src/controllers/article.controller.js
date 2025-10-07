@@ -61,16 +61,22 @@ export const getAllArticles = async (req, res) => {
 export const getArticleById = async (req, res) => {
   const { id } = req.params;
   try {
-    const article = await ArticleModel.findById(id).populate([
-      {
+    // ✅ CORRECCIÓN: Añadimos .populate('author', '-password') para traer los datos del autor de la pregunta.
+    const article = await ArticleModel.findById(id)
+      .populate("author", "-password") // <--- ESTA ES LA LÍNEA AÑADIDA
+      .populate({
         path: "comments",
         populate: {
           path: "author",
           model: "User",
-          select: "-password",
+          select: "-password -role", // También puedes seleccionar qué traer del autor del comentario
         },
-      },
-    ]);
+      });
+
+    if (!article) {
+      return res.status(404).json({ msg: "Pregunta no encontrada." });
+    }
+
     return res.status(200).json(article);
   } catch (error) {
     console.log(error);

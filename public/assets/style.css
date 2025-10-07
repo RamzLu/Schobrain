@@ -1482,13 +1482,15 @@ body {
   margin-top: 0.4rem;
   margin-bottom: 0.5rem;
 }
+/* ... (todo tu CSS existente va aquí arriba) ... */
 
 /* ==========================================================================
-   16. ESTILOS PARA LA GALERÍA DE IMÁGENES
+   16. ESTILOS PARA LA GALERÍA DE IMÁGENES (EN CUADRÍCULA)
    ========================================================================== */
 
 .article-images-gallery {
   display: grid;
+  /* Crea columnas automáticas de un tamaño mínimo de 150px */
   grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
   gap: 10px; /* Espacio entre las imágenes */
   margin-top: 1.5rem;
@@ -1504,8 +1506,8 @@ body {
 }
 
 .article-image-link:hover {
-  transform: scale(1.05);
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  transform: translateY(-3px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
 }
 
 .article-image {

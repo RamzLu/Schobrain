@@ -43,6 +43,24 @@ export const fetchAllArticles = async () => {
 };
 
 /**
+ * ✅ NUEVA FUNCIÓN: Obtiene un solo artículo por su ID.
+ * @param {string} articleId - El ID del artículo a buscar.
+ * @returns {Promise<Object>} El artículo con sus comentarios.
+ */
+export const fetchArticleById = async (articleId) => {
+  const response = await fetch(`${API_URL}/${articleId}`, {
+    method: "GET",
+    headers: { "Content-Type": "application/json" },
+  });
+
+  if (!response.ok) {
+    const data = await response.json();
+    throw new Error(data.msg || "Error al obtener la pregunta.");
+  }
+  return await response.json();
+};
+
+/**
  * Obtiene artículos filtrados por una etiqueta específica.
  * @param {string} tagName
  * @returns {Promise<Array<Object>>}

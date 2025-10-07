@@ -3,7 +3,7 @@ const questionsList = document.getElementById("questions-list");
 const closeQuestionModalButton = document.getElementById(
   "close-question-modal"
 );
-const imageFileInput = document.getElementById("image-files"); // Corresponde al nuevo ID del input
+const imageFileInput = document.getElementById("image-files");
 const fileNameDisplay = document.getElementById("file-name-display");
 
 export const showAskQuestionModal = () => {
@@ -100,7 +100,7 @@ export const populateTagSelector = (tags) => {
   }
 };
 
-const renderArticleCard = (article, currentUser) => {
+export const renderArticleCard = (article, currentUser) => {
   let authorName = "Usuario Desconocido";
   let statusBadges = "";
   const author = article.author;
@@ -141,17 +141,19 @@ const renderArticleCard = (article, currentUser) => {
     tagHtml = `<span class="article-tag ${tagColorClass}">${tag.name}</span>`;
   }
 
-  // ✅ CAMBIO CLAVE: Se genera una galería si hay múltiples imágenes.
+  // ✅ LÓGICA CORREGIDA PARA GALERÍA EN CUADRÍCULA
   let imagesHtml = "";
   if (article.imageUrls && article.imageUrls.length > 0) {
     const imageElements = article.imageUrls
       .map(
         (url) => `
       <a href="${url}" target="_blank" class="article-image-link">
-        <img src="${url}" alt="Imagen adjunta de la pregunta" class="article-image"/>
+        <img src="${url}" alt="Imagen de la pregunta" class="article-image"/>
       </a>`
       )
       .join("");
+
+    // Contenedor principal para la galería
     imagesHtml = `<div class="article-images-gallery">${imageElements}</div>`;
   }
 
@@ -165,7 +167,7 @@ const renderArticleCard = (article, currentUser) => {
       ${imagesHtml}
       <div class="article-footer-actions">
         <div class="article-tags-container">${tagHtml}</div>
-        <div class="article-actions"><a href="#">Ver discusión y responder</a></div>
+        <div class="article-actions"><a href="/pregunta.html?id=${article._id}">Ver discusión y responder</a></div>
       </div>
     </article>`;
 };
@@ -197,7 +199,6 @@ export const setupCancelButton = () => {
       } else if (files.length === 1) {
         fileNameDisplay.textContent = files[0].name;
       } else {
-        // ✅ CAMBIO CLAVE: Muestra el número de archivos seleccionados.
         fileNameDisplay.textContent = `${files.length} archivos seleccionados`;
       }
     });

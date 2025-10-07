@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pregunta | Schobrain</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+    <link rel="icon" type="image/png" href="assets/img/logoSchobrain.png" />
+    <link rel="stylesheet" href="assets/style.css" />
+    <style>
+      /* Estilos adicionales para esta página */
+      .main-question-container {
+        max-width: 900px;
+        margin: 2rem auto;
+      }
+      .comments-section {
+        max-width: 900px;
+        margin: 2rem auto;
+        background-color: #fff;
+        padding: 2rem;
+        border-radius: 10px;
+        color: #333;
+      }
+      .comments-section h2 {
+        margin-bottom: 1.5rem;
+        border-bottom: 1px solid #eee;
+        padding-bottom: 1rem;
+      }
+      .comment-card {
+        border-bottom: 1px solid #eee;
+        padding: 1.5rem 0;
+      }
+      .comment-card:last-child {
+        border-bottom: none;
+      }
+      .comment-author {
+        font-weight: bold;
+        color: #6a11cb;
+      }
+      .comment-date {
+        font-size: 0.8rem;
+        color: #888;
+        margin-left: 0.5rem;
+      }
+      .comment-content {
+        margin-top: 0.5rem;
+        line-height: 1.6;
+      }
+      #comment-form textarea {
+        width: 100%;
+        min-height: 80px;
+        padding: 0.8rem;
+        border-radius: 8px;
+        border: 1px solid #ccc;
+        margin-bottom: 1rem;
+        resize: vertical;
+        font-family: "Outfit", sans-serif;
+        font-size: 1rem;
+      }
+      #comment-form button {
+        float: right;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="main-container">
+      <header class="main-header">
+        <div class="header-left">
+          <a href="/"
+            ><img
+              src="assets/img/logoSchobrain.png"
+              alt="Logo Schobrain"
+              class="header-logo"
+          /></a>
+        </div>
+        <div class="header-right">
+          <span class="welcome-user"
+            >Bienvenido, <span id="logged-in-username">Usuario</span></span
+          >
+
+          <a
+            href="/"
+            class="modal-button secondary"
+            style="text-decoration: none; padding: 0.5rem 1rem"
+          >
+            <i class="fas fa-arrow-left"></i> Volver al Inicio
+          </a>
+        </div>
+      </header>
+
+      <div id="main-question-container" class="main-question-container"></div>
+
+      <div id="comments-section" class="comments-section">
+        <h2>Respuestas</h2>
+
+        <form id="comment-form">
+          <div class="input-group">
+            <textarea
+              id="comment-content"
+              name="content"
+              placeholder="Escribe tu respuesta..."
+              required
+              minlength="5"
+            ></textarea>
+          </div>
+          <button type="submit" class="custom-submit-button">Responder</button>
+        </form>
+
+        <div
+          style="
+            clear: both;
+            margin-top: 3rem;
+            border-top: 1px solid #eee;
+            padding-top: 1rem;
+          "
+        ></div>
+
+        <div id="comments-list"></div>
+      </div>
+    </div>
+
+    <script type="module" src="/js/pregunta.js"></script>
+  </body>
+</html>
