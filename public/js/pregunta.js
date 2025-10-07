@@ -8,7 +8,7 @@ import { renderArticleCard } from "./article/article.ui.js"; // Reutilizamos el 
 const renderMainQuestion = (article, currentUser) => {
   const container = document.getElementById("main-question-container");
   if (container) {
-    // Reutilizamos la función de renderizado de tarjetas pero sin el enlace de "responder"
+    // Reutilizamos la función de renderizado pero quitamos el enlace de "responder" y la tarjeta de fondo
     let cardHtml = renderArticleCard(article, currentUser);
     cardHtml = cardHtml.replace(
       /<a href="\/pregunta\.html\?id=.*">Ver discusión y responder<\/a>/,
@@ -28,6 +28,7 @@ const renderComments = (comments) => {
     return;
   }
 
+  // ✅ ESTRUCTURA DE COMENTARIO ACTUALIZADA
   container.innerHTML = comments
     .map(
       (comment) => `
@@ -36,7 +37,7 @@ const renderComments = (comments) => {
                 <span class="comment-author">${
                   comment.author.profile.firstName
                 } ${comment.author.profile.lastName}</span>
-                <span class="comment-date">· ${new Date(
+                <span class="comment-date">${new Date(
                   comment.createdAt
                 ).toLocaleDateString()}</span>
             </div>
@@ -65,7 +66,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     return;
   }
 
-  // Obtener el ID del artículo de la URL
   const params = new URLSearchParams(window.location.search);
   const articleId = params.get("id");
 
@@ -75,14 +75,11 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   try {
-    // Cargar el artículo y sus comentarios
     const article = await fetchArticleById(articleId);
 
-    // Renderizar la pregunta principal y los comentarios
     renderMainQuestion(article, currentUser);
     renderComments(article.comments);
 
-    // Manejar el formulario de nuevo comentario
     const commentForm = document.getElementById("comment-form");
     commentForm.addEventListener("submit", async (e) => {
       e.preventDefault();
@@ -100,7 +97,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
       try {
         await postComment(commentData);
-        window.location.reload(); // Recargamos para ver el nuevo comentario
+        window.location.reload();
       } catch (error) {
         alert(`Error al publicar tu respuesta: ${error.message}`);
       }
