@@ -1,7 +1,10 @@
 import { verifyAuth } from "./services/auth.service.js";
 import { fetchArticleById } from "./services/article.service.js";
 import { postComment } from "./services/comment.service.js";
-import { renderArticleCard } from "./article/article.ui.js";
+import {
+  renderArticleCard,
+  initializeSymbolsPanel,
+} from "./article/article.ui.js"; // Importamos ambas funciones
 import { showErrorToast } from "./utils/notifications.js";
 import { initializeLightbox } from "./utils/lightbox.js";
 
@@ -78,10 +81,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   try {
     const authData = await verifyAuth();
     currentUser = authData.data;
-    const usernameSpan = document.getElementById("logged-in-username");
-    if (usernameSpan) {
-      usernameSpan.textContent = currentUser.firstName;
-    }
+    document.getElementById("logged-in-username").textContent =
+      currentUser.firstName;
   } catch (error) {
     window.location.href = "/login.html";
     return;
@@ -97,11 +98,17 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   try {
     const article = await fetchArticleById(articleId);
-
     renderMainQuestion(article, currentUser);
     renderComments(article.comments);
 
     initializeLightbox("main-question-container");
+
+    initializeSymbolsPanel({
+      textareaId: "comment-content",
+      toggleBtnId: "toggle-comment-symbols-btn",
+      panelId: "comment-symbols-panel",
+      includeFunctions: false,
+    });
 
     const commentForm = document.getElementById("comment-form");
     commentForm.addEventListener("submit", async (e) => {
@@ -111,15 +118,12 @@ document.addEventListener("DOMContentLoaded", async () => {
         showErrorToast("La respuesta debe tener al menos 5 caracteres.");
         return;
       }
-
-      const commentData = {
-        content,
-        author: currentUser.id,
-        article: articleId,
-      };
-
       try {
-        await postComment(commentData);
+        await postComment({
+          content,
+          author: currentUser.id,
+          article: articleId,
+        });
         window.location.reload();
       } catch (error) {
         showErrorToast(`Error al publicar tu respuesta: ${error.message}`);

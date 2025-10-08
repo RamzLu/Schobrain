@@ -26,14 +26,9 @@
       src="https://cdn.jsdelivr.net/npm/toastify-js"
     ></script>
     <style>
-      /* ==========================================================================
-           ESTILOS PERSONALIZADOS PARA LA PÁGINA DE PREGUNTA
-           ========================================================================== */
-
       body {
         background-color: #f0f2f5;
       }
-
       .content-wrapper {
         background-color: #ffffff;
         width: 100%;
@@ -44,7 +39,6 @@
         color: #333;
         box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
       }
-
       .main-question-container .article-card {
         background-color: transparent;
         box-shadow: none;
@@ -54,23 +48,24 @@
         border-bottom: 1px solid #e0e0e0;
         padding-bottom: 2rem;
       }
-
       .comments-section h2 {
         font-size: 1.5rem;
         margin-bottom: 1.5rem;
         color: #12121c;
       }
-
       .new-comment-form {
         display: flex;
         gap: 1rem;
-        align-items: center;
+        align-items: flex-start;
         margin-bottom: 2.5rem;
       }
-      .new-comment-form textarea {
+      .textarea-wrapper {
         flex-grow: 1;
+        position: relative;
+      }
+      .new-comment-form textarea {
+        width: 100%;
         min-height: 50px;
-        height: 50px;
         padding: 0.8rem 1rem;
         border-radius: 25px;
         border: 1px solid #ced4da;
@@ -93,11 +88,11 @@
         font-weight: 700;
         cursor: pointer;
         transition: background-color 0.2s;
+        margin-top: 1px;
       }
       .new-comment-form button:hover {
         background-color: #560bad;
       }
-
       .comment-card {
         border-bottom: 1px solid #e9ecef;
         padding: 1.5rem 0;
@@ -171,12 +166,26 @@
           <h2>Respuestas</h2>
 
           <form id="comment-form" class="new-comment-form" novalidate>
-            <textarea
-              name="content"
-              placeholder="Responde algo..."
-              required
-              minlength="5"
-            ></textarea>
+            <div class="textarea-wrapper">
+              <textarea
+                id="comment-content"
+                name="content"
+                placeholder="Responde algo..."
+                required
+                minlength="5"
+              ></textarea>
+              <div class="textarea-toolbar">
+                <button
+                  type="button"
+                  id="toggle-comment-symbols-btn"
+                  class="toolbar-btn"
+                  title="Símbolos"
+                >
+                  <i class="fas fa-square-root-alt"></i>
+                </button>
+              </div>
+              <div id="comment-symbols-panel" class="symbols-panel"></div>
+            </div>
             <button type="submit">Responder</button>
           </form>
 

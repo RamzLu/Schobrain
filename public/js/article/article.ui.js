@@ -207,3 +207,121 @@ export const setupCancelButton = () => {
     });
   }
 };
+
+/**
+ * Inicializa un panel de símbolos matemáticos para un textarea específico.
+ * @param {object} config - Objeto de configuración.
+ * @param {string} config.textareaId - ID del textarea.
+ * @param {string} config.toggleBtnId - ID del botón para mostrar/ocultar el panel de símbolos.
+ * @param {string} config.panelId - ID del div que contendrá el panel.
+ * @param {boolean} [config.includeFunctions=false] - Si se deben incluir botones de funciones (fracción, exponente).
+ * @param {string} [config.fractionBtnId] - ID del botón de fracción (si se incluye).
+ * @param {string} [config.exponentBtnId] - ID del botón de exponente (si se incluye).
+ */
+export function initializeSymbolsPanel({
+  textareaId,
+  toggleBtnId,
+  panelId,
+  includeFunctions = false,
+  fractionBtnId,
+  exponentBtnId,
+}) {
+  const textarea = document.getElementById(textareaId);
+  const toggleSymbolsBtn = document.getElementById(toggleBtnId);
+  const symbolsPanel = document.getElementById(panelId);
+
+  if (!textarea || !toggleSymbolsBtn || !symbolsPanel) return;
+
+  const insertText = (text) => {
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+    const currentText = textarea.value;
+
+    textarea.value =
+      currentText.substring(0, start) + text + currentText.substring(end);
+    textarea.selectionStart = textarea.selectionEnd = start + text.length;
+    textarea.focus();
+  };
+
+  if (includeFunctions) {
+    const fractionBtn = document.getElementById(fractionBtnId);
+    const exponentBtn = document.getElementById(exponentBtnId);
+
+    if (fractionBtn) {
+      fractionBtn.addEventListener("click", () => {
+        const numerator = prompt("Ingresa el numerador:");
+        const denominator = prompt("Ingresa el denominador:");
+        if (numerator !== null && denominator !== null) {
+          insertText(`(${numerator}/${denominator})`);
+        }
+      });
+    }
+
+    if (exponentBtn) {
+      exponentBtn.addEventListener("click", () => {
+        const base = prompt("Ingresa la base:");
+        const exponent = prompt("Ingresa el exponente:");
+        if (base !== null && exponent !== null) {
+          insertText(`${base}^${exponent}`);
+        }
+      });
+    }
+  }
+
+  const symbols = [
+    "π",
+    "∀",
+    "≤",
+    "≥",
+    "∉",
+    "≠",
+    "∏",
+    "∑",
+    "¬",
+    "⇔ ",
+    "∧",
+    "∨",
+    "√",
+    "∫",
+    "Σ",
+    "Π",
+    "±",
+    "≠",
+    "≤",
+    "≥",
+    "≈",
+    "∞",
+    "α",
+    "β",
+    "γ",
+    "δ",
+    "θ",
+    "λ",
+    "μ",
+    "π",
+    "ω",
+    "°",
+    "²",
+    "³",
+    "₄",
+    "ₓ",
+  ];
+
+  symbolsPanel.innerHTML = "";
+  symbols.forEach((symbol) => {
+    const span = document.createElement("span");
+    span.className = "symbol-char";
+    span.textContent = symbol;
+    symbolsPanel.appendChild(span);
+  });
+
+  toggleSymbolsBtn.addEventListener("click", () => {
+    symbolsPanel.classList.toggle("visible");
+  });
+
+  symbolsPanel.addEventListener("click", (event) => {
+    if (event.target.classList.contains("symbol-char")) {
+      insertText(event.target.textContent);
+    }
+  });
+}

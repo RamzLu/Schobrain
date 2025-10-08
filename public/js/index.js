@@ -2,6 +2,7 @@ import { verifyAuth, logoutUser } from "./services/auth.service.js";
 import {
   showAskQuestionModal,
   setupCancelButton,
+  initializeSymbolsPanel, // Importamos la función centralizada
 } from "./article/article.ui.js";
 import {
   handlePostQuestion,
@@ -23,106 +24,6 @@ const renderAdminMenuOption = () => {
     } else {
       userMenu.insertAdjacentHTML("beforeend", adminHtml);
     }
-  }
-};
-
-const initializeSymbolsPanel = () => {
-  const toggleSymbolsBtn = document.getElementById("toggle-symbols-btn");
-  const symbolsPanel = document.getElementById("math-symbols-panel");
-  const questionTextarea = document.getElementById("question-content");
-  const fractionBtn = document.getElementById("fraction-btn");
-  const exponentBtn = document.getElementById("exponent-btn");
-
-  if (!questionTextarea) return;
-
-  const insertText = (text) => {
-    const start = questionTextarea.selectionStart;
-    const end = questionTextarea.selectionEnd;
-    const currentText = questionTextarea.value;
-
-    questionTextarea.value =
-      currentText.substring(0, start) + text + currentText.substring(end);
-    questionTextarea.selectionStart = questionTextarea.selectionEnd =
-      start + text.length;
-    questionTextarea.focus();
-  };
-
-  if (fractionBtn) {
-    fractionBtn.addEventListener("click", () => {
-      const numerator = prompt("Ingresa el numerador:");
-      const denominator = prompt("Ingresa el denominador:");
-      if (numerator !== null && denominator !== null) {
-        insertText(`(${numerator}/${denominator})`);
-      }
-    });
-  }
-
-  if (exponentBtn) {
-    exponentBtn.addEventListener("click", () => {
-      const base = prompt("Ingresa la base:");
-      const exponent = prompt("Ingresa el exponente:");
-      if (base !== null && exponent !== null) {
-        insertText(`${base}^${exponent}`);
-      }
-    });
-  }
-
-  if (toggleSymbolsBtn && symbolsPanel) {
-    const symbols = [
-      "π",
-      "∀",
-      "≤",
-      "≥",
-      "∉",
-      "≠",
-      "∏",
-      "∑",
-      "¬",
-      "⇔ ",
-      "∧",
-      "∨",
-      "√",
-      "∫",
-      "Σ",
-      "Π",
-      "±",
-      "≠",
-      "≤",
-      "≥",
-      "≈",
-      "∞",
-      "α",
-      "β",
-      "γ",
-      "δ",
-      "θ",
-      "λ",
-      "μ",
-      "π",
-      "ω",
-      "°",
-      "²",
-      "³",
-      "₄",
-      "ₓ",
-    ];
-
-    symbols.forEach((symbol) => {
-      const span = document.createElement("span");
-      span.className = "symbol-char";
-      span.textContent = symbol;
-      symbolsPanel.appendChild(span);
-    });
-
-    toggleSymbolsBtn.addEventListener("click", () => {
-      symbolsPanel.classList.toggle("visible");
-    });
-
-    symbolsPanel.addEventListener("click", (event) => {
-      if (event.target.classList.contains("symbol-char")) {
-        insertText(event.target.textContent);
-      }
-    });
   }
 };
 
@@ -211,7 +112,14 @@ const initializeIndexPage = async () => {
     }
   }
 
-  initializeSymbolsPanel();
+  initializeSymbolsPanel({
+    textareaId: "question-content",
+    toggleBtnId: "toggle-symbols-btn",
+    panelId: "math-symbols-panel",
+    includeFunctions: true,
+    fractionBtnId: "fraction-btn",
+    exponentBtnId: "exponent-btn",
+  });
 
   const subjectFilterList = document.getElementById("subject-filter-list");
   if (subjectFilterList) {
