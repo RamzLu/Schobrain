@@ -40,6 +40,13 @@ export const handlePostQuestion = async (event) => {
     return;
   }
 
+  //Verificación de que se ha seleccionado una asignatura
+  if (!tagId) {
+    errorMessageElement.textContent = "Por favor, selecciona una asignatura.";
+    errorMessageElement.classList.add("visible");
+    return;
+  }
+
   if (imageFiles.length > 5) {
     errorMessageElement.textContent = "Puedes subir un máximo de 5 imágenes.";
     errorMessageElement.classList.add("visible");
@@ -49,11 +56,7 @@ export const handlePostQuestion = async (event) => {
   try {
     const formData = new FormData();
     formData.append("content", content);
-
-    // ✅ CORRECCIÓN DEFINITIVA: Se envía el tag como un elemento de un array.
-    if (tagId) {
-      formData.append("tags", tagId); // Multer y express-validator lo interpretarán correctamente.
-    }
+    formData.append("tags", tagId); // tagId es obligatorio
 
     if (imageFiles.length > 0) {
       for (const file of imageFiles) {

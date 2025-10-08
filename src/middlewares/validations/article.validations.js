@@ -18,15 +18,16 @@ export const createArticleValidation = [
       "El estado del artículo no es válido. Debe ser 'published' o 'archived'."
     ),
   body("tags")
-    .optional()
+    .notEmpty()
+    .withMessage("Debes seleccionar una asignatura.")
     .toArray()
     .custom(async (tagIds = []) => {
       if (tagIds.length === 0) {
-        return true;
+        throw new Error("La selección de asignatura no puede estar vacía.");
       }
       const existingTags = await TagModel.find({ _id: { $in: tagIds } });
       if (existingTags.length !== tagIds.length) {
-        throw new Error("Al menos uno de los tags referenciados no existe.");
+        throw new Error("La asignatura seleccionada no es válida.");
       }
     }),
 
@@ -35,7 +36,6 @@ export const createArticleValidation = [
     .isArray()
     .withMessage("El campo de imágenes debe ser un arreglo.")
     .custom((files, { req }) => {
-      // 'files' es el array de archivos que multer nos da en req.files
       const uploadedFiles = req.files;
       if (uploadedFiles) {
         for (const file of uploadedFiles) {
