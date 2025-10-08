@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Schobrain | Pregunta</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+    <link rel="icon" type="image/png" href="assets/img/logoSchobrain.png" />
+    <link rel="stylesheet" href="assets/style.css" />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css"
+    />
+    <script
+      type="text/javascript"
+      src="https://cdn.jsdelivr.net/npm/toastify-js"
+    ></script>
+    <style>
+      body {
+        background-color: #f0f2f5;
+      }
+      .content-wrapper {
+        background-color: #ffffff;
+        width: 100%;
+        max-width: 900px;
+        margin: 2rem auto;
+        border-radius: 15px;
+        padding: 2rem 3rem;
+        color: #333;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+      }
+      .main-question-container .article-card {
+        background-color: transparent;
+        box-shadow: none;
+        border: none;
+        padding: 0;
+        margin-bottom: 2rem;
+        border-bottom: 1px solid #e0e0e0;
+        padding-bottom: 2rem;
+      }
+      .comments-section h2 {
+        font-size: 1.5rem;
+        margin-bottom: 1.5rem;
+        color: #12121c;
+      }
+      .new-comment-form {
+        display: flex;
+        gap: 1rem;
+        align-items: flex-start;
+        margin-bottom: 2.5rem;
+      }
+      .textarea-wrapper {
+        flex-grow: 1;
+        position: relative;
+      }
+      .new-comment-form textarea {
+        width: 100%;
+        min-height: 50px;
+        padding: 0.8rem 1rem;
+        border-radius: 25px;
+        border: 1px solid #ced4da;
+        resize: vertical;
+        font-family: "Outfit", sans-serif;
+        font-size: 1rem;
+        transition: border-color 0.2s, box-shadow 0.2s;
+      }
+      .new-comment-form textarea:focus {
+        outline: none;
+        border-color: #8ab4f8;
+        box-shadow: 0 0 0 3px rgba(37, 117, 252, 0.25);
+      }
+      .new-comment-form button {
+        background-color: #6a11cb;
+        color: white;
+        border: none;
+        border-radius: 25px;
+        padding: 0.8rem 1.8rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition: background-color 0.2s;
+        margin-top: 1px;
+      }
+      .new-comment-form button:hover {
+        background-color: #560bad;
+      }
+      .comment-card {
+        border-bottom: 1px solid #e9ecef;
+        padding: 1.5rem 0;
+      }
+      .comment-card:last-child {
+        border-bottom: none;
+        padding-bottom: 0;
+      }
+      .comment-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 0.5rem;
+      }
+      .comment-author-date {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+      }
+      .comment-author {
+        font-weight: 700;
+        font-size: 1.1rem;
+        color: #2575fc;
+      }
+      .comment-date {
+        font-size: 0.85rem;
+        color: #6c757d;
+      }
+      .comment-content p {
+        line-height: 1.6;
+        color: #212529;
+      }
+
+      /* ✅ ESTILOS AÑADIDOS PARA EL MENÚ DE OPCIONES DEL COMENTARIO */
+      .comment-options-menu {
+        position: relative;
+      }
+      .comment-options-menu .options-toggle-btn {
+        font-size: 0.9rem;
+      } /* Botón de 3 puntos más pequeño */
+    </style>
+  </head>
+  <body>
+    <div class="main-container">
+      <header
+        class="main-header"
+        style="background-color: #ffffff; color: #333"
+      >
+        <div
+          class="header-left"
+          style="display: flex; align-items: center; gap: 1rem"
+        >
+          <a href="/"
+            ><img
+              src="assets/img/logoSchobrain.png"
+              alt="Logo Schobrain"
+              class="header-logo"
+          /></a>
+          <h1 style="font-size: 1.5rem; margin: 0; color: #333">Schobrain</h1>
+        </div>
+        <div class="header-right">
+          <span class="welcome-user" style="color: #333"
+            >Bienvenido, <span id="logged-in-username">Usuario</span></span
+          >
+          <a
+            href="/"
+            class="modal-button secondary"
+            style="
+              text-decoration: none;
+              padding: 0.6rem 1.2rem;
+              background-color: #e9ecef;
+              color: #495057;
+            "
+          >
+            Volver al Feed
+          </a>
+        </div>
+      </header>
+
+      <div class="content-wrapper">
+        <div id="main-question-container" class="main-question-container"></div>
+        <div id="comments-section" class="comments-section">
+          <h2>Respuestas</h2>
+          <form id="comment-form" class="new-comment-form" novalidate>
+            <div class="textarea-wrapper">
+              <textarea
+                id="comment-content"
+                name="content"
+                placeholder="Responde algo..."
+                required
+                minlength="5"
+              ></textarea>
+              <div class="textarea-toolbar">
+                <button
+                  type="button"
+                  id="toggle-comment-symbols-btn"
+                  class="toolbar-btn"
+                  title="Símbolos"
+                >
+                  <i class="fas fa-square-root-alt"></i>
+                </button>
+              </div>
+              <div id="comment-symbols-panel" class="symbols-panel"></div>
+            </div>
+            <button type="submit">Responder</button>
+          </form>
+          <div id="comments-list"></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="image-preview-modal" class="modal-overlay">
+      <span class="close-preview-btn">&times;</span>
+      <img
+        class="preview-image"
+        id="preview-image-src"
+        src=""
+        alt="Previsualización de imagen"
+      />
+    </div>
+
+    <div id="delete-confirm-modal" class="modal-overlay">
+      <div class="modal-content">
+        <h2>¿Confirmas la eliminación?</h2>
+        <p class="warning-text-deleteQuestion">
+          Esta acción es permanente y no se puede deshacer. ¿Estás seguro?
+        </p>
+        <div class="modal-actions">
+          <button id="cancel-delete" class="modal-button secondary">
+            Cancelar
+          </button>
+          <button id="confirm-delete" class="modal-button danger">
+            Sí, eliminar
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script type="module" src="/js/pregunta.js"></script>
+  </body>
+</html>

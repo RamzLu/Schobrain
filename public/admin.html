@@ -12,15 +12,22 @@
     />
     <link
       rel="stylesheet"
+      type="text/css"
+      href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css"
+    />
+    <script
+      type="text/javascript"
+      src="https://cdn.jsdelivr.net/npm/toastify-js"
+    ></script>
+    <link
+      rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
     />
+    <link rel="icon" type="image/png" href="assets/img/logoSchobrain.png" />
     <link rel="stylesheet" href="assets/style.css" />
     <style>
-      /* Estilos específicos para la página de administración */
       .admin-container {
         padding: 3rem 2rem;
-        max-width: 1000px;
-        margin: 0 auto;
         color: #333;
         background-color: #f8f9fa;
         min-height: 100vh;
@@ -41,20 +48,6 @@
       .admin-section h2 {
         color: #6a11cb;
         margin-bottom: 1.5rem;
-      }
-      .form-admin .input-group input,
-      .form-admin .input-group textarea {
-        background: #f8f8f8;
-        color: #333;
-        border: 1px solid #ccc;
-        padding: 0.8rem 1rem;
-        width: 100%;
-        margin-top: 0.5rem;
-        border-radius: 6px;
-      }
-      .form-admin button {
-        margin-top: 1.5rem;
-        padding: 0.8rem 2rem;
       }
     </style>
   </head>
@@ -88,45 +81,16 @@
 
       <div class="admin-container">
         <h1>Configuración de Administrador</h1>
-
         <div class="admin-section">
-          <h2>Crear Nueva Etiqueta (Tag)</h2>
-          <form id="createTagForm" class="form-admin" novalidate>
-            <div class="input-group">
-              <label for="tagName">Nombre de la Etiqueta (sin espacios):</label>
-              <input
-                type="text"
-                id="tagName"
-                name="name"
-                placeholder="Ej: matematicas"
-                required
-              />
-            </div>
-            <div class="input-group">
-              <label for="tagDescription">Descripción:</label>
-              <textarea
-                id="tagDescription"
-                name="description"
-                rows="3"
-                placeholder="Una breve descripción de la etiqueta..."
-              ></textarea>
-            </div>
-            <button type="submit" class="login-button secondary">
-              Crear Tag
-            </button>
-            <p id="tag-error-message" class="error-text"></p>
-            <p
-              id="tag-success-message"
-              class="error-text"
-              style="color: #28a745"
-            ></p>
-          </form>
+          <h2>Gestión de Asignaturas (Tags)</h2>
+          <p>
+            Las asignaturas ahora son fijas y se gestionan desde el código. No
+            se pueden crear o eliminar desde esta interfaz :).
+          </p>
         </div>
       </div>
     </div>
 
-    <script type="module" src="./js/services/tag.service.js"></script>
-    <script type="module" src="./js/admin/tag.handler.js"></script>
     <script type="module" src="./js/admin.js"></script>
   </body>
 </html>

@@ -1,61 +1,93 @@
-// File: ramzlu/schobrain/Schobrain-dev-lu/public/js/article/article.handler.js
+import {
+  postQuestion,
+  fetchAllArticles,
+  fetchArticlesByTag,
+  deleteArticle,
+} from "../services/article.service.js";
+import { fetchAllTags } from "../services/tag.service.js";
+import { loadArticles, populateTagSelector } from "./article.ui.js";
+import { showSuccessToast, showErrorToast } from "../utils/notifications.js";
 
-import { postQuestion, fetchAllArticles } from "../services/article.service.js";
-import { hideAskQuestionModal, loadArticles } from "./article.ui.js";
-
-// Llama a la API para obtener y mostrar todos los artículos al cargar la página
-export const initializeArticleFeed = async () => {
+export const initializeArticleFeed = async (currentUser) => {
   try {
     const articles = await fetchAllArticles();
-    loadArticles(articles); // Cargar todos los artículos
+    loadArticles(articles, currentUser);
+    const tags = await fetchAllTags();
+    populateTagSelector(tags);
   } catch (error) {
-    console.error("Error al cargar el feed de artículos:", error);
-    // Mostrar un mensaje de error en el feed si falla
-    const questionsList = document.getElementById("questions-list");
-    if (questionsList) {
-      questionsList.innerHTML = `<p class="error-text visible" style="color: #ff5c5c; text-align: center;">Error al cargar las preguntas: ${error.message}</p>`;
-    }
+    console.error("Error al cargar el feed o tags:", error);
+    showErrorToast(`Error al cargar las preguntas: ${error.message}`);
   }
 };
 
-// Maneja el envío del formulario para crear un nuevo artículo (pregunta)
 export const handlePostQuestion = async (event) => {
   event.preventDefault();
   const form = event.target;
   const content = form["content"].value.trim();
-  const errorMessageElement = document.getElementById("question-error-message");
+  const tagId = form["tags"].value;
+  const imageFiles = form["imageFiles"].files;
 
-  errorMessageElement.classList.remove("visible");
-  errorMessageElement.textContent = "";
-
-  if (!content) {
-    errorMessageElement.textContent =
-      "El contenido de la pregunta no puede estar vacío.";
-    errorMessageElement.classList.add("visible");
+  // Validaciones del frontend con toasts
+  if (!content || content.length < 10) {
+    showErrorToast("El contenido debe tener al menos 10 caracteres.");
     return;
   }
-
-  // Validación de longitud mínima (aunque el backend también lo hace)
-  if (content.length < 10) {
-    errorMessageElement.textContent =
-      "El contenido debe tener al menos 10 caracteres.";
-    errorMessageElement.classList.add("visible");
+  if (!tagId) {
+    showErrorToast("Por favor, selecciona una asignatura.");
+    return;
+  }
+  if (imageFiles.length > 5) {
+    showErrorToast("Puedes subir un máximo de 5 imágenes.");
     return;
   }
 
   try {
-    // 1. Publica la pregunta
-    await postQuestion(content);
+    const formData = new FormData();
+    formData.append("content", content);
+    formData.append("tags", tagId);
 
-    // 2. Vuelve a cargar el feed para mostrar la nueva pregunta
-    await initializeArticleFeed();
+    if (imageFiles.length > 0) {
+      for (const file of imageFiles) {
+        formData.append("imageFiles", file);
+      }
+    }
 
-    hideAskQuestionModal();
-    alert("¡Tu pregunta ha sido publicada!");
+    await postQuestion(formData);
+
+    // ✅ CAMBIO 1: Mostrar notificación de éxito y esperar antes de recargar.
+    showSuccessToast("¡Pregunta publicada con éxito!");
+
+    setTimeout(() => {
+      window.location.reload();
+    }, 900); // 1.5 segundos de espera para que se vea el toast
   } catch (error) {
     console.error("Error al publicar la pregunta:", error);
-    // Mostrar error de validación del backend
-    errorMessageElement.textContent = error.message;
-    errorMessageElement.classList.add("visible");
+    showErrorToast(error.message);
+  }
+};
+
+export const filterArticlesByTag = async (tagName, currentUser) => {
+  try {
+    let articles =
+      tagName === "all"
+        ? await fetchAllArticles()
+        : await fetchArticlesByTag(tagName);
+    loadArticles(articles, currentUser);
+  } catch (error) {
+    console.error(`Error al filtrar por ${tagName}:`, error);
+    showErrorToast(`Error al filtrar: ${error.message}`);
+  }
+};
+
+export const handleDeleteArticle = async (articleId) => {
+  try {
+    await deleteArticle(articleId);
+    showSuccessToast("Pregunta eliminada correctamente.");
+    setTimeout(() => {
+      window.location.reload();
+    }, 900);
+  } catch (error) {
+    console.error("Error al eliminar la pregunta:", error);
+    showErrorToast(error.message);
   }
 };

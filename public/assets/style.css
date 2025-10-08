@@ -9,13 +9,12 @@
 
 body {
   font-family: "Outfit", sans-serif;
-  background-color: #12121c;
+  background-color: #f0f2f5;
   color: #e0e0e0;
   display: flex;
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  /* overflow: hidden; <-- ELIMINAR ESTA LÍNEA */
   /* padding: 2rem; */
 }
 
@@ -231,7 +230,6 @@ body {
   color: #ff5c5c;
   font-size: 0.9rem;
   text-align: center;
-  margin-top: 1rem;
   min-height: 1.2rem; /* Reserva espacio para el error */
   opacity: 0;
   transition: opacity 0.3s ease;
@@ -243,7 +241,7 @@ body {
 
 /* ==========================================================================
    6. FOOTER Y DISEÑO RESPONSIVE
-   =================================================  ========================= */
+   ========================================================================== */
 .copyright {
   position: absolute;
   bottom: 1rem;
@@ -288,7 +286,7 @@ body {
   min-height: 100vh;
   width: 100%;
   padding: 0; /* Elimina el padding del body si lo tienes aquí */
-  background-color: #12121c; /* Fondo general */
+  background-color: #f3f3ff;
 }
 
 /* --- HEADER --- */
@@ -318,31 +316,39 @@ body {
 .search-bar {
   display: flex;
   align-items: center;
-  background-color: #dcdcf7; /* Fondo de la barra de búsqueda */
+  background-color: #e9ecef; /* Un gris más neutro y profesional */
   border-radius: 25px;
   padding: 0.5rem 1rem;
-  max-width: 500px; /* Ancho máximo para la barra */
+  max-width: 500px;
   width: 100%;
+  border: 1px solid transparent; /* Borde inicial sutil */
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Efecto visual cuando haces clic dentro de la barra */
+.search-bar:focus-within {
+  border-color: #c1c9d2;
+  box-shadow: 0 0 8px rgba(37, 117, 252, 0.2);
 }
 
 .search-bar input {
   border: none;
   background: transparent;
-  color: #e0e0e0;
+  color: #343a40; /* Texto oscuro para mejor legibilidad */
   font-size: 1rem;
   padding: 0.3rem;
   flex-grow: 1;
-  /* outline: none; */
+  outline: none; /* Quitamos el outline por defecto */
 }
 
 .search-bar input::placeholder {
-  color: #808090;
+  color: #6c757d; /* Placeholder un poco más oscuro */
 }
 
 .search-button {
   background: transparent;
   border: none;
-  color: #6f81e4;
+  color: #6c757d; /* Icono de lupa gris */
   cursor: pointer;
   font-size: 1rem;
   margin-left: 0.5rem;
@@ -350,10 +356,11 @@ body {
 }
 
 .search-button:hover {
-  color: #6a11cb; /* Color de hover para el botón de búsqueda */
+  color: #2575fc; /* Color azul al pasar el ratón */
 }
 
 .header-right {
+  position: relative; /* Clave para posicionar el menú desplegable */
   display: flex;
   align-items: center;
   gap: 1.5rem;
@@ -362,7 +369,7 @@ body {
 .welcome-user {
   font-size: 1rem;
   font: normal bold 1rem/1.5rem "Outfit", sans-serif;
-  color: #5b5bf0;
+  color: #5b5bf0 !important;
 }
 
 .menu-toggle {
@@ -386,23 +393,23 @@ body {
   flex-grow: 1;
   padding: 1.5rem 2rem;
   gap: 2rem;
+  /* ---> NUEVO COLOR DE FONDO PARA EL ÁREA DE CONTENIDO <--- */
+  background-color: #f0f2f5;
 }
 
-/* --- SIDEBAR (ASIGNATURAS) --- */
+/* --- SIDEBARS (IZQUIERDA Y DERECHA) --- */
 .sidebar {
   flex-basis: 250px; /* Ancho fijo para el sidebar */
   flex-shrink: 0;
-  background-color: #1a1a2e;
+  background-color: #ffffff; /* Fondo blanco para las barras laterales */
   border-radius: 10px;
   padding: 1.5rem;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  color: #333; /* Texto oscuro para contraste */
 }
 
 .sidebar h2 {
-  font-size: 1.3rem;
-  font-weight: 700;
-  margin-bottom: 1.5rem;
-  color: #ffffff;
+  color: #111; /* Títulos más oscuros */
 }
 
 .filter-list {
@@ -418,7 +425,7 @@ body {
   align-items: center;
   gap: 1rem;
   text-decoration: none;
-  color: #c0c0d0;
+  color: #555; /* Enlaces más oscuros */
   font-size: 1rem;
   padding: 0.6rem 0.8rem;
   border-radius: 8px;
@@ -427,19 +434,26 @@ body {
 
 .filter-list a i {
   font-size: 1.1rem;
-  color: #a0a0b0; /* Color de icono por defecto */
+  color: #888;
 }
 
 .filter-list a:hover {
-  background-color: rgba(37, 117, 252, 0.2); /* Fondo más claro en hover */
-  color: #2575fc; /* Color del texto en hover */
+  background-color: #e9ecef;
+  color: #007bff;
 }
 
 .filter-list a:hover i {
-  color: #2575fc; /* Color del icono en hover */
+  color: #007bff;
 }
 
-/* --- SECCIÓN DE PREGUNTAS (MAIN CONTENT) --- */
+/* --- Estilos para la nueva barra de contribuyentes --- */
+
+.contributors-list p {
+  color: #888;
+  font-style: italic;
+}
+
+/* --- SECCIÓN DE PREGUNTAS (Contenido central) --- */
 .question-feed {
   flex-grow: 1;
   display: flex;
@@ -512,6 +526,39 @@ body {
   transform: translateY(-2px);
 }
 
+/* --- ESTILOS PARA EL MENÚ DE USUARIO DESPLEGABLE --- */
+
+/* --- Estilos para el menú de usuario desplegable --- */
+.user-menu {
+  display: none; /* Oculto por defecto */
+  position: absolute;
+  top: calc(100% + 10px); /* Posición: Debajo del header + 10px de espacio */
+  right: 0;
+  background-color: #1a1a2e;
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+  width: 180px;
+  overflow: hidden;
+  z-index: 1000;
+}
+
+.user-menu.visible {
+  display: block; /* Se muestra con JavaScript */
+}
+
+.user-menu a {
+  display: block;
+  padding: 0.8rem 1.2rem;
+  color: #e0e0e0;
+  text-decoration: none; /* Elimina el subrayado */
+  transition: background-color 0.2s ease-in-out;
+}
+
+.user-menu a:hover {
+  background-color: #2575fc;
+  color: #ffffff;
+}
+
 /* ==========================================================================
    8. MEDIA QUERIES (RESPONSIVE DESIGN) para INDEX
    ========================================================================== */
@@ -573,121 +620,7 @@ body {
   }
 }
 /* ==========================================================================
-   7. ESTILOS PARA LA PÁGINA PRINCIPAL (INDEX.HTML)
-   ========================================================================== */
-
-/* --- Contenedor principal y fondo --- */
-.main-container {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-  width: 100%;
-  background-color: #12121c;
-}
-
-/* --- ÁREA DE CONTENIDO PRINCIPAL (sidebar + feed + contributors) --- */
-.content-area {
-  display: flex;
-  flex-grow: 1;
-  padding: 1.5rem 2rem;
-  gap: 2rem;
-  /* ---> NUEVO COLOR DE FONDO PARA EL ÁREA DE CONTENIDO <--- */
-  background-color: #f0f2f5;
-}
-
-/* --- SIDEBARS (IZQUIERDA Y DERECHA) --- */
-.sidebar {
-  flex-basis: 250px;
-  flex-shrink: 0;
-  background-color: #ffffff; /* Fondo blanco para las barras laterales */
-  border-radius: 10px;
-  padding: 1.5rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-  color: #333; /* Texto oscuro para contraste */
-}
-
-.sidebar h2 {
-  color: #111; /* Títulos más oscuros */
-}
-
-.filter-list a {
-  color: #555; /* Enlaces más oscuros */
-}
-
-.filter-list a i {
-  color: #888;
-}
-
-.filter-list a:hover {
-  background-color: #e9ecef;
-  color: #007bff;
-}
-
-.filter-list a:hover i {
-  color: #007bff;
-}
-
-/* --- Estilos para la nueva barra de contribuyentes --- */
-/* .contributors-sidebar { */
-/* Hereda los estilos de .sidebar */
-/* } */
-
-.contributors-list p {
-  color: #888;
-  font-style: italic;
-}
-
-/* --- SECCIÓN DE PREGUNTAS (Contenido central) --- */
-.question-feed {
-  flex-grow: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
-}
-/* --- ESTILOS PARA EL MENÚ DE USUARIO DESPLEGABLE --- */
-
-/* Posicionamos el contenedor para el menú */
-/* --- Estilos para la sección derecha del header --- */
-.header-right {
-  position: relative; /* Clave para posicionar el menú desplegable */
-  display: flex;
-  align-items: center;
-  gap: 1.5rem;
-}
-
-/* --- Estilos para el menú de usuario desplegable --- */
-.user-menu {
-  display: none; /* Oculto por defecto */
-  position: absolute;
-  top: calc(100% + 10px); /* Posición: Debajo del header + 10px de espacio */
-  right: 0;
-  background-color: #1a1a2e;
-  border-radius: 8px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
-  width: 180px;
-  overflow: hidden;
-  z-index: 1000;
-}
-
-.user-menu.visible {
-  display: block; /* Se muestra con JavaScript */
-}
-
-.user-menu a {
-  display: block;
-  padding: 0.8rem 1.2rem;
-  color: #e0e0e0;
-  text-decoration: none; /* Elimina el subrayado */
-  transition: background-color 0.2s ease-in-out;
-}
-
-.user-menu a:hover {
-  background-color: #2575fc;
-  color: #ffffff;
-}
-
-/* ==========================================================================
-   9. ESTILOS PARA MODAL PREGUNTA 
+   9. ESTILOS PARA MODAL Y ARTICLE CARD
    ========================================================================== */
 .modal-overlay {
   position: fixed; /* Se superpone a todo */
@@ -783,7 +716,9 @@ body {
 }
 
 .question-modal-content .input-group input,
-.question-modal-content .input-group textarea {
+.question-modal-content .input-group textarea,
+.question-modal-content .input-group select {
+  /* ⬅️ AÑADIDO SELECT */
   background: #f8f8f8;
   color: #333;
   border: 1px solid #ccc;
@@ -792,10 +727,13 @@ body {
   background: linear-gradient(to right, #ffffff, #ffffff) padding-box,
     none border-box;
   border: 1px solid #ccc;
+  min-height: 51px; /* Consistencia con otros inputs */
 }
 
 .question-modal-content .input-group input:focus,
-.question-modal-content .input-group textarea:focus {
+.question-modal-content .input-group textarea:focus,
+.question-modal-content .input-group select:focus {
+  /* ⬅️ AÑADIDO SELECT */
   outline: none;
   box-shadow: 0 0 5px rgba(37, 117, 252, 0.5);
   border: 1px solid #2575fc;
@@ -814,7 +752,7 @@ body {
   border-radius: 10px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
   color: #333;
-  border-left: 5px solid #2575fc;
+  border-left: none !important;
   margin-bottom: 1.5rem;
 }
 
@@ -840,8 +778,8 @@ body {
 .article-content {
   font-size: 1rem;
   line-height: 1.6;
-  margin-bottom: 1rem;
-  white-space: pre-wrap;
+  margin-bottom: 0.5rem; /* Ajustado para dejar espacio al footer */
+  /* white-space: pre-wrap; */
 }
 
 .article-actions a {
@@ -853,4 +791,899 @@ body {
 
 .article-actions a:hover {
   color: #6a11cb;
+}
+
+/* --- Footer de Tarjeta y Tags --- */
+
+.article-footer-actions {
+  display: flex;
+  flex-direction: column; /* Apila los elementos verticalmente */
+  gap: 1rem; /* Espacio entre la fila de tags/links y la fila de votos */
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid #f0f0f0; /* Línea separadora */
+}
+
+.footer-top-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.article-tags-container {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.article-tags-container {
+  /* Posición abajo a la izquierda dentro del footer */
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.article-tag {
+  display: inline-block;
+  padding: 0.3rem 0.8rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: capitalize;
+  color: white;
+}
+
+/* --- Colores de Tags --- */
+
+.tag-blue {
+  background-color: #2575fc; /* Matemáticas */
+}
+.tag-green {
+  background-color: #28a745; /* Lengua */
+}
+.tag-red {
+  background-color: #dc3545; /* Ciencias */
+}
+.tag-purple {
+  background-color: #6a11cb; /* Programación */
+}
+.tag-orange {
+  background-color: #ff8c00; /* Historia */
+}
+.tag-teal {
+  background-color: #008080; /* Inglés */
+}
+.tag-violet {
+  background-color: #8f00ff; /* Castellano */
+}
+.tag-cyan {
+  background-color: #00bcd4; /* Estadísticas */
+}
+.tag-brown {
+  background-color: #a52a2a;
+}
+.tag-earth {
+  background-color: #8b4513;
+}
+.tag-navy {
+  background-color: #000080;
+}
+.tag-olive {
+  background-color: #808000;
+}
+.tag-sky {
+  background-color: #87ceeb;
+}
+.tag-lime {
+  background-color: #00ff00;
+}
+.tag-pink {
+  background-color: #ffc0cb;
+}
+.tag-leaf {
+  background-color: #228b22;
+}
+.tag-steel {
+  background-color: #4682b4;
+}
+.tag-electric {
+  background-color: #00ffff;
+  color: #333;
+} /* Color claro, texto oscuro */
+.tag-gold {
+  background-color: #ffd700;
+  color: #333;
+} /* Color claro, texto oscuro */
+.tag-indigo {
+  background-color: #4b0082;
+}
+.tag-salmon {
+  background-color: #fa8072;
+}
+.tag-grass {
+  background-color: #7cfc00;
+  color: #333;
+} /* Color claro, texto oscuro */
+.tag-maroon {
+  background-color: #800000;
+}
+.tag-coral {
+  background-color: #ff7f50;
+}
+.tag-lightblue {
+  background-color: #add8e6;
+  color: #333;
+} /* Color claro, texto oscuro */
+.tag-darkred {
+  background-color: #8b0000;
+}
+.tag-sand {
+  background-color: #f4a460;
+}
+.tag-fire {
+  background-color: #ff4500;
+}
+.tag-night {
+  background-color: #191970;
+}
+.tag-gray {
+  background-color: #6c757d; /* Default/Otros */
+}
+
+/* ==========================================================================
+   10. ESTILOS ESPECÍFICOS PARA EL PANEL DE ADMINISTRACIÓN
+   ========================================================================== */
+
+/* Ajustes para el contenedor principal a ancho completo y fondo oscuro */
+.admin-container {
+  flex-grow: 1;
+  padding: 3rem 2rem;
+  max-width: none !important; /* Elimina la restricción de ancho */
+  margin: 0 !important; /* Elimina los márgenes laterales */
+  background-color: #12121c; /* Fondo que coincide con el body */
+  color: #e0e0e0;
+}
+#existing-tags-list {
+  max-height: 400px; /* Define la altura máxima antes de que aparezca el scroll */
+  overflow-y: auto; /* Habilita la barra de desplazamiento vertical si el contenido excede el max-height */
+  padding-right: 15px; /* Añade un pequeño padding para que el scroll no se pegue al borde de la tarjeta */
+}
+/* ⬅️ INICIO ESTILOS DE BARRA DE SCROLL (WebKit) ⬅️ */
+
+#existing-tags-list::-webkit-scrollbar {
+  width: 8px; /* Ancho total de la barra */
+}
+
+#existing-tags-list::-webkit-scrollbar-track {
+  background: #f1f1f1; /* Color de fondo de la pista de scroll */
+  border-radius: 10px;
+}
+
+#existing-tags-list::-webkit-scrollbar-thumb {
+  background: #6a11cb; /* Color del deslizador (thumb) */
+  border-radius: 10px;
+}
+
+#existing-tags-list::-webkit-scrollbar-thumb:hover {
+  background: #2575fc; /* Color al pasar el ratón (un poco de azul para el hover) */
+}
+
+/* ⬅️ FIN ESTILOS DE BARRA DE SCROLL ⬅️ */
+
+.admin-container h1 {
+  color: #e0e0e0;
+  border-bottom-color: #2575fc;
+}
+
+/* Diseño de dos columnas para las secciones de tags */
+.tags-management-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* Dos columnas de igual ancho */
+  gap: 2rem; /* Espacio entre las columnas */
+  align-items: flex-start; /* Alinea las secciones en la parte superior */
+}
+
+/* Estilos de las secciones (card) en el panel de admin */
+.admin-section {
+  background-color: #ffffff; /* Fondo blanco para las secciones (como en el Login) */
+  color: #333; /* Texto oscuro para el interior de la sección */
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  margin-bottom: 2rem;
+}
+
+.admin-section h2 {
+  color: #6a11cb; /* Título morado */
+  margin-bottom: 1.5rem;
+}
+
+/* Estilos de formulario e inputs dentro de la sección Admin */
+.form-admin .input-group label {
+  color: #333; /* Etiquetas oscuras */
+}
+
+.form-admin .input-group input,
+.form-admin .input-group textarea {
+  background: #f8f8f8;
+  color: #333;
+  border: 1px solid #ccc;
+  padding: 0.8rem 1rem;
+  width: 100%;
+  margin-top: 0.5rem;
+  border-radius: 6px;
+}
+
+.form-admin button {
+  background-color: #6a11cb; /* Botón con el color morado principal */
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.form-admin button:hover {
+  background-color: #8c42ed;
+}
+
+/* --- Estilos de las Tarjetas de Tags existentes --- */
+
+.admin-section .tag-card {
+  display: flex;
+  justify-content: space-between; /* Añadido para espaciar el texto del botón */
+  align-items: center;
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid #eee;
+  background-color: #f8f8f8;
+  border-radius: 8px;
+  margin-bottom: 0.8rem;
+  transition: background-color 0.2s ease;
+}
+
+.admin-section .tag-card:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+}
+
+.admin-section .tag-card:hover {
+  background-color: #e9ecef; /* Hover en tarjetas de tag */
+}
+
+.tag-name {
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: #1a1a2e; /* Nombre de tag oscuro */
+}
+
+.tag-description {
+  font-size: 0.9rem;
+  color: #6c757d; /* Descripción de tag gris */
+  margin-top: 0.2rem;
+}
+
+/* Media query para hacer el diseño responsivo en pantallas más pequeñas */
+@media (max-width: 992px) {
+  .tags-management-grid {
+    grid-template-columns: 1fr; /* Una sola columna en pantallas pequeñas */
+  }
+}
+.tag-actions {
+  /* Contenedor de botones (si agregamos más) */
+  display: flex;
+  gap: 10px;
+}
+
+.delete-tag-btn {
+  background: none;
+  border: none;
+  color: #dc3545; /* Rojo de peligro */
+  cursor: pointer;
+  font-size: 1.1rem;
+  padding: 5px;
+  border-radius: 5px;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.delete-tag-btn:hover {
+  background-color: rgba(220, 53, 69, 0.1);
+  color: #c82333;
+}
+/* ... (omitted existing styles) */
+
+/* --- Estilos para las Tarjetas de Pregunta (Article Card) --- */
+.article-card {
+  background-color: #ffffff;
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  color: #333;
+  border-left: 5px solid #2575fc;
+  margin-bottom: 1.5rem;
+}
+
+/* ⬅️ NUEVO: Estilos para la imagen adjunta */
+.article-image-container {
+  margin: 1rem 0;
+  max-height: 400px; /* Limitar altura del contenedor */
+  overflow: hidden; /* Ocultar partes de la imagen si excede el max-height */
+  border-radius: 8px;
+}
+
+.article-image {
+  width: 100%; /* La imagen ocupa todo el ancho del contenedor */
+  height: auto;
+  object-fit: cover; /* Asegura que la imagen cubra el área sin distorsionarse */
+  display: block;
+}
+
+/* NUEVOS ESTILOS PARA LA IMAGEN ADJUNTA EN LA TARJETA DE ARTÍCULO  */
+
+.article-image-container {
+  /* Contenedor que limita el espacio de la imagen */
+  margin: 1.5rem 0;
+  width: 100%;
+  max-height: 450px; /* Altura máxima razonable para el feed */
+  overflow: hidden; /* Asegura que no se desborde si la imagen es muy grande */
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  display: flex;
+  justify-content: center; /* Centra la imagen si es más pequeña que el contenedor */
+  align-items: center;
+  background-color: #f0f2f5; /* Fondo ligero para la zona de la imagen */
+}
+
+.article-image {
+  /* La imagen real se adapta */
+  max-width: 100%; /* CRÍTICO: Asegura que nunca exceda el ancho de la tarjeta */
+  height: auto; /* Mantiene la proporción */
+  max-height: 450px; /* La imagen no superará la altura máxima del contenedor */
+  display: block;
+  /* CRÍTICO: Ajusta la imagen dentro del contenedor sin recortarla, manteniendo su relación de aspecto */
+  object-fit: contain;
+  border-radius: 8px;
+}
+/* ==========================================================================
+   11. ESTILOS PARA EL MODAL DE PREGUNTA PERSONALIZADO (AÑADIDOS)
+   ========================================================================== */
+
+/* Se usa .custom-modal para que estos estilos solo apliquen al nuevo modal */
+.question-modal-content.custom-modal {
+  width: 650px;
+  max-width: 90%;
+  padding: 0; /* Anula el padding del .modal-content general */
+  border-radius: 15px;
+  overflow: hidden; /* Necesario para que el border-radius del header funcione */
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  text-align: left; /* Anula el text-align: center del .modal-content general */
+}
+
+.custom-modal .modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+  padding: 1.2rem 2rem;
+  color: white;
+}
+
+.custom-modal .modal-header h2 {
+  margin: 0;
+  color: white;
+  font-size: 1.3em;
+  font-weight: 700;
+}
+
+.close-modal-button {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 1.5em;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.close-modal-button:hover {
+  transform: rotate(90deg);
+}
+
+.custom-modal form {
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* Anulamos el margin-bottom del .input-group general dentro de nuestro form */
+.custom-modal form .input-group {
+  position: relative;
+  margin-bottom: 0;
+}
+
+.custom-modal .input-group label {
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 0.6rem;
+  display: block;
+  font-size: 0.95em;
+}
+
+.custom-modal textarea#question-content {
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 1rem 1.2rem;
+  font-size: 1em;
+  color: #333;
+  background-color: #f8faff;
+  resize: vertical;
+  min-height: 120px;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.custom-modal textarea#question-content:focus {
+  border-color: #6a11cb;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.08),
+    0 0 0 3px rgba(106, 17, 203, 0.2);
+  outline: none;
+}
+
+.custom-modal .custom-select {
+  width: 100%;
+  padding: 0.8rem 1.2rem;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  background-color: #f8faff;
+  font-size: 1em;
+  color: #333;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%236a11cb'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  background-size: 1.2em;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.custom-modal .custom-select:focus {
+  border-color: #6a11cb;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.08),
+    0 0 0 3px rgba(106, 17, 203, 0.2);
+  outline: none;
+}
+
+.file-input-group {
+  display: flex;
+  align-items: center;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  background-color: #f8faff;
+  padding: 0.5rem;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.file-input-group:focus-within {
+  border-color: #6a11cb;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.08),
+    0 0 0 3px rgba(106, 17, 203, 0.2);
+}
+
+.file-input-label {
+  background-color: #e9ecef;
+  color: #495057;
+  padding: 0.7rem 1.2rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s, color 0.2s;
+  white-space: nowrap;
+  margin-right: 1rem;
+  font-weight: 600;
+}
+
+.file-input-label:hover {
+  background-color: #d8dee3;
+  color: #212529;
+}
+
+.file-name-display {
+  flex-grow: 1;
+  color: #6c757d;
+  font-size: 0.95em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.hidden-file-input {
+  display: none;
+}
+
+.file-size-info {
+  font-size: 0.8em;
+  color: #999;
+  text-align: right;
+  margin-top: -0.8rem;
+  padding-right: 0.5rem;
+}
+
+.custom-modal .modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.custom-cancel-button {
+  background-color: #e9ecef;
+  color: #495057;
+  border: none;
+  padding: 0.8rem 1.5rem;
+  border-radius: 8px;
+  font-size: 1em;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.custom-cancel-button:hover {
+  background-color: #d8dee3;
+  color: #212529;
+}
+
+.custom-submit-button {
+  background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+  color: white;
+  border: none;
+  padding: 0.8rem 1.5rem;
+  border-radius: 8px;
+  font-size: 1em;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s, transform 0.2s;
+}
+
+.custom-submit-button:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+.custom-submit-button:active {
+  opacity: 0.8;
+  transform: translateY(0);
+}
+/* Reduce la altura mínima y el padding del área de texto */
+.custom-modal textarea#question-content {
+  min-height: 90px; /* Antes era 120px */
+}
+
+/* Reduce el espaciado general dentro del formulario */
+.custom-modal form {
+  padding-top: 1.5rem; /* Antes era 2rem */
+  padding-bottom: 1.5rem; /* Antes era 2rem */
+  gap: 1.2rem; /* Antes era 1.5rem */
+}
+
+/* Reduce un poco el padding del header del modal */
+.custom-modal .modal-header {
+  padding-top: 1rem; /* Antes era 1.2rem */
+  padding-bottom: 1rem; /* Antes era 1.2rem */
+}
+
+/* Reduce el padding de los botones de acción */
+.custom-cancel-button,
+.custom-submit-button {
+  padding-top: 0.7rem; /* Antes era 0.8rem */
+  padding-bottom: 0.7rem; /* Antes era 0.8rem */
+}
+
+/* Reduce el espaciado sobre los botones */
+.custom-modal .modal-actions {
+  margin-top: 0.5rem; /* Antes era 1rem */
+}
+/* ==========================================================================
+   13. ESTILOS PARA LA ETIQUETA DE ADMINISTRADOR
+   ========================================================================== */
+
+.author-info {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem; /* Espacio entre el nombre y la etiqueta */
+}
+
+.admin-badge {
+  background-color: #6a11cb; /* Un color morado que combine con tu paleta */
+  color: #ffffff;
+  padding: 0.2rem 0.6rem;
+  border-radius: 12px; /* Bordes redondeados */
+  font-size: 0.6rem; /* Tamaño de letra pequeño */
+  font-weight: 600;
+  text-transform: uppercase; /* Opcional: para que se vea más como una etiqueta */
+  letter-spacing: 0.5px; /* Opcional: ligero espaciado de letras */
+}
+/* ==========================================================================
+   15. ESTILOS PARA LA ETIQUETA DE AUTOR ("TÚ")
+   ========================================================================== */
+
+.author-badge {
+  background-color: #2575fc; /* Un color azul para diferenciarlo del admin */
+  color: #ffffff;
+  padding: 0.2rem 0.6rem;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+/* ==========================================================================
+   14. ESTILOS PARA MENÚ DE OPCIONES DE LA PREGUNTA
+   ========================================================================== */
+
+.article-card-header {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.header-right-controls {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.article-options-menu {
+  position: relative;
+}
+
+.options-toggle-btn {
+  background: none;
+  border: none;
+  color: #808090;
+  cursor: pointer;
+  padding: 0.3rem 0.5rem;
+  border-radius: 50%;
+  font-size: 1rem;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.options-toggle-btn:hover {
+  background-color: #f0f2f5;
+  color: #333;
+}
+
+.options-dropdown {
+  display: none;
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+  z-index: 5;
+  overflow: hidden;
+  width: 150px;
+}
+
+.options-dropdown.visible {
+  display: block;
+}
+
+.options-dropdown .dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  background: none;
+  border: none;
+  width: 100%;
+  text-align: left;
+  padding: 0.8rem 1rem;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.options-dropdown .dropdown-item:hover {
+  background-color: #f0f2f5;
+}
+
+.options-dropdown .dropdown-item.delete-btn {
+  color: #dc3545;
+}
+.warning-text-deleteQuestion {
+  color: #dc3545;
+  font-size: 0.9rem;
+  margin-top: 0.4rem;
+  margin-bottom: 0.5rem;
+}
+/* ... (todo tu CSS existente va aquí arriba) ... */
+
+/* ==========================================================================
+   16. ESTILOS PARA LA GALERÍA DE IMÁGENES (EN CUADRÍCULA)
+   ========================================================================== */
+
+.article-images-gallery {
+  display: grid;
+  /* Crea columnas automáticas de un tamaño mínimo de 150px */
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 10px; /* Espacio entre las imágenes */
+  margin-top: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.article-image-link {
+  display: block;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.article-image-link:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+}
+
+.article-image {
+  width: 100%;
+  height: 120px; /* Altura fija para todas las miniaturas */
+  object-fit: cover; /* Asegura que la imagen cubra el espacio sin deformarse */
+  display: block;
+}
+
+/* ==========================================================================
+   17. ESTILOS PARA EL PANEL DE SÍMBOLOS MATEMÁTICOS
+   ========================================================================== */
+
+.textarea-toolbar {
+  display: flex;
+  justify-content: flex-start;
+  margin-top: 0.5rem;
+}
+
+.toolbar-btn {
+  background: none;
+  border: 1px solid transparent;
+  border-radius: 5px;
+  padding: 0.2rem 0.5rem;
+  font-size: 1rem;
+  color: #888;
+  cursor: pointer;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.toolbar-btn:hover {
+  background-color: #e9ecef;
+  color: #333;
+}
+
+.symbols-panel {
+  display: none;
+
+  /* ✅ CAMBIO CLAVE: Posicionamiento absoluto para que no afecte el layout */
+  position: absolute;
+  top: 100%; /* Se posiciona justo debajo de su contenedor padre (el input-group) */
+  left: 0;
+  width: 100%;
+  z-index: 10; /* Se asegura de que esté por encima de otros elementos */
+
+  grid-template-columns: repeat(auto-fill, minmax(38px, 1fr));
+  gap: 6px;
+  background-color: #f8faff;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 0.8rem;
+  margin-top: 0.5rem;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Sombra para que destaque */
+
+  max-height: 150px;
+  overflow-y: auto;
+}
+
+.symbols-panel.visible {
+  display: grid;
+}
+
+.symbol-char {
+  background-color: #fff;
+  border: 1px solid #dcdfe6;
+  color: #000;
+  border-radius: 5px;
+  padding: 0.5rem 0;
+  text-align: center;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s, transform 0.1s;
+}
+
+.symbol-char:hover {
+  background-color: #e9ecef;
+  border-color: #b0b6be;
+}
+
+.symbol-char:active {
+  transform: scale(0.95);
+}
+/* ... (todo tu CSS existente va aquí arriba) ... */
+
+/* ==========================================================================
+   18. ESTILOS PARA EL VISOR DE IMÁGENES (LIGHTBOX)
+   ========================================================================== */
+
+/* Mejora el overlay existente para añadir el desenfoque */
+.modal-overlay.visible {
+  display: flex;
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+}
+
+/* Contenedor de la imagen previsualizada */
+#image-preview-modal .preview-image {
+  max-width: 90vw; /* Ancho máximo del 90% de la ventana */
+  max-height: 90vh; /* Altura máxima del 90% de la ventana */
+  border-radius: 10px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  object-fit: contain; /* Asegura que la imagen completa sea visible */
+}
+
+/* Botón para cerrar el visor */
+#image-preview-modal .close-preview-btn {
+  position: absolute;
+  top: 20px;
+  right: 30px;
+  font-size: 3rem;
+  font-weight: bold;
+  color: white;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+  text-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+}
+
+#image-preview-modal .close-preview-btn:hover {
+  transform: scale(1.1);
+}
+/* ... (todo tu CSS existente va aquí arriba) ... */
+
+/* ==========================================================================
+   19. ESTILOS PARA EL SISTEMA DE VOTACIÓN
+   ========================================================================== */
+
+.vote-controls {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem; /* Espacio entre los grupos de like y dislike */
+}
+
+.vote-group {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.vote-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #888; /* Color por defecto */
+  font-size: 1.2rem;
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.vote-btn:hover {
+  color: #555;
+  transform: scale(1.1);
+}
+
+.vote-btn.active.like {
+  color: #2575fc; /* Color azul para like activado */
+}
+
+.vote-btn.active.dislike {
+  color: #e63946; /* Color rojo para dislike activado */
+}
+
+.vote-count {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #555;
 }

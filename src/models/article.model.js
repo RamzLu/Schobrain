@@ -15,7 +15,6 @@ const articleSchema = new Schema(
       enum: ["published", "archived"],
       default: "published",
     },
-    //* RELACIÓN 1:N con User
     author: {
       type: Types.ObjectId,
       ref: "User",
@@ -28,11 +27,35 @@ const articleSchema = new Schema(
         message: "El autor referenciado no existe.",
       },
     },
-    //* RELACIÓN N:M con Tag
     tags: {
       type: [Types.ObjectId],
       ref: "Tag",
     },
+    imageUrls: {
+      type: [String],
+      required: false,
+    },
+    // CAMPOS PARA VOTACIÓN
+    likes: {
+      type: Number,
+      default: 0,
+    },
+    dislikes: {
+      type: Number,
+      default: 0,
+    },
+    votedUp: [
+      {
+        type: Types.ObjectId,
+        ref: "User",
+      },
+    ],
+    votedDown: [
+      {
+        type: Types.ObjectId,
+        ref: "User",
+      },
+    ],
   },
   {
     versionKey: false,

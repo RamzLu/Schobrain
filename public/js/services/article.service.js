@@ -1,18 +1,9 @@
-// File: ramzlu/schobrain/Schobrain-dev-lu/public/js/services/article.service.js
-
 const API_URL = "/api/articles";
 
-/**
- * Publica una nueva pregunta (artículo sin título ni extracto).
- * @param {string} content - El contenido de la pregunta.
- * @returns {Promise<Object>} El artículo creado.
- */
-export const postQuestion = async (content) => {
+export const postQuestion = async (formData) => {
   const response = await fetch(API_URL, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
-    // Solo se envía el content; title y excerpt se manejan en el backend.
-    body: JSON.stringify({ content }),
+    body: formData,
   });
 
   const data = await response.json();
@@ -27,10 +18,6 @@ export const postQuestion = async (content) => {
   return data.data;
 };
 
-/**
- * Obtiene todos los artículos (preguntas) para el feed.
- * @returns {Promise<Array<Object>>} Lista de artículos.
- */
 export const fetchAllArticles = async () => {
   const response = await fetch(API_URL, {
     method: "GET",
@@ -42,4 +29,87 @@ export const fetchAllArticles = async () => {
     throw new Error(data.msg || "Error al obtener los artículos.");
   }
   return await response.json();
+};
+
+export const fetchArticleById = async (articleId) => {
+  const response = await fetch(`${API_URL}/${articleId}`, {
+    method: "GET",
+    headers: { "Content-Type": "application/json" },
+  });
+
+  if (!response.ok) {
+    const data = await response.json();
+    throw new Error(data.msg || "Error al obtener la pregunta.");
+  }
+  return await response.json();
+};
+
+/**
+ * Busca artículos que coincidan con un término de búsqueda.
+ * @param {string} query - El término a buscar.
+ * @returns {Promise<Array<Object>>} Lista de artículos encontrados.
+ */
+export const searchArticles = async (query) => {
+  const response = await fetch(
+    `${API_URL}/search?query=${encodeURIComponent(query)}`,
+    {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+    }
+  );
+
+  if (!response.ok) {
+    const data = await response.json();
+    throw new Error(data.msg || "Error al realizar la búsqueda.");
+  }
+  return await response.json();
+};
+
+export const fetchArticlesByTag = async (tagName) => {
+  const response = await fetch(`${API_URL}/tag/${tagName}`, {
+    method: "GET",
+    headers: { "Content-Type": "application/json" },
+  });
+
+  if (!response.ok) {
+    const data = await response.json();
+    throw new Error(data.msg || `Error al obtener artículos de ${tagName}.`);
+  }
+  return await response.json();
+};
+
+export const deleteArticle = async (articleId) => {
+  const response = await fetch(`${API_URL}/${articleId}`, {
+    method: "DELETE",
+  });
+
+  if (!response.ok) {
+    const data = await response.json();
+    throw new Error(
+      data.msg ||
+        "No tienes permiso para eliminar esta pregunta o ha ocurrido un error."
+    );
+  }
+
+  return await response.json();
+};
+
+/**
+ * Envía un voto (like/dislike) para un artículo.
+ * @param {string} articleId - El ID del artículo.
+ * @param {'like' | 'dislike'} voteType - El tipo de voto.
+ * @returns {Promise<Object>} Los contadores de votos actualizados.
+ */
+export const voteOnArticle = async (articleId, voteType) => {
+  const response = await fetch(`${API_URL}/${articleId}/vote`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ voteType }),
+  });
+
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data.msg || "Error al registrar el voto.");
+  }
+  return data.data;
 };

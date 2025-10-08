@@ -38,6 +38,27 @@ const commentSchema = new Schema(
         message: "El articulo referenciado no existe.",
       },
     },
+    //CAMPOS PARA VOTACIÓN
+    likes: {
+      type: Number,
+      default: 0,
+    },
+    dislikes: {
+      type: Number,
+      default: 0,
+    },
+    votedUp: [
+      {
+        type: Types.ObjectId,
+        ref: "User",
+      },
+    ],
+    votedDown: [
+      {
+        type: Types.ObjectId,
+        ref: "User",
+      },
+    ],
   },
   {
     versionKey: false,

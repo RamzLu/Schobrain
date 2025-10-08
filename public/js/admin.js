@@ -1,7 +1,4 @@
-// File: ramzlu/schobrain/Schobrain-dev-lu/public/js/admin.js
-
 import { verifyAuth } from "./services/auth.service.js";
-import { handleCreateTag } from "./admin/tag.handler.js";
 
 const initializeAdminPage = async () => {
   let authData;
@@ -26,13 +23,8 @@ const initializeAdminPage = async () => {
   } catch (error) {
     // verifyAuth ya redirige si falla el token, pero si falla por permisos
     console.error("Error de autenticación o permiso:", error);
+    window.location.href = "/login.html";
     return;
-  }
-
-  // 3. Inicializa los handlers del formulario de Tags
-  const createTagForm = document.getElementById("createTagForm");
-  if (createTagForm) {
-    createTagForm.addEventListener("submit", handleCreateTag);
   }
 };
 
