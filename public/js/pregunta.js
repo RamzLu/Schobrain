@@ -1,11 +1,11 @@
 import { verifyAuth } from "./services/auth.service.js";
 import { fetchArticleById } from "./services/article.service.js";
-import { postComment } from "./services/comment.service.js";
+import { postComment, deleteComment } from "./services/comment.service.js";
 import {
   renderArticleCard,
   initializeSymbolsPanel,
-} from "./article/article.ui.js"; // Importamos ambas funciones
-import { showErrorToast } from "./utils/notifications.js";
+} from "./article/article.ui.js";
+import { showSuccessToast, showErrorToast } from "./utils/notifications.js";
 import { initializeLightbox } from "./utils/lightbox.js";
 
 const formatRelativeTime = (dateString) => {
@@ -45,7 +45,7 @@ const renderMainQuestion = (article, currentUser) => {
   }
 };
 
-const renderComments = (comments) => {
+const renderComments = (comments, currentUser) => {
   const container = document.getElementById("comments-list");
   if (!container) return;
 
@@ -56,23 +56,52 @@ const renderComments = (comments) => {
   }
 
   container.innerHTML = comments
-    .map(
-      (comment) => `
+    .map((comment) => {
+      const canDelete =
+        currentUser.role === "admin" || currentUser.id === comment.author._id;
+
+      // ✅ INICIO DE LA LÓGICA PARA LAS ETIQUETAS
+      let statusBadges = "";
+      if (comment.author.role === "admin") {
+        statusBadges += `<span class="admin-badge">Administrador</span>`;
+      }
+      if (currentUser.id === comment.author._id) {
+        statusBadges += `<span class="author-badge">Tú</span>`;
+      }
+      // ✅ FIN DE LA LÓGICA
+
+      const optionsMenuHtml = canDelete
+        ? `<div class="comment-options-menu">
+             <button class="options-toggle-btn">
+               <i class="fas fa-ellipsis-v"></i>
+             </button>
+             <div class="options-dropdown">
+               <button class="dropdown-item delete-comment-btn" data-comment-id="${comment._id}">
+                 <i class="fas fa-trash-alt"></i> Eliminar
+               </button>
+             </div>
+           </div>`
+        : "";
+
+      return `
         <div class="comment-card" data-id="${comment._id}">
             <div class="comment-header">
-                <span class="comment-author">${
-                  comment.author.profile.firstName
-                } ${comment.author.profile.lastName}</span>
-                <span class="comment-date">${formatRelativeTime(
-                  comment.createdAt
-                )}</span>
+                <div class="comment-author-date">
+                    <span class="comment-author">${
+                      comment.author.profile.firstName
+                    } ${comment.author.profile.lastName}</span>
+                    ${statusBadges}
+                    <span class="comment-date">${formatRelativeTime(
+                      comment.createdAt
+                    )}</span>
+                </div>
+                ${optionsMenuHtml}
             </div>
             <div class="comment-content">
                 <p>${comment.content}</p>
             </div>
-        </div>
-    `
-    )
+        </div>`;
+    })
     .join("");
 };
 
@@ -99,10 +128,9 @@ document.addEventListener("DOMContentLoaded", async () => {
   try {
     const article = await fetchArticleById(articleId);
     renderMainQuestion(article, currentUser);
-    renderComments(article.comments);
+    renderComments(article.comments, currentUser);
 
     initializeLightbox("main-question-container");
-
     initializeSymbolsPanel({
       textareaId: "comment-content",
       toggleBtnId: "toggle-comment-symbols-btn",
@@ -127,6 +155,64 @@ document.addEventListener("DOMContentLoaded", async () => {
         window.location.reload();
       } catch (error) {
         showErrorToast(`Error al publicar tu respuesta: ${error.message}`);
+      }
+    });
+
+    const commentsList = document.getElementById("comments-list");
+    const deleteConfirmModal = document.getElementById("delete-confirm-modal");
+    const confirmDeleteBtn = document.getElementById("confirm-delete");
+    const cancelDeleteBtn = document.getElementById("cancel-delete");
+    let commentIdToDelete = null;
+
+    commentsList.addEventListener("click", (event) => {
+      const toggleBtn = event.target.closest(".options-toggle-btn");
+      if (toggleBtn) {
+        const dropdown = toggleBtn.nextElementSibling;
+        document.querySelectorAll(".options-dropdown.visible").forEach((d) => {
+          if (d !== dropdown) d.classList.remove("visible");
+        });
+        dropdown.classList.toggle("visible");
+      }
+
+      const deleteBtn = event.target.closest(".delete-comment-btn");
+      if (deleteBtn) {
+        commentIdToDelete = deleteBtn.dataset.commentId;
+        deleteConfirmModal.classList.add("visible");
+        deleteBtn.closest(".options-dropdown").classList.remove("visible");
+      }
+    });
+
+    document.addEventListener("click", (event) => {
+      if (!event.target.closest(".comment-options-menu")) {
+        document.querySelectorAll(".options-dropdown.visible").forEach((d) => {
+          d.classList.remove("visible");
+        });
+      }
+    });
+
+    confirmDeleteBtn.addEventListener("click", async () => {
+      if (commentIdToDelete) {
+        try {
+          await deleteComment(commentIdToDelete);
+          showSuccessToast("Respuesta eliminada correctamente.");
+          setTimeout(() => window.location.reload(), 1500);
+        } catch (error) {
+          showErrorToast(error.message);
+        } finally {
+          deleteConfirmModal.classList.remove("visible");
+          commentIdToDelete = null;
+        }
+      }
+    });
+
+    cancelDeleteBtn.addEventListener("click", () => {
+      deleteConfirmModal.classList.remove("visible");
+      commentIdToDelete = null;
+    });
+
+    deleteConfirmModal.addEventListener("click", (event) => {
+      if (event.target === deleteConfirmModal) {
+        deleteConfirmModal.classList.remove("visible");
       }
     });
   } catch (error) {

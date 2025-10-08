@@ -103,9 +103,14 @@
       }
       .comment-header {
         display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 0.5rem;
+      }
+      .comment-author-date {
+        display: flex;
         align-items: center;
         gap: 0.75rem;
-        margin-bottom: 0.5rem;
       }
       .comment-author {
         font-weight: 700;
@@ -120,6 +125,14 @@
         line-height: 1.6;
         color: #212529;
       }
+
+      /* ✅ ESTILOS AÑADIDOS PARA EL MENÚ DE OPCIONES DEL COMENTARIO */
+      .comment-options-menu {
+        position: relative;
+      }
+      .comment-options-menu .options-toggle-btn {
+        font-size: 0.9rem;
+      } /* Botón de 3 puntos más pequeño */
     </style>
   </head>
   <body>
@@ -161,10 +174,8 @@
 
       <div class="content-wrapper">
         <div id="main-question-container" class="main-question-container"></div>
-
         <div id="comments-section" class="comments-section">
           <h2>Respuestas</h2>
-
           <form id="comment-form" class="new-comment-form" novalidate>
             <div class="textarea-wrapper">
               <textarea
@@ -188,7 +199,6 @@
             </div>
             <button type="submit">Responder</button>
           </form>
-
           <div id="comments-list"></div>
         </div>
       </div>
@@ -202,6 +212,23 @@
         src=""
         alt="Previsualización de imagen"
       />
+    </div>
+
+    <div id="delete-confirm-modal" class="modal-overlay">
+      <div class="modal-content">
+        <h2>¿Confirmas la eliminación?</h2>
+        <p class="warning-text-deleteQuestion">
+          Esta acción es permanente y no se puede deshacer. ¿Estás seguro?
+        </p>
+        <div class="modal-actions">
+          <button id="cancel-delete" class="modal-button secondary">
+            Cancelar
+          </button>
+          <button id="confirm-delete" class="modal-button danger">
+            Sí, eliminar
+          </button>
+        </div>
+      </div>
     </div>
 
     <script type="module" src="/js/pregunta.js"></script>

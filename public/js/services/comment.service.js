@@ -23,3 +23,20 @@ export const postComment = async (commentData) => {
   }
   return data.data;
 };
+
+/**
+ * Elimina un comentario por su ID.
+ * @param {string} commentId - El ID del comentario a eliminar.
+ * @returns {Promise<Object>} La respuesta del servidor.
+ */
+export const deleteComment = async (commentId) => {
+  const response = await fetch(`${API_URL}/${commentId}`, {
+    method: "DELETE",
+  });
+
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data.msg || "Error al eliminar la respuesta.");
+  }
+  return data;
+};

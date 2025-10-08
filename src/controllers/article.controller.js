@@ -5,14 +5,12 @@ export const createArticle = async (req, res) => {
   const authorId = req.userLog.id;
   const { content, status, tags } = req.body;
 
-  // Obtener las URLs de las imágenes si se subieron
   let imageUrls = [];
   if (req.files && req.files.length > 0) {
     console.log(
       "Archivos recibidos:",
       req.files.map((f) => f.originalname)
     );
-    // req.files será un array de archivos
     imageUrls = req.files.map((file) => `/uploads/${file.filename}`);
   }
 
@@ -22,7 +20,7 @@ export const createArticle = async (req, res) => {
       status,
       author: authorId,
       tags,
-      imageUrls, // Guardar el array de URLs
+      imageUrls,
     });
 
     const populatedArticle = await ArticleModel.findById(article._id)
@@ -46,7 +44,6 @@ export const getAllArticles = async (req, res) => {
     const articles = await ArticleModel.find()
       .populate("author", "-password")
       .populate("tags", "name")
-      // Se añade 'imageUrls' a la selección
       .select("content author createdAt tags imageUrls")
       .sort({ createdAt: -1 });
     return res.status(200).json(articles);
@@ -61,15 +58,16 @@ export const getAllArticles = async (req, res) => {
 export const getArticleById = async (req, res) => {
   const { id } = req.params;
   try {
-    // ✅ CORRECCIÓN: Añadimos .populate('author', '-password') para traer los datos del autor de la pregunta.
     const article = await ArticleModel.findById(id)
-      .populate("author", "-password") // <--- ESTA ES LA LÍNEA AÑADIDA
+      .populate("author", "-password")
       .populate({
         path: "comments",
+        options: { sort: { createdAt: -1 } },
         populate: {
           path: "author",
           model: "User",
-          select: "-password -role", // También puedes seleccionar qué traer del autor del comentario
+          // ✅ CAMBIO CLAVE: Se añade 'role' a los campos seleccionados
+          select: "-password",
         },
       });
 

@@ -16,6 +16,8 @@ import {
   updateCommentValidation,
 } from "../middlewares/validations/comment.validations.js";
 import { validator } from "../middlewares/validator.js";
+import { CommentModel } from "../models/comment.model.js";
+
 export const routeComment = Router();
 
 routeComment.get("/comments/my", validateToken, getUserLogComments);
@@ -30,7 +32,7 @@ routeComment.get("/comments", validateToken, getAllComments);
 routeComment.put(
   "/comments/:id",
   validateToken,
-  ownerOrAdmin,
+  ownerOrAdmin(CommentModel),
   updateCommentValidation,
   validator,
   updateComment
@@ -38,7 +40,7 @@ routeComment.put(
 routeComment.delete(
   "/comments/:id",
   validateToken,
-  ownerOrAdmin,
+  ownerOrAdmin(CommentModel),
   deleteCommentValidation,
   validator,
   deleteComment
