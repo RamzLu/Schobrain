@@ -34,7 +34,7 @@ export const login = async (req, res) => {
     const user = await UserModel.findOne({
       username: username,
     });
-    console.log(user);
+    // Se eliminó el console.log(user) para no exponer datos sensibles
     if (!user) {
       return res.status(404).json({
         msg: "El usuario o la contraseña no coinciden",
