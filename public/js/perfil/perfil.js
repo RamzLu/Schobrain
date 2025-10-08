@@ -1,5 +1,4 @@
-const API_URL = "/profile";
-const token = localStorage.getItem("token");
+const API_URL = "/api/profile"; // URL corregida para apuntar a /api/profile
 let avatarFile = null;
 
 function setProfileFields(profile, user) {
@@ -30,10 +29,15 @@ function showMsg(msg, isError = false) {
 
 async function fetchProfile() {
   try {
-    const res = await fetch(API_URL, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    if (!res.ok) throw new Error("No autenticado");
+    // Se eliminó el encabezado de autorización, la cookie se envía automáticamente
+    const res = await fetch(API_URL);
+    if (!res.ok) {
+      if (res.status === 401) {
+        window.location.href = "/login.html";
+        return;
+      }
+      throw new Error("No autenticado");
+    }
     const user = await res.json();
     setProfileFields(user.profile, user);
   } catch (err) {
@@ -60,7 +64,6 @@ async function saveProfile() {
 
     const res = await fetch(API_URL + "/avatar", {
       method: "PUT",
-      headers: { Authorization: `Bearer ${token}` },
       body: formData,
     });
     const result = await res.json();
@@ -79,7 +82,6 @@ async function saveProfile() {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify({ profile, email, username }),
     });
