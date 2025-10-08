@@ -1,7 +1,6 @@
 import { ArticleModel } from "../models/article.model.js";
 import { TagModel } from "../models/tag.model.js";
 
-// ... (createArticle se mantiene igual)
 export const createArticle = async (req, res) => {
   const authorId = req.userLog.id;
   const { content, status, tags } = req.body;
@@ -45,7 +44,6 @@ export const getAllArticles = async (req, res) => {
     const articles = await ArticleModel.find()
       .populate("author", "-password")
       .populate("tags", "name")
-      // ✅ Se añaden los campos de votación a la selección
       .select(
         "content author createdAt tags imageUrls likes dislikes votedUp votedDown"
       )
@@ -59,7 +57,6 @@ export const getAllArticles = async (req, res) => {
   }
 };
 
-// ... (getArticleById, deleteArticle, etc., se mantienen igual)
 export const getArticleById = async (req, res) => {
   const { id } = req.params;
   try {
@@ -67,7 +64,8 @@ export const getArticleById = async (req, res) => {
       .populate("author", "-password")
       .populate({
         path: "comments",
-        options: { sort: { createdAt: -1 } },
+        // Ordenamos por likes (desc) y luego por fecha (desc)
+        options: { sort: { likes: -1, createdAt: -1 } },
         populate: {
           path: "author",
           model: "User",

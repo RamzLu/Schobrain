@@ -1,6 +1,10 @@
 import { verifyAuth } from "./services/auth.service.js";
-import { fetchArticleById, voteOnArticle } from "./services/article.service.js"; // Se importa voteOnArticle
-import { postComment, deleteComment } from "./services/comment.service.js";
+import { fetchArticleById, voteOnArticle } from "./services/article.service.js";
+import {
+  postComment,
+  deleteComment,
+  voteOnComment,
+} from "./services/comment.service.js";
 import {
   renderArticleCard,
   initializeSymbolsPanel,
@@ -81,6 +85,35 @@ const renderComments = (comments, currentUser) => {
            </div>`
         : "";
 
+      const userHasLiked = comment.votedUp.includes(currentUser.id);
+      const userHasDisliked = comment.votedDown.includes(currentUser.id);
+      const voteControlsHtml = `
+        <div class="vote-controls">
+            <div class="vote-group">
+                <button class="vote-btn like ${
+                  userHasLiked ? "active" : ""
+                }" data-comment-id="${
+        comment._id
+      }" data-vote-type="like" title="Me gusta">
+                    <i class="fas fa-thumbs-up"></i>
+                </button>
+                <span class="vote-count like-count">${comment.likes}</span>
+            </div>
+            <div class="vote-group">
+                <button class="vote-btn dislike ${
+                  userHasDisliked ? "active" : ""
+                }" data-comment-id="${
+        comment._id
+      }" data-vote-type="dislike" title="No me gusta">
+                    <i class="fas fa-thumbs-down"></i>
+                </button>
+                <span class="vote-count dislike-count">${
+                  comment.dislikes
+                }</span>
+            </div>
+        </div>
+    `;
+
       return `
         <div class="comment-card" data-id="${comment._id}">
             <div class="comment-header">
@@ -97,6 +130,9 @@ const renderComments = (comments, currentUser) => {
             </div>
             <div class="comment-content">
                 <p>${comment.content}</p>
+            </div>
+            <div class="comment-footer">
+                ${voteControlsHtml}
             </div>
         </div>`;
     })
@@ -156,14 +192,14 @@ document.addEventListener("DOMContentLoaded", async () => {
       }
     });
 
-    // --- Lógica para eliminar comentarios ---
     const commentsList = document.getElementById("comments-list");
     const deleteConfirmModal = document.getElementById("delete-confirm-modal");
     const confirmDeleteBtn = document.getElementById("confirm-delete");
     const cancelDeleteBtn = document.getElementById("cancel-delete");
     let commentIdToDelete = null;
 
-    commentsList.addEventListener("click", (event) => {
+    commentsList.addEventListener("click", async (event) => {
+      // --- Lógica para el menú de opciones ---
       const toggleBtn = event.target.closest(".options-toggle-btn");
       if (toggleBtn) {
         const dropdown = toggleBtn.nextElementSibling;
@@ -173,11 +209,46 @@ document.addEventListener("DOMContentLoaded", async () => {
         dropdown.classList.toggle("visible");
       }
 
+      // --- Lógica para el botón de eliminar ---
       const deleteBtn = event.target.closest(".delete-comment-btn");
       if (deleteBtn) {
         commentIdToDelete = deleteBtn.dataset.commentId;
         deleteConfirmModal.classList.add("visible");
         deleteBtn.closest(".options-dropdown").classList.remove("visible");
+      }
+
+      // --- Lógica para los botones de voto de comentarios ---
+      const voteBtn = event.target.closest(".vote-btn");
+      if (voteBtn && voteBtn.dataset.commentId) {
+        const commentId = voteBtn.dataset.commentId;
+        const voteType = voteBtn.dataset.voteType;
+
+        try {
+          const updatedVotes = await voteOnComment(commentId, voteType);
+          const commentCard = document.querySelector(
+            `.comment-card[data-id="${commentId}"]`
+          );
+          if (commentCard) {
+            commentCard.querySelector(".like-count").textContent =
+              updatedVotes.likes;
+            commentCard.querySelector(".dislike-count").textContent =
+              updatedVotes.dislikes;
+
+            const likeBtn = commentCard.querySelector(".vote-btn.like");
+            const dislikeBtn = commentCard.querySelector(".vote-btn.dislike");
+
+            likeBtn.classList.toggle(
+              "active",
+              updatedVotes.votedUp.includes(currentUser.id)
+            );
+            dislikeBtn.classList.toggle(
+              "active",
+              updatedVotes.votedDown.includes(currentUser.id)
+            );
+          }
+        } catch (error) {
+          showErrorToast(error.message);
+        }
       }
     });
 
@@ -215,13 +286,13 @@ document.addEventListener("DOMContentLoaded", async () => {
       }
     });
 
-    //  LÓGICA DE VOTACIÓN
     const mainQuestionContainer = document.getElementById(
       "main-question-container"
     );
     mainQuestionContainer.addEventListener("click", async (event) => {
       const voteBtn = event.target.closest(".vote-btn");
-      if (voteBtn) {
+      if (voteBtn && voteBtn.dataset.articleId) {
+        // Aseguramos que sea un voto de artículo
         const articleId = voteBtn.dataset.articleId;
         const voteType = voteBtn.dataset.voteType;
 

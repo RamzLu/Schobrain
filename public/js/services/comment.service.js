@@ -40,3 +40,23 @@ export const deleteComment = async (commentId) => {
   }
   return data;
 };
+
+/**
+ * Envía un voto para un comentario.
+ * @param {string} commentId - El ID del comentario.
+ * @param {'like' | 'dislike'} voteType - El tipo de voto.
+ * @returns {Promise<Object>} Los contadores de votos actualizados.
+ */
+export const voteOnComment = async (commentId, voteType) => {
+  const response = await fetch(`${API_URL}/${commentId}/vote`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ voteType }),
+  });
+
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data.msg || "Error al registrar el voto.");
+  }
+  return data.data;
+};

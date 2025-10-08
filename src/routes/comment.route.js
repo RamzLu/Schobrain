@@ -6,6 +6,7 @@ import {
   getCommentsByArticle,
   getUserLogComments,
   updateComment,
+  voteOnComment, //  Importamos la nueva función
 } from "../controllers/comment.controller.js";
 import { validateToken } from "../middlewares/authMiddleware.js";
 import { ownerOrAdmin } from "../middlewares/ownerOrAdminMiddleware.js";
@@ -29,6 +30,10 @@ routeComment.post(
   createComment
 );
 routeComment.get("/comments", validateToken, getAllComments);
+
+// RUTA PARA VOTAR EN COMENTARIOS
+routeComment.post("/comments/:id/vote", validateToken, voteOnComment);
+
 routeComment.put(
   "/comments/:id",
   validateToken,
