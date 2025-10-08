@@ -15,6 +15,11 @@ export const showAskQuestionModal = () => {
     document
       .getElementById("question-error-message")
       .classList.remove("visible");
+
+    const symbolsPanel = document.getElementById("math-symbols-panel");
+    if (symbolsPanel) {
+      symbolsPanel.classList.remove("visible");
+    }
   }
 };
 
@@ -141,19 +146,17 @@ export const renderArticleCard = (article, currentUser) => {
     tagHtml = `<span class="article-tag ${tagColorClass}">${tag.name}</span>`;
   }
 
-  // ✅ LÓGICA CORREGIDA PARA GALERÍA EN CUADRÍCULA
   let imagesHtml = "";
   if (article.imageUrls && article.imageUrls.length > 0) {
     const imageElements = article.imageUrls
       .map(
         (url) => `
-      <a href="${url}" target="_blank" class="article-image-link">
+      <a href="${url}" class="article-image-link">
         <img src="${url}" alt="Imagen de la pregunta" class="article-image"/>
       </a>`
       )
       .join("");
 
-    // Contenedor principal para la galería
     imagesHtml = `<div class="article-images-gallery">${imageElements}</div>`;
   }
 

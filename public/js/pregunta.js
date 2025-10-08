@@ -2,7 +2,8 @@ import { verifyAuth } from "./services/auth.service.js";
 import { fetchArticleById } from "./services/article.service.js";
 import { postComment } from "./services/comment.service.js";
 import { renderArticleCard } from "./article/article.ui.js";
-import { showErrorToast } from "./utils/notifications.js"; // Importamos el toast
+import { showErrorToast } from "./utils/notifications.js";
+import { initializeLightbox } from "./utils/lightbox.js";
 
 const formatRelativeTime = (dateString) => {
   const now = new Date();
@@ -28,8 +29,6 @@ const formatRelativeTime = (dateString) => {
   const yearsElapsed = Math.floor(daysElapsed / 365);
   return `hace ${yearsElapsed} año${yearsElapsed > 1 ? "s" : ""}`;
 };
-
-// --- Renderizadores específicos para esta página ---
 
 const renderMainQuestion = (article, currentUser) => {
   const container = document.getElementById("main-question-container");
@@ -74,8 +73,6 @@ const renderComments = (comments) => {
     .join("");
 };
 
-// --- Lógica principal de la página ---
-
 document.addEventListener("DOMContentLoaded", async () => {
   let currentUser;
   try {
@@ -103,6 +100,8 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     renderMainQuestion(article, currentUser);
     renderComments(article.comments);
+
+    initializeLightbox("main-question-container");
 
     const commentForm = document.getElementById("comment-form");
     commentForm.addEventListener("submit", async (e) => {

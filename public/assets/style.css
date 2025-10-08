@@ -1590,3 +1590,41 @@ body {
 .symbol-char:active {
   transform: scale(0.95);
 }
+/* ... (todo tu CSS existente va aquí arriba) ... */
+
+/* ==========================================================================
+   18. ESTILOS PARA EL VISOR DE IMÁGENES (LIGHTBOX)
+   ========================================================================== */
+
+/* Mejora el overlay existente para añadir el desenfoque */
+.modal-overlay.visible {
+  display: flex;
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+}
+
+/* Contenedor de la imagen previsualizada */
+#image-preview-modal .preview-image {
+  max-width: 90vw; /* Ancho máximo del 90% de la ventana */
+  max-height: 90vh; /* Altura máxima del 90% de la ventana */
+  border-radius: 10px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  object-fit: contain; /* Asegura que la imagen completa sea visible */
+}
+
+/* Botón para cerrar el visor */
+#image-preview-modal .close-preview-btn {
+  position: absolute;
+  top: 20px;
+  right: 30px;
+  font-size: 3rem;
+  font-weight: bold;
+  color: white;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+  text-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+}
+
+#image-preview-modal .close-preview-btn:hover {
+  transform: scale(1.1);
+}

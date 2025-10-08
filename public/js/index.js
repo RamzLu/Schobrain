@@ -9,8 +9,8 @@ import {
   filterArticlesByTag,
   handleDeleteArticle,
 } from "./article/article.handler.js";
+import { initializeLightbox } from "./utils/lightbox.js";
 
-// Función para renderizar la opción de Admin en el menú de usuario
 const renderAdminMenuOption = () => {
   const userMenu = document.getElementById("user-menu");
   if (userMenu) {
@@ -26,86 +26,106 @@ const renderAdminMenuOption = () => {
   }
 };
 
-/**
- * ✅ NUEVA FUNCIÓN: Se encarga de crear y manejar el panel de símbolos.
- */
 const initializeSymbolsPanel = () => {
   const toggleSymbolsBtn = document.getElementById("toggle-symbols-btn");
   const symbolsPanel = document.getElementById("math-symbols-panel");
   const questionTextarea = document.getElementById("question-content");
+  const fractionBtn = document.getElementById("fraction-btn");
+  const exponentBtn = document.getElementById("exponent-btn");
 
-  if (!toggleSymbolsBtn || !symbolsPanel || !questionTextarea) return;
+  if (!questionTextarea) return;
 
-  const symbols = [
-    "π",
-    "∀",
-    "≤",
-    "≥",
-    "∉",
-    "≠",
-    "∏",
-    "∑",
-    "¬",
-    "⇔ ",
-    "∧",
-    "∨",
-    "√",
-    "∫",
-    "Σ",
-    "Π",
-    "±",
-    "≠",
-    "≤",
-    "≥",
-    "≈",
-    "∞",
-    "α",
-    "β",
-    "γ",
-    "δ",
-    "θ",
-    "λ",
-    "μ",
-    "π",
-    "ω",
-    "°",
-    "²",
-    "³",
-    "₄",
-    "ₓ",
-  ];
+  const insertText = (text) => {
+    const start = questionTextarea.selectionStart;
+    const end = questionTextarea.selectionEnd;
+    const currentText = questionTextarea.value;
 
-  // Genera los símbolos dinámicamente
-  symbols.forEach((symbol) => {
-    const span = document.createElement("span");
-    span.className = "symbol-char";
-    span.textContent = symbol;
-    symbolsPanel.appendChild(span);
-  });
+    questionTextarea.value =
+      currentText.substring(0, start) + text + currentText.substring(end);
+    questionTextarea.selectionStart = questionTextarea.selectionEnd =
+      start + text.length;
+    questionTextarea.focus();
+  };
 
-  // Event listener para mostrar/ocultar el panel
-  toggleSymbolsBtn.addEventListener("click", () => {
-    symbolsPanel.classList.toggle("visible");
-  });
+  if (fractionBtn) {
+    fractionBtn.addEventListener("click", () => {
+      const numerator = prompt("Ingresa el numerador:");
+      const denominator = prompt("Ingresa el denominador:");
+      if (numerator !== null && denominator !== null) {
+        insertText(`(${numerator}/${denominator})`);
+      }
+    });
+  }
 
-  // Event listener para insertar los símbolos
-  symbolsPanel.addEventListener("click", (event) => {
-    if (event.target.classList.contains("symbol-char")) {
-      const symbol = event.target.textContent;
-      const start = questionTextarea.selectionStart;
-      const end = questionTextarea.selectionEnd;
-      const text = questionTextarea.value;
+  if (exponentBtn) {
+    exponentBtn.addEventListener("click", () => {
+      const base = prompt("Ingresa la base:");
+      const exponent = prompt("Ingresa el exponente:");
+      if (base !== null && exponent !== null) {
+        insertText(`${base}^${exponent}`);
+      }
+    });
+  }
 
-      questionTextarea.value =
-        text.substring(0, start) + symbol + text.substring(end);
-      questionTextarea.selectionStart = questionTextarea.selectionEnd =
-        start + symbol.length;
-      questionTextarea.focus();
-    }
-  });
+  if (toggleSymbolsBtn && symbolsPanel) {
+    const symbols = [
+      "π",
+      "∀",
+      "≤",
+      "≥",
+      "∉",
+      "≠",
+      "∏",
+      "∑",
+      "¬",
+      "⇔ ",
+      "∧",
+      "∨",
+      "√",
+      "∫",
+      "Σ",
+      "Π",
+      "±",
+      "≠",
+      "≤",
+      "≥",
+      "≈",
+      "∞",
+      "α",
+      "β",
+      "γ",
+      "δ",
+      "θ",
+      "λ",
+      "μ",
+      "π",
+      "ω",
+      "°",
+      "²",
+      "³",
+      "₄",
+      "ₓ",
+    ];
+
+    symbols.forEach((symbol) => {
+      const span = document.createElement("span");
+      span.className = "symbol-char";
+      span.textContent = symbol;
+      symbolsPanel.appendChild(span);
+    });
+
+    toggleSymbolsBtn.addEventListener("click", () => {
+      symbolsPanel.classList.toggle("visible");
+    });
+
+    symbolsPanel.addEventListener("click", (event) => {
+      if (event.target.classList.contains("symbol-char")) {
+        insertText(event.target.textContent);
+      }
+    });
+  }
 };
 
-// --- Función principal que se ejecuta al cargar la página ---
 const initializeIndexPage = async () => {
   let authData;
   try {
@@ -125,7 +145,6 @@ const initializeIndexPage = async () => {
 
   await initializeArticleFeed(authData.data);
 
-  // --- Lógica del Menú Desplegable ---
   const menuToggle = document.querySelector(".menu-toggle");
   const userMenu = document.getElementById("user-menu");
 
@@ -143,7 +162,6 @@ const initializeIndexPage = async () => {
     });
   }
 
-  // --- Lógica de Cerrar Sesión ---
   const logoutButton = document.getElementById("logout-button");
   const logoutModal = document.getElementById("logout-modal");
   const cancelLogoutButton = document.getElementById("cancel-logout");
@@ -173,7 +191,6 @@ const initializeIndexPage = async () => {
     });
   }
 
-  // --- Lógica del Modal de "Hacer una pregunta" ---
   const askQuestionButton = document.getElementById("ask-question-button");
   const askQuestionForm = document.getElementById("askQuestionForm");
   const askQuestionModal = document.getElementById("ask-question-modal");
@@ -194,10 +211,8 @@ const initializeIndexPage = async () => {
     }
   }
 
-  // ✅ LLAMADA A LA NUEVA FUNCIÓN
   initializeSymbolsPanel();
 
-  // --- Lógica de Filtrado por Asignatura ---
   const subjectFilterList = document.getElementById("subject-filter-list");
   if (subjectFilterList) {
     subjectFilterList.addEventListener("click", (event) => {
@@ -209,7 +224,6 @@ const initializeIndexPage = async () => {
     });
   }
 
-  // --- Lógica para el Menú de Opciones y Borrado ---
   const questionsList = document.getElementById("questions-list");
   const deleteConfirmModal = document.getElementById("delete-confirm-modal");
   const confirmDeleteBtn = document.getElementById("confirm-delete");
@@ -260,6 +274,8 @@ const initializeIndexPage = async () => {
       deleteConfirmModal.classList.remove("visible");
     }
   });
+
+  initializeLightbox("questions-list");
 };
 
 document.addEventListener("DOMContentLoaded", initializeIndexPage);

@@ -16,7 +16,6 @@
     />
     <link rel="icon" type="image/png" href="assets/img/logoSchobrain.png" />
     <link rel="stylesheet" href="assets/style.css" />
-
     <link
       rel="stylesheet"
       type="text/css"
@@ -264,22 +263,6 @@
             <div class="textarea-toolbar">
               <button
                 type="button"
-                id="fraction-btn"
-                class="toolbar-btn"
-                title="Insertar Fracción"
-              >
-                ½
-              </button>
-              <button
-                type="button"
-                id="exponent-btn"
-                class="toolbar-btn"
-                title="Insertar Exponente"
-              >
-                x²
-              </button>
-              <button
-                type="button"
                 id="toggle-symbols-btn"
                 class="toolbar-btn"
                 title="Símbolos"
@@ -336,14 +319,6 @@
       </div>
     </div>
 
-    <script type="module" src="./js/main.js"></script>
-    <script type="module" src="./js/index.js"></script>
-    <script type="module" src="./js/utils/notifications.js"></script>
-    <script type="module" src="./js/services/article.service.js"></script>
-    <script type="module" src="./js/article/article.ui.js"></script>
-    <script type="module" src="./js/article/article.handler.js"></script>
-    <script type="module" src="./js/services/tag.service.js"></script>
-
     <div id="logout-modal" class="modal-overlay">
       <div class="modal-content">
         <h2>¿Seguro que quieres cerrar sesión?</h2>
@@ -374,5 +349,22 @@
         </div>
       </div>
     </div>
+
+    <div id="image-preview-modal" class="modal-overlay">
+      <span class="close-preview-btn">&times;</span>
+      <img
+        class="preview-image"
+        id="preview-image-src"
+        src=""
+        alt="Previsualización de imagen"
+      />
+    </div>
+
+    <script type="module" src="./js/main.js"></script>
+    <script type="module" src="./js/index.js"></script>
+    <script type="module" src="./js/services/article.service.js"></script>
+    <script type="module" src="./js/article/article.ui.js"></script>
+    <script type="module" src="./js/article/article.handler.js"></script>
+    <script type="module" src="./js/services/tag.service.js"></script>
   </body>
 </html>

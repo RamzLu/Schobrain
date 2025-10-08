@@ -26,6 +26,10 @@
       src="https://cdn.jsdelivr.net/npm/toastify-js"
     ></script>
     <style>
+      /* ==========================================================================
+           ESTILOS PERSONALIZADOS PARA LA PÁGINA DE PREGUNTA
+           ========================================================================== */
+
       body {
         background-color: #f0f2f5;
       }
@@ -179,6 +183,16 @@
           <div id="comments-list"></div>
         </div>
       </div>
+    </div>
+
+    <div id="image-preview-modal" class="modal-overlay">
+      <span class="close-preview-btn">&times;</span>
+      <img
+        class="preview-image"
+        id="preview-image-src"
+        src=""
+        alt="Previsualización de imagen"
+      />
     </div>
 
     <script type="module" src="/js/pregunta.js"></script>
