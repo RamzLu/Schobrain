@@ -209,7 +209,20 @@ export const renderArticleCard = (article, currentUser) => {
 export const loadArticles = (articles, currentUser) => {
   if (questionsList) {
     if (articles.length === 0) {
-      questionsList.innerHTML = `<p style="text-align: center; color: #808090; padding: 2rem;">No hay preguntas para esta asignatura. ¡Sé el primero!</p>`;
+      // ✅ INICIO DEL CAMBIO: Contenedor con mensaje e imagen
+      questionsList.innerHTML = `
+        <div style="text-align: center; padding: 2rem; opacity: 0.8;">
+          <p style="color: #808090; font-size: 1.2rem; margin-bottom: 1.5rem;">
+            No hay preguntas para esta asignatura. ¡Sé el primero!
+          </p>
+          <img 
+            src="/assets/img/errorImg.png" 
+            alt="No hay preguntas" 
+            style="max-width: 250px; width: 100%;"
+          />
+        </div>
+      `;
+      // ✅ FIN DEL CAMBIO
       return;
     }
     questionsList.innerHTML = articles
