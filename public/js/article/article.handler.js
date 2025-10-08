@@ -6,6 +6,7 @@ import {
 } from "../services/article.service.js";
 import { fetchAllTags } from "../services/tag.service.js";
 import { loadArticles, populateTagSelector } from "./article.ui.js";
+import { showSuccessToast, showErrorToast } from "../utils/notifications.js";
 
 export const initializeArticleFeed = async (currentUser) => {
   try {
@@ -15,10 +16,7 @@ export const initializeArticleFeed = async (currentUser) => {
     populateTagSelector(tags);
   } catch (error) {
     console.error("Error al cargar el feed o tags:", error);
-    const questionsList = document.getElementById("questions-list");
-    if (questionsList) {
-      questionsList.innerHTML = `<p class="error-text visible" style="color: #ff5c5c; text-align: center;">Error al cargar las preguntas: ${error.message}</p>`;
-    }
+    showErrorToast(`Error al cargar las preguntas: ${error.message}`);
   }
 };
 
@@ -28,35 +26,25 @@ export const handlePostQuestion = async (event) => {
   const content = form["content"].value.trim();
   const tagId = form["tags"].value;
   const imageFiles = form["imageFiles"].files;
-  const errorMessageElement = document.getElementById("question-error-message");
 
-  errorMessageElement.classList.remove("visible");
-  errorMessageElement.textContent = "";
-
+  // Validaciones del frontend con toasts
   if (!content || content.length < 10) {
-    errorMessageElement.textContent =
-      "El contenido debe tener al menos 10 caracteres.";
-    errorMessageElement.classList.add("visible");
+    showErrorToast("El contenido debe tener al menos 10 caracteres.");
     return;
   }
-
-  //Verificación de que se ha seleccionado una asignatura
   if (!tagId) {
-    errorMessageElement.textContent = "Por favor, selecciona una asignatura.";
-    errorMessageElement.classList.add("visible");
+    showErrorToast("Por favor, selecciona una asignatura.");
     return;
   }
-
   if (imageFiles.length > 5) {
-    errorMessageElement.textContent = "Puedes subir un máximo de 5 imágenes.";
-    errorMessageElement.classList.add("visible");
+    showErrorToast("Puedes subir un máximo de 5 imágenes.");
     return;
   }
 
   try {
     const formData = new FormData();
     formData.append("content", content);
-    formData.append("tags", tagId); // tagId es obligatorio
+    formData.append("tags", tagId);
 
     if (imageFiles.length > 0) {
       for (const file of imageFiles) {
@@ -65,11 +53,16 @@ export const handlePostQuestion = async (event) => {
     }
 
     await postQuestion(formData);
-    window.location.reload();
+
+    // ✅ CAMBIO 1: Mostrar notificación de éxito y esperar antes de recargar.
+    showSuccessToast("¡Pregunta publicada con éxito!");
+
+    setTimeout(() => {
+      window.location.reload();
+    }, 900); // 1.5 segundos de espera para que se vea el toast
   } catch (error) {
     console.error("Error al publicar la pregunta:", error);
-    errorMessageElement.textContent = error.message;
-    errorMessageElement.classList.add("visible");
+    showErrorToast(error.message);
   }
 };
 
@@ -82,16 +75,19 @@ export const filterArticlesByTag = async (tagName, currentUser) => {
     loadArticles(articles, currentUser);
   } catch (error) {
     console.error(`Error al filtrar por ${tagName}:`, error);
+    showErrorToast(`Error al filtrar: ${error.message}`);
   }
 };
 
 export const handleDeleteArticle = async (articleId) => {
   try {
     await deleteArticle(articleId);
-    alert("Pregunta eliminada correctamente.");
-    window.location.reload();
+    showSuccessToast("Pregunta eliminada correctamente.");
+    setTimeout(() => {
+      window.location.reload();
+    }, 900);
   } catch (error) {
     console.error("Error al eliminar la pregunta:", error);
-    alert(error.message);
+    showErrorToast(error.message);
   }
 };

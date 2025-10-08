@@ -1,7 +1,8 @@
 import { verifyAuth } from "./services/auth.service.js";
 import { fetchArticleById } from "./services/article.service.js";
 import { postComment } from "./services/comment.service.js";
-import { renderArticleCard } from "./article/article.ui.js"; // Reutilizamos el renderizador
+import { renderArticleCard } from "./article/article.ui.js";
+import { showErrorToast } from "./utils/notifications.js"; // Importamos el toast
 
 const formatRelativeTime = (dateString) => {
   const now = new Date();
@@ -52,7 +53,6 @@ const renderComments = (comments) => {
     return;
   }
 
-  // ✅ CAMBIO: Se usa formatRelativeTime para la fecha del comentario
   container.innerHTML = comments
     .map(
       (comment) => `
@@ -109,7 +109,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       e.preventDefault();
       const content = e.target.content.value.trim();
       if (content.length < 5) {
-        alert("La respuesta debe tener al menos 5 caracteres.");
+        showErrorToast("La respuesta debe tener al menos 5 caracteres.");
         return;
       }
 
@@ -123,7 +123,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         await postComment(commentData);
         window.location.reload();
       } catch (error) {
-        alert(`Error al publicar tu respuesta: ${error.message}`);
+        showErrorToast(`Error al publicar tu respuesta: ${error.message}`);
       }
     });
   } catch (error) {

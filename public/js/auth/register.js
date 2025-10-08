@@ -1,20 +1,18 @@
 import { registerUser } from "../services/auth.service.js";
+import { showSuccessToast, showErrorToast } from "../utils/notifications.js";
 
 export const handleRegister = async (event) => {
   event.preventDefault();
   const form = event.target;
   const errorMessageElement = document.getElementById("error-message");
 
-  // Ocultar mensaje de error anterior
   errorMessageElement.classList.remove("visible");
 
   const password = form.password.value;
   const confirmPassword = form.confirmPassword.value;
 
   if (password !== confirmPassword) {
-    // Mostrar error de contraseñas que no coinciden
-    errorMessageElement.textContent = "Las contraseñas no coinciden.";
-    errorMessageElement.classList.add("visible");
+    showErrorToast("Las contraseñas no coinciden."); // Reemplazamos el mensaje en el DOM
     return;
   }
 
@@ -31,11 +29,11 @@ export const handleRegister = async (event) => {
 
   try {
     const result = await registerUser(userData);
-    alert(result.msg); // Mantenemos el alert de éxito para el registro
-    window.location.href = "/login.html";
+    showSuccessToast(result.msg);
+    setTimeout(() => {
+      window.location.href = "/login.html";
+    }, 1500); // Pequeña demora para que el usuario vea el mensaje
   } catch (error) {
-    // Mostrar error que viene del backend (ej: usuario ya existe)
-    errorMessageElement.textContent = error.message;
-    errorMessageElement.classList.add("visible");
+    showErrorToast(error.message);
   }
 };

@@ -16,26 +16,31 @@
     />
     <link rel="icon" type="image/png" href="assets/img/logoSchobrain.png" />
     <link rel="stylesheet" href="assets/style.css" />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css"
+    />
+    <script
+      type="text/javascript"
+      src="https://cdn.jsdelivr.net/npm/toastify-js"
+    ></script>
     <style>
-      /* ==========================================================================
-           ESTILOS PERSONALIZADOS PARA LA PÁGINA DE PREGUNTA
-           ========================================================================== */
+      body {
+        background-color: #f0f2f5;
+      }
 
-      /* ✅ ELIMINADO: Ya no forzamos el fondo del body a ser oscuro */
-
-      /* Contenedor principal para el contenido de la página */
       .content-wrapper {
-        background-color: #ffffff; /* El contenedor ahora es blanco */
+        background-color: #ffffff;
         width: 100%;
         max-width: 900px;
         margin: 2rem auto;
         border-radius: 15px;
         padding: 2rem 3rem;
         color: #333;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); /* Añadimos una sombra sutil */
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
       }
 
-      /* Anula los estilos de la tarjeta principal para que se integre con el fondo */
       .main-question-container .article-card {
         background-color: transparent;
         box-shadow: none;
@@ -46,14 +51,12 @@
         padding-bottom: 2rem;
       }
 
-      /* --- Estilos para la sección de respuestas --- */
       .comments-section h2 {
         font-size: 1.5rem;
         margin-bottom: 1.5rem;
         color: #12121c;
       }
 
-      /* --- Nuevo formulario de comentario --- */
       .new-comment-form {
         display: flex;
         gap: 1rem;
@@ -91,7 +94,6 @@
         background-color: #560bad;
       }
 
-      /* --- Lista de comentarios --- */
       .comment-card {
         border-bottom: 1px solid #e9ecef;
         padding: 1.5rem 0;
@@ -164,7 +166,7 @@
         <div id="comments-section" class="comments-section">
           <h2>Respuestas</h2>
 
-          <form id="comment-form" class="new-comment-form">
+          <form id="comment-form" class="new-comment-form" novalidate>
             <textarea
               name="content"
               placeholder="Responde algo..."

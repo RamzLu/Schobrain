@@ -16,6 +16,16 @@
     />
     <link rel="icon" type="image/png" href="assets/img/logoSchobrain.png" />
     <link rel="stylesheet" href="assets/style.css" />
+
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css"
+    />
+    <script
+      type="text/javascript"
+      src="https://cdn.jsdelivr.net/npm/toastify-js"
+    ></script>
   </head>
   <body>
     <div class="main-container">
@@ -254,6 +264,22 @@
             <div class="textarea-toolbar">
               <button
                 type="button"
+                id="fraction-btn"
+                class="toolbar-btn"
+                title="Insertar Fracción"
+              >
+                ½
+              </button>
+              <button
+                type="button"
+                id="exponent-btn"
+                class="toolbar-btn"
+                title="Insertar Exponente"
+              >
+                x²
+              </button>
+              <button
+                type="button"
                 id="toggle-symbols-btn"
                 class="toolbar-btn"
                 title="Símbolos"
@@ -309,8 +335,10 @@
         </form>
       </div>
     </div>
+
     <script type="module" src="./js/main.js"></script>
     <script type="module" src="./js/index.js"></script>
+    <script type="module" src="./js/utils/notifications.js"></script>
     <script type="module" src="./js/services/article.service.js"></script>
     <script type="module" src="./js/article/article.ui.js"></script>
     <script type="module" src="./js/article/article.handler.js"></script>
