@@ -160,6 +160,34 @@ export const renderArticleCard = (article, currentUser) => {
     imagesHtml = `<div class="article-images-gallery">${imageElements}</div>`;
   }
 
+  const userHasLiked = article.votedUp.includes(currentUser.id);
+  const userHasDisliked = article.votedDown.includes(currentUser.id);
+
+  const voteControlsHtml = `
+    <div class="vote-controls">
+        <div class="vote-group">
+            <button class="vote-btn like ${
+              userHasLiked ? "active" : ""
+            }" data-article-id="${
+    article._id
+  }" data-vote-type="like" title="Me gusta">
+                <i class="fas fa-thumbs-up"></i>
+            </button>
+            <span class="vote-count like-count">${article.likes}</span>
+        </div>
+        <div class="vote-group">
+            <button class="vote-btn dislike ${
+              userHasDisliked ? "active" : ""
+            }" data-article-id="${
+    article._id
+  }" data-vote-type="dislike" title="No me gusta">
+                <i class="fas fa-thumbs-down"></i>
+            </button>
+            <span class="vote-count dislike-count">${article.dislikes}</span>
+        </div>
+    </div>
+  `;
+
   return `
     <article class="article-card" data-id="${article._id}">
       <div class="article-card-header">
@@ -169,8 +197,11 @@ export const renderArticleCard = (article, currentUser) => {
       <div class="article-content"><p>${article.content}</p></div>
       ${imagesHtml}
       <div class="article-footer-actions">
-        <div class="article-tags-container">${tagHtml}</div>
-        <div class="article-actions"><a href="/pregunta.html?id=${article._id}">Ver discusión y responder</a></div>
+        <div class="footer-top-row">
+            <div class="article-tags-container">${tagHtml}</div>
+            <div class="article-actions"><a href="/pregunta.html?id=${article._id}">Ver discusión y responder</a></div>
+        </div>
+        ${voteControlsHtml}
       </div>
     </article>`;
 };
@@ -208,16 +239,6 @@ export const setupCancelButton = () => {
   }
 };
 
-/**
- * Inicializa un panel de símbolos matemáticos para un textarea específico.
- * @param {object} config - Objeto de configuración.
- * @param {string} config.textareaId - ID del textarea.
- * @param {string} config.toggleBtnId - ID del botón para mostrar/ocultar el panel de símbolos.
- * @param {string} config.panelId - ID del div que contendrá el panel.
- * @param {boolean} [config.includeFunctions=false] - Si se deben incluir botones de funciones (fracción, exponente).
- * @param {string} [config.fractionBtnId] - ID del botón de fracción (si se incluye).
- * @param {string} [config.exponentBtnId] - ID del botón de exponente (si se incluye).
- */
 export function initializeSymbolsPanel({
   textareaId,
   toggleBtnId,

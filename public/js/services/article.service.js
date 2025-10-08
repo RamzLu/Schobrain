@@ -2,11 +2,6 @@
 
 const API_URL = "/api/articles";
 
-/**
- * Publica una nueva pregunta.
- * @param {FormData} formData - Contiene content, tags, e imageFile.
- * @returns {Promise<Object>} El artículo creado.
- */
 export const postQuestion = async (formData) => {
   const response = await fetch(API_URL, {
     method: "POST",
@@ -25,10 +20,6 @@ export const postQuestion = async (formData) => {
   return data.data;
 };
 
-/**
- * Obtiene todos los artículos (preguntas) para el feed.
- * @returns {Promise<Array<Object>>} Lista de artículos.
- */
 export const fetchAllArticles = async () => {
   const response = await fetch(API_URL, {
     method: "GET",
@@ -42,11 +33,6 @@ export const fetchAllArticles = async () => {
   return await response.json();
 };
 
-/**
- * ✅ NUEVA FUNCIÓN: Obtiene un solo artículo por su ID.
- * @param {string} articleId - El ID del artículo a buscar.
- * @returns {Promise<Object>} El artículo con sus comentarios.
- */
 export const fetchArticleById = async (articleId) => {
   const response = await fetch(`${API_URL}/${articleId}`, {
     method: "GET",
@@ -60,11 +46,6 @@ export const fetchArticleById = async (articleId) => {
   return await response.json();
 };
 
-/**
- * Obtiene artículos filtrados por una etiqueta específica.
- * @param {string} tagName
- * @returns {Promise<Array<Object>>}
- */
 export const fetchArticlesByTag = async (tagName) => {
   const response = await fetch(`${API_URL}/tag/${tagName}`, {
     method: "GET",
@@ -78,11 +59,6 @@ export const fetchArticlesByTag = async (tagName) => {
   return await response.json();
 };
 
-/**
- * Elimina un artículo por su ID.
- * @param {string} articleId - El ID del artículo a eliminar.
- * @returns {Promise<Object>} La respuesta del servidor.
- */
 export const deleteArticle = async (articleId) => {
   const response = await fetch(`${API_URL}/${articleId}`, {
     method: "DELETE",
@@ -97,4 +73,24 @@ export const deleteArticle = async (articleId) => {
   }
 
   return await response.json();
+};
+
+/**
+ * Envía un voto (like/dislike) para un artículo.
+ * @param {string} articleId - El ID del artículo.
+ * @param {'like' | 'dislike'} voteType - El tipo de voto.
+ * @returns {Promise<Object>} Los contadores de votos actualizados.
+ */
+export const voteOnArticle = async (articleId, voteType) => {
+  const response = await fetch(`${API_URL}/${articleId}/vote`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ voteType }),
+  });
+
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data.msg || "Error al registrar el voto.");
+  }
+  return data.data;
 };

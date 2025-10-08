@@ -797,10 +797,24 @@ body {
 
 .article-footer-actions {
   display: flex;
+  flex-direction: column; /* Apila los elementos verticalmente */
+  gap: 1rem; /* Espacio entre la fila de tags/links y la fila de votos */
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid #f0f0f0; /* Línea separadora */
+}
+
+.footer-top-row {
+  display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: 1rem;
-  padding-top: 0.5rem;
+  width: 100%;
+}
+
+.article-tags-container {
+  display: flex;
+  gap: 10px;
+  align-items: center;
 }
 
 .article-tags-container {
@@ -1627,4 +1641,49 @@ body {
 
 #image-preview-modal .close-preview-btn:hover {
   transform: scale(1.1);
+}
+/* ... (todo tu CSS existente va aquí arriba) ... */
+
+/* ==========================================================================
+   19. ESTILOS PARA EL SISTEMA DE VOTACIÓN
+   ========================================================================== */
+
+.vote-controls {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem; /* Espacio entre los grupos de like y dislike */
+}
+
+.vote-group {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.vote-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #888; /* Color por defecto */
+  font-size: 1.2rem;
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.vote-btn:hover {
+  color: #555;
+  transform: scale(1.1);
+}
+
+.vote-btn.active.like {
+  color: #2575fc; /* Color azul para like activado */
+}
+
+.vote-btn.active.dislike {
+  color: #e63946; /* Color rojo para dislike activado */
+}
+
+.vote-count {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #555;
 }

@@ -2,7 +2,7 @@ import { verifyAuth, logoutUser } from "./services/auth.service.js";
 import {
   showAskQuestionModal,
   setupCancelButton,
-  initializeSymbolsPanel, // Importamos la función centralizada
+  initializeSymbolsPanel,
 } from "./article/article.ui.js";
 import {
   handlePostQuestion,
@@ -11,6 +11,8 @@ import {
   handleDeleteArticle,
 } from "./article/article.handler.js";
 import { initializeLightbox } from "./utils/lightbox.js";
+import { voteOnArticle } from "./services/article.service.js"; // Importamos el servicio de voto
+import { showErrorToast } from "./utils/notifications.js"; // Importamos el toast de error
 
 const renderAdminMenuOption = () => {
   const userMenu = document.getElementById("user-menu");
@@ -138,7 +140,8 @@ const initializeIndexPage = async () => {
   const cancelDeleteBtn = document.getElementById("cancel-delete");
   let articleIdToDelete = null;
 
-  questionsList.addEventListener("click", (event) => {
+  questionsList.addEventListener("click", async (event) => {
+    // --- Lógica para el menú de opciones ---
     const toggleBtn = event.target.closest(".options-toggle-btn");
     if (toggleBtn) {
       const dropdown = toggleBtn.nextElementSibling;
@@ -148,11 +151,48 @@ const initializeIndexPage = async () => {
       dropdown.classList.toggle("visible");
     }
 
+    // --- Lógica para el botón de eliminar ---
     const deleteBtn = event.target.closest(".delete-btn");
     if (deleteBtn) {
       articleIdToDelete = deleteBtn.dataset.id;
       deleteConfirmModal.classList.add("visible");
       deleteBtn.closest(".options-dropdown").classList.remove("visible");
+    }
+
+    // --- Lógica para los botones de voto ---
+    const voteBtn = event.target.closest(".vote-btn");
+    if (voteBtn) {
+      const articleId = voteBtn.dataset.articleId;
+      const voteType = voteBtn.dataset.voteType;
+
+      try {
+        const updatedVotes = await voteOnArticle(articleId, voteType);
+
+        const articleCard = document.querySelector(
+          `.article-card[data-id="${articleId}"]`
+        );
+        if (articleCard) {
+          articleCard.querySelector(".like-count").textContent =
+            updatedVotes.likes;
+          articleCard.querySelector(".dislike-count").textContent =
+            updatedVotes.dislikes;
+
+          const likeBtn = articleCard.querySelector(".vote-btn.like");
+          const dislikeBtn = articleCard.querySelector(".vote-btn.dislike");
+          const userId = authData.data.id;
+
+          likeBtn.classList.toggle(
+            "active",
+            updatedVotes.votedUp.includes(userId)
+          );
+          dislikeBtn.classList.toggle(
+            "active",
+            updatedVotes.votedDown.includes(userId)
+          );
+        }
+      } catch (error) {
+        showErrorToast(error.message);
+      }
     }
   });
 

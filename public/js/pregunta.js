@@ -1,5 +1,5 @@
 import { verifyAuth } from "./services/auth.service.js";
-import { fetchArticleById } from "./services/article.service.js";
+import { fetchArticleById, voteOnArticle } from "./services/article.service.js"; // Se importa voteOnArticle
 import { postComment, deleteComment } from "./services/comment.service.js";
 import {
   renderArticleCard,
@@ -60,7 +60,6 @@ const renderComments = (comments, currentUser) => {
       const canDelete =
         currentUser.role === "admin" || currentUser.id === comment.author._id;
 
-      // ✅ INICIO DE LA LÓGICA PARA LAS ETIQUETAS
       let statusBadges = "";
       if (comment.author.role === "admin") {
         statusBadges += `<span class="admin-badge">Administrador</span>`;
@@ -68,7 +67,6 @@ const renderComments = (comments, currentUser) => {
       if (currentUser.id === comment.author._id) {
         statusBadges += `<span class="author-badge">Tú</span>`;
       }
-      // ✅ FIN DE LA LÓGICA
 
       const optionsMenuHtml = canDelete
         ? `<div class="comment-options-menu">
@@ -158,6 +156,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       }
     });
 
+    // --- Lógica para eliminar comentarios ---
     const commentsList = document.getElementById("comments-list");
     const deleteConfirmModal = document.getElementById("delete-confirm-modal");
     const confirmDeleteBtn = document.getElementById("confirm-delete");
@@ -213,6 +212,46 @@ document.addEventListener("DOMContentLoaded", async () => {
     deleteConfirmModal.addEventListener("click", (event) => {
       if (event.target === deleteConfirmModal) {
         deleteConfirmModal.classList.remove("visible");
+      }
+    });
+
+    //  LÓGICA DE VOTACIÓN
+    const mainQuestionContainer = document.getElementById(
+      "main-question-container"
+    );
+    mainQuestionContainer.addEventListener("click", async (event) => {
+      const voteBtn = event.target.closest(".vote-btn");
+      if (voteBtn) {
+        const articleId = voteBtn.dataset.articleId;
+        const voteType = voteBtn.dataset.voteType;
+
+        try {
+          const updatedVotes = await voteOnArticle(articleId, voteType);
+
+          const articleCard = mainQuestionContainer.querySelector(
+            `.article-card[data-id="${articleId}"]`
+          );
+          if (articleCard) {
+            articleCard.querySelector(".like-count").textContent =
+              updatedVotes.likes;
+            articleCard.querySelector(".dislike-count").textContent =
+              updatedVotes.dislikes;
+
+            const likeBtn = articleCard.querySelector(".vote-btn.like");
+            const dislikeBtn = articleCard.querySelector(".vote-btn.dislike");
+
+            likeBtn.classList.toggle(
+              "active",
+              updatedVotes.votedUp.includes(currentUser.id)
+            );
+            dislikeBtn.classList.toggle(
+              "active",
+              updatedVotes.votedDown.includes(currentUser.id)
+            );
+          }
+        } catch (error) {
+          showErrorToast(error.message);
+        }
       }
     });
   } catch (error) {

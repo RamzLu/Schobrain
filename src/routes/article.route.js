@@ -7,6 +7,7 @@ import {
   getArticlesByTag,
   getUserLogArticles,
   updateArticle,
+  voteOnArticle,
 } from "../controllers/article.controller.js";
 import { validateToken } from "../middlewares/authMiddleware.js";
 import { ownerOrAdmin } from "../middlewares/ownerOrAdminMiddleware.js";
@@ -37,6 +38,9 @@ routeArticle.post(
 routeArticle.get("/articles", getAllArticles);
 
 routeArticle.get("/articles/tag/:tagName", getArticlesByTag);
+
+//  RUTA PARA GESTIONAR VOTOS
+routeArticle.post("/articles/:id/vote", validateToken, voteOnArticle);
 
 routeArticle.get(
   "/articles/:id",
