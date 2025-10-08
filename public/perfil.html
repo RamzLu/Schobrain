@@ -1,92 +1,40 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mi Perfil Personal</title>
-    <link rel="stylesheet" href="assets/perfil.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mi Perfil Personal</title>
+  <link rel="stylesheet" href="assets/perfil.css">
 </head>
 <body>
-    <div class="container">
- <header class="profile-header">
-    <div class="profile-image-container">
-        <img id="profileImage" src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80" 
-             alt="Foto de perfil" class="profile-img" onclick="document.getElementById('imageUpload').click()">
-        <input type="file" id="imageUpload" accept="image/*" class="image-upload">
-        <label for="imageUpload" class="change-photo-btn">Cambiar foto</label>
+  <div class="perfil-container">
+    <div class="perfil-header">
+      <div class="avatar-wrapper">
+        <img id="avatarUrl" class="perfil-avatar" src="" alt="Avatar">
+        <label for="avatarInput" class="avatar-edit-btn">Cambiar foto</label>
+        <input type="file" id="avatarInput" accept="image/*" style="display:none">
+      </div>
+      <div>
+        <h2>
+          <input id="firstName" class="input-name" placeholder="Nombre">
+          <input id="lastName" class="input-name" placeholder="Apellido">
+        </h2>
+        <span id="role" class="role-badge"></span>
+      </div>
     </div>
-    
-    <h1 class="profile-name editable" contenteditable="true" data-original="Juan Pérez">Juan Pérez</h1>
-    <p class="profile-tagline editable" contenteditable="true" data-original="Desarrollador Web Full Stack">Desarrollador Web Full Stack</p>
-    
-    <button class="guardar-header" id="guardarHeader" onclick="guardarCambiosHeader()">
-         Guardar Cambios
-        <span class="contador-cambios" id="contadorCambios" style="display: none;">0</span>
-    </button>
-</header>
-
-        <main class="profile-content">
-            <section class="profile-section">
-                <h2 class="section-title">Sobre Mí</h2>
-                <div class="section-content editable" id="aboutContent" contenteditable="true">
-                    <p>Soy un desarrollador web apasionado por crear soluciones innovadoras. Me encanta aprender nuevas tecnologías y trabajar en equipo para alcanzar objetivos comunes.</p>
-                    <p>En mi tiempo libre disfruto del senderismo, la fotografía y leer libros de ciencia ficción.</p>
-                </div>
-            </section>
-
-            <section class="profile-section">
-                <h2 class="section-title">Habilidades</h2>
-                <div class="skills-container" id="skillsContainer">
-                    <!-- Las habilidades se generarán dinámicamente -->
-                </div>
-                <div class="add-skill-container">
-                    <input type="text" id="newSkillInput" placeholder="Añadir nueva habilidad">
-                    <button id="addSkillBtn" class="btn">+ Añadir</button>
-                </div>
-            </section>
-
-            <section class="profile-section">
-                <h2 class="section-title">Experiencia</h2>
-                <div class="experience-content editable" id="experienceContent" contenteditable="true">
-                    <div class="experience-item">
-                        <h3>Desarrollador Frontend Senior</h3>
-                        <p class="company">Tech Solutions Inc.</p>
-                        <p class="date">2020 - Presente</p>
-                        <p>Lideré el desarrollo de aplicaciones web usando React y TypeScript. Colaboré con equipos de diseño para implementar interfaces de usuario responsivas.</p>
-                    </div>
-                    <div class="experience-item">
-                        <h3>Desarrollador Web Junior</h3>
-                        <p class="company">Digital Agency</p>
-                        <p class="date">2018 - 2020</p>
-                        <p>Desarrollé sitios web para diversos clientes usando HTML, CSS y JavaScript. Participé en proyectos de e-commerce y landing pages.</p>
-                    </div>
-                </div>
-            </section>
-
-            <section class="profile-section">
-                <h2 class="section-title">Contacto</h2>
-                <div class="contact-info">
-                    <div class="contact-item editable" contenteditable="true">
-                        <span class="contact-label">📧 Email:</span>
-                        <span class="contact-value">juan.perez@ejemplo.com</span>
-                    </div>
-                    <div class="contact-item editable" contenteditable="true">
-                        <span class="contact-label">📱 Teléfono:</span>
-                        <span class="contact-value">+34 612 345 678</span>
-                    </div>
-                    <div class="contact-item editable" contenteditable="true">
-                        <span class="contact-label">📍 Ubicación:</span>
-                        <span class="contact-value">Madrid, España</span>
-                    </div>
-                </div>
-            </section>
-        </main>
-
-        <footer class="profile-footer">
-            <p>Los cambios se guardan automáticamente</p>
-        </footer>
+    <div class="perfil-info">
+      <label>Biografía:</label>
+      <textarea id="biography" placeholder="Escribe algo sobre ti..."></textarea>
+      <label>Fecha de nacimiento:</label>
+      <input type="date" id="birthDate">
+      <label>Email:</label>
+      <input type="email" id="email">
+      <label>Usuario:</label>
+      <input type="text" id="username">
     </div>
-
-    <script src="js/perfil/perfil.js"></script>
+    <button id="saveProfileBtn">Guardar cambios</button>
+    <div id="profileMsg"></div>
+  </div>
+  <script src="js/perfil/perfil.js"></script>
 </body>
 </html>

@@ -30,7 +30,6 @@ export const register = async (req, res) => {
 export const login = async (req, res) => {
   const { username, password } = req.body;
   try {
-    // en mongoDB ya no se utiliza where
     const user = await UserModel.findOne({
       username: username,
     });
@@ -69,7 +68,7 @@ export const login = async (req, res) => {
 export const logout = async (req, res) => {
   try {
     const user = req.userLog;
-    res.clearCookie("token"); // Eliminar cookie del navegador
+    res.clearCookie("token");
     return res.json({
       msg: `Logout exitoso, adiós ${user.firstName}`,
     });
@@ -126,8 +125,6 @@ export const updateProfile = async (req, res) => {
 };
 
 export const verifyToken = (req, res) => {
-  // Si el middleware validateToken pasa, significa que el token es válido.
-  // Devolvemos los datos del usuario por si el frontend los necesita.
   return res.status(200).json({
     msg: "Token válido.",
     data: req.userLog,

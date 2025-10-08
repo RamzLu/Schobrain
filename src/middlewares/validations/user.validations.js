@@ -11,7 +11,7 @@ export const createUserValidation = [
     .withMessage("El nombre de usuario debe tener entre 3 y 20 caracteres.")
     .trim()
     .custom(async (value) => {
-      const user = await UserModel.findOne({ username: value });
+      const user = await User.findOne({ username: value });
       if (user) {
         throw new Error("El nombre de usuario ya está en uso.");
       }
@@ -23,7 +23,7 @@ export const createUserValidation = [
     .withMessage("Debe proporcionar un correo electrónico válido.")
     .normalizeEmail()
     .custom(async (value) => {
-      const user = await UserModel.findOne({ email: value });
+      const user = await User.findOne({ email: value });
       if (user) {
         throw new Error("El correo electrónico ya está registrado.");
       }
@@ -78,7 +78,7 @@ export const updateUserValidation = [
     .isMongoId()
     .withMessage("El id del tag no es un ObjectId válido.")
     .custom(async (value) => {
-      const tag = await UserModel.findById(value);
+      const tag = await User.findById(value);
       if (!tag) {
         throw new Error("El user no existe.");
       }
@@ -91,7 +91,7 @@ export const updateUserValidation = [
     .withMessage("El nombre de usuario debe tener entre 3 y 20 caracteres.")
     .trim()
     .custom(async (value, { req }) => {
-      const user = await UserModel.findOne({ where: { username: value } });
+      const user = await User.findOne({ where: { username: value } });
       if (user && user.id !== parseInt(req.params.id)) {
         throw new Error(
           "El nombre de usuario ya está en uso por otro usuario."
@@ -105,7 +105,7 @@ export const updateUserValidation = [
     .withMessage("Debe proporcionar un correo electrónico válido.")
     .normalizeEmail()
     .custom(async (value, { req }) => {
-      const user = await UserModel.findOne({ email: value });
+      const user = await User.findOne({ email: value });
       if (user && user._id.toString() !== req.params.id) {
         throw new Error(
           "El correo electrónico ya está en uso por otro usuario."
@@ -192,7 +192,7 @@ const userIdValidation = [
     .isMongoId()
     .withMessage("El id del tag no es un ObjectId válido.")
     .custom(async (value) => {
-      const tag = await UserModel.findById(value);
+      const tag = await User.findById(value);
       if (!tag) {
         throw new Error("El user no existe.");
       }
