@@ -3,6 +3,7 @@ import {
   showAskQuestionModal,
   setupCancelButton,
   initializeSymbolsPanel,
+  loadArticles,
 } from "./article/article.ui.js";
 import {
   handlePostQuestion,
@@ -11,8 +12,8 @@ import {
   handleDeleteArticle,
 } from "./article/article.handler.js";
 import { initializeLightbox } from "./utils/lightbox.js";
-import { voteOnArticle } from "./services/article.service.js"; // Importamos el servicio de voto
-import { showErrorToast } from "./utils/notifications.js"; // Importamos el toast de error
+import { voteOnArticle, searchArticles } from "./services/article.service.js"; // Importamos searchArticles
+import { showSuccessToast, showErrorToast } from "./utils/notifications.js";
 
 const renderAdminMenuOption = () => {
   const userMenu = document.getElementById("user-menu");
@@ -121,6 +122,33 @@ const initializeIndexPage = async () => {
     includeFunctions: true,
     fractionBtnId: "fraction-btn",
     exponentBtnId: "exponent-btn",
+  });
+
+  // LA LÓGICA DE BÚSQUEDA
+  const searchBar = document.querySelector(".search-bar");
+  const searchInput = searchBar.querySelector("input");
+  const searchButton = searchBar.querySelector(".search-button");
+
+  const performSearch = async () => {
+    const query = searchInput.value.trim();
+    if (!query) {
+      showErrorToast("Por favor, ingresa un término para buscar.");
+      return;
+    }
+    try {
+      const results = await searchArticles(query);
+      loadArticles(results, authData.data);
+      showSuccessToast(`${results.length} resultados para "${query}"`);
+    } catch (error) {
+      showErrorToast(error.message);
+    }
+  };
+
+  searchButton.addEventListener("click", performSearch);
+  searchInput.addEventListener("keypress", (event) => {
+    if (event.key === "Enter") {
+      performSearch();
+    }
   });
 
   const subjectFilterList = document.getElementById("subject-filter-list");

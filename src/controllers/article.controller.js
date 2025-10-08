@@ -86,6 +86,36 @@ export const getArticleById = async (req, res) => {
   }
 };
 
+//FUNCIÓN PARA LA BÚSQUEDA
+export const searchArticles = async (req, res) => {
+  const { query } = req.query; // Obtenemos el término de búsqueda de la URL (ej: /search?query=matrices)
+
+  if (!query) {
+    return res
+      .status(400)
+      .json({ msg: "Debes proporcionar un término de búsqueda." });
+  }
+
+  try {
+    const articles = await ArticleModel.find({
+      // Usamos una expresión regular para buscar el texto en el contenido
+      // 'i' hace que la búsqueda no distinga mayúsculas/minúsculas
+      content: { $regex: query, $options: "i" },
+    })
+      .populate("author", "-password")
+      .populate("tags", "name")
+      .select(
+        "content author createdAt tags imageUrls likes dislikes votedUp votedDown"
+      )
+      .sort({ createdAt: -1 });
+
+    return res.status(200).json(articles);
+  } catch (error) {
+    console.log(error);
+    return res.status(501).json({ msg: "Error interno del servidor." });
+  }
+};
+
 export const deleteArticle = async (req, res) => {
   const { id } = req.params;
   try {

@@ -1,5 +1,3 @@
-// File: ramzlu/schobrain/Schobrain-dev-lu/public/js/services/article.service.js
-
 const API_URL = "/api/articles";
 
 export const postQuestion = async (formData) => {
@@ -42,6 +40,27 @@ export const fetchArticleById = async (articleId) => {
   if (!response.ok) {
     const data = await response.json();
     throw new Error(data.msg || "Error al obtener la pregunta.");
+  }
+  return await response.json();
+};
+
+/**
+ * Busca artículos que coincidan con un término de búsqueda.
+ * @param {string} query - El término a buscar.
+ * @returns {Promise<Array<Object>>} Lista de artículos encontrados.
+ */
+export const searchArticles = async (query) => {
+  const response = await fetch(
+    `${API_URL}/search?query=${encodeURIComponent(query)}`,
+    {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+    }
+  );
+
+  if (!response.ok) {
+    const data = await response.json();
+    throw new Error(data.msg || "Error al realizar la búsqueda.");
   }
   return await response.json();
 };

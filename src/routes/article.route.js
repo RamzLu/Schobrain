@@ -8,6 +8,7 @@ import {
   getUserLogArticles,
   updateArticle,
   voteOnArticle,
+  searchArticles,
 } from "../controllers/article.controller.js";
 import { validateToken } from "../middlewares/authMiddleware.js";
 import { ownerOrAdmin } from "../middlewares/ownerOrAdminMiddleware.js";
@@ -25,6 +26,9 @@ import { uploadImages } from "../middlewares/uploadMiddleware.js";
 export const routeArticle = Router();
 
 routeArticle.get("/articles/my", validateToken, getUserLogArticles);
+
+// RUTA PARA LA BÚSQUEDA
+routeArticle.get("/articles/search", searchArticles);
 
 routeArticle.post(
   "/articles",
