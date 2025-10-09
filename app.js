@@ -9,6 +9,7 @@ import { routeUser } from "./src/routes/user.route.js";
 import { tagRouter } from "./src/routes/tag.route.js";
 import { routeArticle } from "./src/routes/article.route.js";
 import { routeComment } from "./src/routes/comment.route.js";
+import profileRouter from "./src/routes/profile.route.js";
 
 app.use(express.json());
 app.use(cookieParser());
@@ -20,6 +21,7 @@ app.use("/api", routeUser);
 app.use("/api", tagRouter);
 app.use("/api", routeArticle);
 app.use("/api", routeComment);
+app.use("/api/profile", profileRouter);
 app.listen(PORT, async () => {
   await conectDB();
   console.log(`Servidor corriendo en http://localhost:${PORT}`);

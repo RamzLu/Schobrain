@@ -1,0 +1,118 @@
+body {
+  background: linear-gradient(120deg, #059669 0%, #38bdf8 100%);
+  font-family: 'Segoe UI', Arial, sans-serif;
+}
+.perfil-container {
+  max-width: 480px;
+  margin: 48px auto;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 4px 24px #0002;
+  padding: 36px 32px 32px 32px;
+  position: relative;
+}
+.perfil-header {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  margin-bottom: 28px;
+}
+.avatar-wrapper {
+  position: relative;
+  width: 110px;
+  height: 110px;
+}
+.perfil-avatar {
+  width: 110;
+  height: 110px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #6163ec52;
+  box-shadow: 0 2px 8px #05966944;
+  background: #f3f4f6;
+}
+.avatar-edit-btn {
+  position: relative;
+  bottom: 0px;
+  background: #aa92d8;
+  color: #fffefe;
+  border-radius: 10%;
+  padding: 3px 3px;
+  font-size: 15px;
+  cursor: pointer;
+
+  box-shadow: 0 2px 6px #0002;
+  transition: background 0.2s;
+}
+.avatar-edit-btn:hover {
+  background: #60b89f6c;
+}
+.input-name {
+  font-size: 1.3em;
+  font-weight: bold;
+  border: none;
+  background: transparent;
+  margin-right: 8px;
+  padding: 2px 6px;
+  border-radius: 6px;
+  transition: background 0.2s;
+}
+.input-name:focus {
+  background: #e0f2fe;
+  outline: none;
+}
+.role-badge {
+  display: inline-block;
+  background: #38bdf8;
+  color: #fff;
+  font-size: 0.95em;
+  padding: 3px 12px;
+  border-radius: 12px;
+  margin-top: 6px;
+  font-weight: 500;
+}
+.perfil-info label {
+  display: block;
+  margin-top: 18px;
+  font-weight: bold;
+  color: #059669;
+}
+.perfil-info input,
+.perfil-info textarea {
+  width: 100%;
+  padding: 9px;
+  margin-top: 5px;
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+  font-size: 16px;
+  background: #f9fafb;
+  transition: border 0.2s;
+}
+.perfil-info input:focus,
+.perfil-info textarea:focus {
+  border: 1.5px solid #38bdf8;
+  outline: none;
+}
+#saveProfileBtn {
+  margin-top: 28px;
+  background: linear-gradient(90deg, #059669 60%, #38bdf8 100%);
+  color: white;
+  border: none;
+  padding: 14px 36px;
+  border-radius: 8px;
+  font-size: 19px;
+  cursor: pointer;
+  box-shadow: 0 2px 8px #05966933;
+  font-weight: bold;
+  transition: background 0.2s;
+}
+#saveProfileBtn:hover {
+  background: linear-gradient(90deg, #047857 60%, #0ea5e9 100%);
+}
+#profileMsg {
+  margin-top: 18px;
+  font-size: 16px;
+  color: #059669;
+  text-align: center;
+  min-height: 24px;
+}
