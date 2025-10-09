@@ -44,11 +44,6 @@ export const fetchArticleById = async (articleId) => {
   return await response.json();
 };
 
-/**
- * Busca artículos que coincidan con un término de búsqueda.
- * @param {string} query - El término a buscar.
- * @returns {Promise<Array<Object>>} Lista de artículos encontrados.
- */
 export const searchArticles = async (query) => {
   const response = await fetch(
     `${API_URL}/search?query=${encodeURIComponent(query)}`,
@@ -66,12 +61,20 @@ export const searchArticles = async (query) => {
 };
 
 export const fetchArticlesByTag = async (tagName) => {
-  const response = await fetch(`${API_URL}/tag/${tagName}`, {
+  // --- CORRECCIÓN CLAVE ---
+  // Se codifica el nombre de la etiqueta para que los caracteres especiales
+  // como '/' y espacios sean seguros para la URL.
+  const encodedTagName = encodeURIComponent(tagName);
+  const response = await fetch(`${API_URL}/tag/${encodedTagName}`, {
     method: "GET",
     headers: { "Content-Type": "application/json" },
   });
 
   if (!response.ok) {
+    // Si la respuesta no es JSON, lanzamos un error más genérico.
+    if (!response.headers.get("content-type")?.includes("application/json")) {
+      throw new Error(`Error en el servidor: ${response.statusText}`);
+    }
     const data = await response.json();
     throw new Error(data.msg || `Error al obtener artículos de ${tagName}.`);
   }
@@ -94,12 +97,6 @@ export const deleteArticle = async (articleId) => {
   return await response.json();
 };
 
-/**
- * Envía un voto (like/dislike) para un artículo.
- * @param {string} articleId - El ID del artículo.
- * @param {'like' | 'dislike'} voteType - El tipo de voto.
- * @returns {Promise<Object>} Los contadores de votos actualizados.
- */
 export const voteOnArticle = async (articleId, voteType) => {
   const response = await fetch(`${API_URL}/${articleId}/vote`, {
     method: "POST",
