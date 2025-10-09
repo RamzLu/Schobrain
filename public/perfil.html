@@ -1,40 +1,142 @@
 <!DOCTYPE html>
 <html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mi Perfil Personal</title>
-  <link rel="stylesheet" href="assets/perfil.css">
-</head>
-<body>
-  <div class="perfil-container">
-    <div class="perfil-header">
-      <div class="avatar-wrapper">
-        <img id="avatarUrl" class="perfil-avatar" src="" alt="Avatar">
-        <label for="avatarInput" class="avatar-edit-btn">Cambiar foto</label>
-        <input type="file" id="avatarInput" accept="image/*" style="display:none">
-      </div>
-      <div>
-        <h2>
-          <input id="firstName" class="input-name" placeholder="Nombre">
-          <input id="lastName" class="input-name" placeholder="Apellido">
-        </h2>
-        <span id="role" class="role-badge"></span>
-      </div>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mi Perfil | Schobrain</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+    <link rel="icon" type="image/png" href="assets/img/logoSchobrain.png" />
+    <link rel="stylesheet" href="assets/style.css" />
+    <link rel="stylesheet" href="assets/perfil.css" />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css"
+    />
+    <script
+      type="text/javascript"
+      src="https://cdn.jsdelivr.net/npm/toastify-js"
+    ></script>
+  </head>
+  <body>
+    <div class="main-container">
+      <header
+        class="main-header"
+        style="background-color: #ffffff; color: #333"
+      >
+        <div
+          class="header-left"
+          style="display: flex; align-items: center; gap: 1rem"
+        >
+          <a href="/"
+            ><img
+              src="assets/img/logoSchobrain.png"
+              alt="Logo Schobrain"
+              class="header-logo"
+          /></a>
+        </div>
+        <div class="header-center">
+          <div class="search-bar">
+            <input type="text" placeholder="busca preguntas específicas" />
+            <button type="button" class="search-button">
+              <i class="fas fa-search"></i>
+            </button>
+          </div>
+        </div>
+        <div class="header-right">
+          <span class="welcome-user" style="color: #333"
+            >Bienvenido, <span id="logged-in-username">Usuario</span></span
+          >
+          <a
+            href="/"
+            class="modal-button secondary"
+            style="
+              text-decoration: none;
+              padding: 0.6rem 1.2rem;
+              background-color: #e9ecef;
+              color: #495057;
+            "
+          >
+            Volver al Feed
+          </a>
+        </div>
+      </header>
+
+      <main class="profile-main-area">
+        <aside class="profile-sidebar">
+          <h2>Configuración</h2>
+          <nav class="profile-nav">
+            <a href="/perfil.html" class="nav-link active">Mi Perfil</a>
+          </nav>
+        </aside>
+
+        <section class="profile-content">
+          <div class="profile-card">
+            <div class="profile-card-header">
+              <div class="avatar-container">
+                <img
+                  id="avatarUrl"
+                  src="https://ui-avatars.com/api/?name=S&background=random"
+                  alt="Avatar del usuario"
+                  class="profile-avatar"
+                />
+                <label
+                  for="avatarInput"
+                  class="avatar-edit-button"
+                  title="Cambiar foto"
+                >
+                  <i class="fas fa-camera"></i>
+                </label>
+                <input
+                  type="file"
+                  id="avatarInput"
+                  accept="image/*"
+                  style="display: none"
+                />
+              </div>
+              <div class="user-details">
+                <h1 id="username" class="username-display">@username</h1>
+                <p class="full-name">
+                  <span id="firstName">Nombre</span>
+                  <span id="lastName">Apellido</span>
+                </p>
+                <span id="role" class="role-badge">Usuario</span>
+              </div>
+            </div>
+
+            <div class="profile-card-body">
+              <div class="info-group">
+                <label for="birthDate">Fecha de nacimiento</label>
+                <input type="date" id="birthDate" />
+              </div>
+              <div class="info-group">
+                <label for="biography">Biografía</label>
+                <textarea
+                  id="biography"
+                  placeholder="Hola, soy un alumno de la escuela XXXXX y quiero aprender..."
+                ></textarea>
+              </div>
+            </div>
+
+            <div class="profile-card-footer">
+              <button id="saveProfileBtn" class="save-button">
+                Guardar Cambios
+              </button>
+            </div>
+          </div>
+        </section>
+      </main>
     </div>
-    <div class="perfil-info">
-      <label>Biografía:</label>
-      <textarea id="biography" placeholder="Escribe algo sobre ti..."></textarea>
-      <label>Fecha de nacimiento:</label>
-      <input type="date" id="birthDate">
-      <label>Email:</label>
-      <input type="email" id="email">
-      <label>Usuario:</label>
-      <input type="text" id="username">
-    </div>
-    <button id="saveProfileBtn">Guardar cambios</button>
-    <div id="profileMsg"></div>
-  </div>
-  <script src="js/perfil/perfil.js"></script>
-</body>
+
+    <script type="module" src="/js/perfil/perfil.js"></script>
+  </body>
 </html>

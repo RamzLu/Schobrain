@@ -1,118 +1,190 @@
+/* Limpiamos el fondo del body, ya que lo hereda del style.css principal */
 body {
-  background: linear-gradient(120deg, #059669 0%, #38bdf8 100%);
-  font-family: 'Segoe UI', Arial, sans-serif;
+  background-color: #f0f2f5;
 }
-.perfil-container {
-  max-width: 480px;
-  margin: 48px auto;
-  background: #fff;
-  border-radius: 16px;
-  box-shadow: 0 4px 24px #0002;
-  padding: 36px 32px 32px 32px;
-  position: relative;
+
+/* Área principal del perfil (layout de 2 columnas) */
+.profile-main-area {
+  display: flex;
+  gap: 2rem;
+  padding: 2rem;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
 }
-.perfil-header {
+
+/* Barra lateral izquierda */
+.profile-sidebar {
+  flex: 0 0 250px; /* No crece, no se encoge, base de 250px */
+}
+
+.profile-sidebar h2 {
+  font-size: 1.8rem;
+  color: #12121c;
+  margin-bottom: 1.5rem;
+}
+
+.profile-nav .nav-link {
+  display: block;
+  padding: 0.8rem 1rem;
+  text-decoration: none;
+  color: #495057;
+  font-weight: 600;
+  border-radius: 8px;
+  margin-bottom: 0.5rem;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.profile-nav .nav-link:hover {
+  background-color: #e9ecef;
+}
+
+.profile-nav .nav-link.active {
+  background-color: #e0e7ff;
+  color: #4338ca;
+}
+
+/* Contenido principal derecho */
+.profile-content {
+  flex-grow: 1;
+}
+
+.profile-card {
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+}
+
+.profile-card-header {
   display: flex;
   align-items: center;
-  gap: 28px;
-  margin-bottom: 28px;
+  gap: 1.5rem;
+  padding: 2rem;
+  border-bottom: 1px solid #e9ecef;
 }
-.avatar-wrapper {
+
+.avatar-container {
   position: relative;
-  width: 110px;
-  height: 110px;
+  flex-shrink: 0;
 }
-.perfil-avatar {
-  width: 110;
-  height: 110px;
+
+.profile-avatar {
+  width: 100px;
+  height: 100px;
   border-radius: 50%;
   object-fit: cover;
-  border: 3px solid #6163ec52;
-  box-shadow: 0 2px 8px #05966944;
-  background: #f3f4f6;
+  border: 4px solid #ffffff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
-.avatar-edit-btn {
-  position: relative;
-  bottom: 0px;
-  background: #aa92d8;
-  color: #fffefe;
-  border-radius: 10%;
-  padding: 3px 3px;
-  font-size: 15px;
-  cursor: pointer;
 
-  box-shadow: 0 2px 6px #0002;
-  transition: background 0.2s;
+.avatar-edit-button {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  background-color: #4338ca;
+  color: white;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border: 2px solid white;
+  transition: background-color 0.2s;
 }
-.avatar-edit-btn:hover {
-  background: #60b89f6c;
+
+.avatar-edit-button:hover {
+  background-color: #3730a3;
 }
-.input-name {
-  font-size: 1.3em;
-  font-weight: bold;
-  border: none;
-  background: transparent;
-  margin-right: 8px;
-  padding: 2px 6px;
-  border-radius: 6px;
-  transition: background 0.2s;
+
+.user-details .username-display {
+  font-size: 1.5rem;
+  color: #111827;
+  font-weight: 700;
+  margin: 0;
 }
-.input-name:focus {
-  background: #e0f2fe;
-  outline: none;
+
+.user-details .full-name {
+  font-size: 1.1rem;
+  color: #4b5563;
+  margin: 0.25rem 0 0.5rem 0;
 }
-.role-badge {
-  display: inline-block;
-  background: #38bdf8;
-  color: #fff;
-  font-size: 0.95em;
-  padding: 3px 12px;
+
+.user-details .role-badge {
+  background-color: #e0e7ff;
+  color: #4338ca;
+  padding: 0.25rem 0.75rem;
   border-radius: 12px;
-  margin-top: 6px;
-  font-weight: 500;
+  font-size: 0.8rem;
+  font-weight: 600;
 }
-.perfil-info label {
+
+.profile-card-body {
+  padding: 2rem;
+}
+
+.info-group {
+  margin-bottom: 1.5rem;
+}
+
+.info-group label {
   display: block;
-  margin-top: 18px;
-  font-weight: bold;
-  color: #059669;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 0.5rem;
 }
-.perfil-info input,
-.perfil-info textarea {
+
+.info-group input,
+.info-group textarea {
   width: 100%;
-  padding: 9px;
-  margin-top: 5px;
+  padding: 0.8rem 1rem;
   border-radius: 8px;
   border: 1px solid #d1d5db;
-  font-size: 16px;
+  font-size: 1rem;
   background: #f9fafb;
-  transition: border 0.2s;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  font-family: "Outfit", sans-serif;
 }
-.perfil-info input:focus,
-.perfil-info textarea:focus {
-  border: 1.5px solid #38bdf8;
+
+.info-group input:focus,
+.info-group textarea:focus {
+  border-color: #4f46e5;
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
   outline: none;
 }
-#saveProfileBtn {
-  margin-top: 28px;
-  background: linear-gradient(90deg, #059669 60%, #38bdf8 100%);
+
+.info-group textarea {
+  min-height: 120px;
+  resize: vertical;
+  background-color: #f3f4f6; /* Fondo grisáceo como en la imagen */
+  border-radius: 20px; /* Bordes redondeados de burbuja */
+}
+
+.profile-card-footer {
+  padding: 1.5rem 2rem;
+  background-color: #f9fafb;
+  text-align: right;
+  border-top: 1px solid #e9ecef;
+}
+
+.save-button {
+  background-color: #4f46e5;
   color: white;
   border: none;
-  padding: 14px 36px;
+  padding: 0.8rem 2rem;
   border-radius: 8px;
-  font-size: 19px;
+  font-size: 1rem;
+  font-weight: 600;
   cursor: pointer;
-  box-shadow: 0 2px 8px #05966933;
-  font-weight: bold;
-  transition: background 0.2s;
+  transition: background-color 0.2s, transform 0.1s;
 }
-#saveProfileBtn:hover {
-  background: linear-gradient(90deg, #047857 60%, #0ea5e9 100%);
+
+.save-button:hover {
+  background-color: #4338ca;
 }
-#profileMsg {
-  margin-top: 18px;
-  font-size: 16px;
-  color: #059669;
-  text-align: center;
-  min-height: 24px;
+
+.save-button:active {
+  transform: scale(0.98);
 }
