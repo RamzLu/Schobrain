@@ -801,7 +801,6 @@ body {
   gap: 1rem; /* Espacio entre la fila de tags/links y la fila de votos */
   margin-top: 1.5rem;
   padding-top: 1rem;
-  border-top: 1px solid #f0f0f0; /* Línea separadora */
 }
 
 .footer-top-row {
