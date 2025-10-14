@@ -99,194 +99,8 @@ body {
   background-color: #3730a3;
 }
 
-.user-details .username-display {
-  font-size: 1.5rem;
-  color: #111827;
-  font-weight: 700;
-  margin: 0;
-}
-
-.user-details .full-name {
-  font-size: 1.1rem;
-  color: #4b5563;
-  margin: 0.25rem 0 0.5rem 0;
-}
-
-.user-details .role-badge {
-  background-color: #e0e7ff;
-  color: #4338ca;
-  padding: 0.25rem 0.75rem;
-  border-radius: 12px;
-  font-size: 0.8rem;
-  font-weight: 600;
-}
-
-.profile-card-body {
-  padding: 2rem;
-}
-
-.info-group {
-  margin-bottom: 1.5rem;
-}
-
-.info-group label {
-  display: block;
-  font-weight: 600;
-  color: #374151;
-  margin-bottom: 0.5rem;
-}
-
-.info-group input,
-.info-group textarea {
-  width: 100%;
-  padding: 0.8rem 1rem;
-  border-radius: 8px;
-  border: 1px solid #d1d5db;
-  font-size: 1rem;
-  background: #f9fafb;
-  transition: border-color 0.2s, box-shadow 0.2s;
-  font-family: "Outfit", sans-serif;
-}
-
-.info-group input:focus,
-.info-group textarea:focus {
-  border-color: #4f46e5;
-  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
-  outline: none;
-}
-
-.info-group textarea {
-  min-height: 120px;
-  resize: vertical;
-  background-color: #f3f4f6; /* Fondo grisáceo como en la imagen */
-  border-radius: 20px; /* Bordes redondeados de burbuja */
-}
-
-.profile-card-footer {
-  padding: 1.5rem 2rem;
-  background-color: #f9fafb;
-  text-align: right;
-  border-top: 1px solid #e9ecef;
-}
-
-.save-button {
-  background-color: #4f46e5;
-  color: white;
-  border: none;
-  padding: 0.8rem 2rem;
-  border-radius: 8px;
-  font-size: 1rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background-color 0.2s, transform 0.1s;
-}
-
-.save-button:hover {
-  background-color: #4338ca;
-}
-
-.save-button:active {
-  transform: scale(0.98);
-}
-/* Limpiamos el fondo del body, ya que lo hereda del style.css principal */
-body {
-  background-color: #f0f2f5;
-}
-
-/* Área principal del perfil (layout de 2 columnas) */
-.profile-main-area {
-  display: flex;
-  gap: 2rem;
-  padding: 2rem;
-  width: 100%;
-  max-width: 1200px;
-  margin: 0 auto;
-}
-
-/* Barra lateral izquierda */
-.profile-sidebar {
-  flex: 0 0 250px; /* No crece, no se encoge, base de 250px */
-}
-
-.profile-sidebar h2 {
-  font-size: 1.8rem;
-  color: #12121c;
-  margin-bottom: 1.5rem;
-}
-
-.profile-nav .nav-link {
-  display: block;
-  padding: 0.8rem 1rem;
-  text-decoration: none;
-  color: #495057;
-  font-weight: 600;
-  border-radius: 8px;
-  margin-bottom: 0.5rem;
-  transition: background-color 0.2s, color 0.2s;
-}
-
-.profile-nav .nav-link:hover {
-  background-color: #e9ecef;
-}
-
-.profile-nav .nav-link.active {
-  background-color: #e0e7ff;
-  color: #4338ca;
-}
-
-/* Contenido principal derecho */
-.profile-content {
+.user-details {
   flex-grow: 1;
-}
-
-.profile-card {
-  background-color: #ffffff;
-  border-radius: 12px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-  overflow: hidden;
-}
-
-.profile-card-header {
-  display: flex;
-  align-items: center;
-  gap: 1.5rem;
-  padding: 2rem;
-  border-bottom: 1px solid #e9ecef;
-}
-
-.avatar-container {
-  position: relative;
-  flex-shrink: 0;
-}
-
-.profile-avatar {
-  width: 100px;
-  height: 100px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 4px solid #ffffff;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-
-.avatar-edit-button {
-  position: absolute;
-  bottom: 0;
-  right: 0;
-  background-color: #4338ca;
-  color: white;
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  border: 2px solid white;
-  transition: background-color 0.2s;
-}
-
-.avatar-edit-button:hover {
-  background-color: #3730a3;
 }
 
 .user-details .username-display {
@@ -397,23 +211,6 @@ body {
   transform: scale(0.98);
 }
 
-.edit-button {
-  margin-left: auto;
-  background-color: #4f46e5;
-  color: white;
-  border: none;
-  padding: 0.8rem 1.5rem;
-  border-radius: 8px;
-  font-size: 1rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background-color 0.2s;
-}
-
-.edit-button:hover {
-  background-color: #4338ca;
-}
-
 /* --- ESTILOS PARA EL MODAL DE EDICIÓN --- */
 .modal-overlay {
   position: fixed;
@@ -453,4 +250,10 @@ body {
   justify-content: flex-end;
   gap: 1rem;
   margin-top: 1.5rem;
+}
+
+/* --- ESTILOS PARA EL MENÚ DE OPCIONES DEL PERFIL --- */
+.profile-options-menu {
+  position: relative;
+  margin-left: auto;
 }

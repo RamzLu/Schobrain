@@ -1,4 +1,4 @@
-import { verifyAuth } from "../services/auth.service.js";
+import { verifyAuth, logoutUser } from "../services/auth.service.js";
 import { showSuccessToast, showErrorToast } from "../utils/notifications.js";
 
 const API_URL = "/api/profile";
@@ -15,10 +15,47 @@ document.addEventListener("DOMContentLoaded", async () => {
     return;
   }
 
+  const optionsMenu = document.querySelector(".profile-options-menu");
+  const optionsToggleBtn = optionsMenu.querySelector(".options-toggle-btn");
+  const optionsDropdown = optionsMenu.querySelector(".options-dropdown");
+
   const editProfileBtn = document.getElementById("edit-profile-btn");
   const modal = document.getElementById("edit-profile-modal");
   const cancelBtn = document.getElementById("cancel-edit-btn");
   const editProfileForm = document.getElementById("edit-profile-form");
+
+  const logoutBtn = document.getElementById("logout-btn-perfil");
+  const logoutModal = document.getElementById("logout-modal");
+  const cancelLogoutBtn = document.getElementById("cancel-logout");
+  const confirmLogoutBtn = document.getElementById("confirm-logout");
+
+  optionsToggleBtn.addEventListener("click", () => {
+    optionsDropdown.classList.toggle("visible");
+  });
+
+  document.addEventListener("click", (event) => {
+    if (!optionsMenu.contains(event.target)) {
+      optionsDropdown.classList.remove("visible");
+    }
+  });
+
+  logoutBtn.addEventListener("click", () => {
+    logoutModal.classList.add("visible");
+    optionsDropdown.classList.remove("visible");
+  });
+
+  cancelLogoutBtn.addEventListener("click", () => {
+    logoutModal.classList.remove("visible");
+  });
+
+  confirmLogoutBtn.addEventListener("click", async () => {
+    try {
+      await logoutUser();
+      window.location.href = "/login.html";
+    } catch (error) {
+      showErrorToast("Error al cerrar sesión.");
+    }
+  });
 
   const setProfileFields = (data) => {
     const { profile, email, username, role } = data;

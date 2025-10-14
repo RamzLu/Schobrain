@@ -101,9 +101,19 @@
                   <span id="role" class="role-badge">Usuario</span>
                 </div>
               </div>
-              <button id="edit-profile-btn" class="edit-button">
-                Editar Perfil
-              </button>
+              <div class="profile-options-menu">
+                <button class="options-toggle-btn">
+                  <i class="fas fa-ellipsis-v"></i>
+                </button>
+                <div class="options-dropdown">
+                  <button class="dropdown-item" id="edit-profile-btn">
+                    <i class="fas fa-edit"></i> Editar Perfil
+                  </button>
+                  <button class="dropdown-item" id="logout-btn-perfil">
+                    <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+                  </button>
+                </div>
+              </div>
             </div>
             <div class="profile-card-body">
               <div class="info-group">
@@ -119,7 +129,6 @@
         </section>
       </main>
     </div>
-
     <div id="edit-profile-modal" class="modal-overlay">
       <div class="modal-content">
         <h2>Editar Perfil</h2>
@@ -154,6 +163,19 @@
             <button type="submit" class="modal-button">Guardar Cambios</button>
           </div>
         </form>
+      </div>
+    </div>
+    <div id="logout-modal" class="modal-overlay">
+      <div class="modal-content">
+        <h2>¿Seguro que quieres cerrar sesión?</h2>
+        <div class="modal-actions">
+          <button id="cancel-logout" class="modal-button secondary">
+            Cancelar
+          </button>
+          <button id="confirm-logout" class="modal-button danger">
+            Cerrar sesión de todas formas
+          </button>
+        </div>
       </div>
     </div>
 
