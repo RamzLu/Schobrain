@@ -12,8 +12,14 @@ import {
   handleDeleteArticle,
 } from "./article/article.handler.js";
 import { initializeLightbox } from "./utils/lightbox.js";
-import { voteOnArticle, searchArticles } from "./services/article.service.js"; // Importamos searchArticles
+import {
+  voteOnArticle,
+  searchArticles,
+  fetchArticleById,
+  updateArticle,
+} from "./services/article.service.js";
 import { showSuccessToast, showErrorToast } from "./utils/notifications.js";
+import { fetchAllTags } from "./services/tag.service.js";
 
 const renderAdminMenuOption = () => {
   const userMenu = document.getElementById("user-menu");
@@ -29,7 +35,6 @@ const renderAdminMenuOption = () => {
     }
   }
 };
-
 const initializeIndexPage = async () => {
   let authData;
   try {
@@ -66,35 +71,6 @@ const initializeIndexPage = async () => {
     });
   }
 
-  const logoutButton = document.getElementById("logout-button");
-  const logoutModal = document.getElementById("logout-modal");
-  const cancelLogoutButton = document.getElementById("cancel-logout");
-  const confirmLogoutButton = document.getElementById("confirm-logout");
-
-  if (logoutButton && logoutModal) {
-    logoutButton.addEventListener("click", (event) => {
-      event.preventDefault();
-      userMenu.classList.remove("visible");
-      logoutModal.classList.add("visible");
-    });
-
-    cancelLogoutButton.addEventListener("click", () =>
-      logoutModal.classList.remove("visible")
-    );
-    logoutModal.addEventListener("click", (event) => {
-      if (event.target === logoutModal) logoutModal.classList.remove("visible");
-    });
-
-    confirmLogoutButton.addEventListener("click", async () => {
-      try {
-        await logoutUser();
-        window.location.href = "/login.html";
-      } catch (error) {
-        console.error("Error al cerrar sesión:", error);
-      }
-    });
-  }
-
   const askQuestionButton = document.getElementById("ask-question-button");
   const askQuestionForm = document.getElementById("askQuestionForm");
   const askQuestionModal = document.getElementById("ask-question-modal");
@@ -124,7 +100,6 @@ const initializeIndexPage = async () => {
     exponentBtnId: "exponent-btn",
   });
 
-  // LA LÓGICA DE BÚSQUEDA
   const searchBar = document.querySelector(".search-bar");
   const searchInput = searchBar.querySelector("input");
   const searchButton = searchBar.querySelector(".search-button");
@@ -168,8 +143,35 @@ const initializeIndexPage = async () => {
   const cancelDeleteBtn = document.getElementById("cancel-delete");
   let articleIdToDelete = null;
 
+  const editQuestionModal = document.getElementById("edit-question-modal");
+  const editQuestionForm = document.getElementById("editQuestionForm");
+  const cancelEditBtn = document.getElementById("cancel-edit-question");
+
+  const openEditModal = async (articleId) => {
+    try {
+      const article = await fetchArticleById(articleId);
+      document.getElementById("edit-article-id").value = article._id;
+      document.getElementById("edit-question-content").value = article.content;
+
+      const tagSelect = document.getElementById("edit-tag-select");
+      const tags = await fetchAllTags();
+      tagSelect.innerHTML = "";
+      tags.forEach((tag) => {
+        const option = document.createElement("option");
+        option.value = tag._id;
+        option.textContent = tag.name;
+        if (article.tags[0] && tag._id === article.tags[0]._id) {
+          option.selected = true;
+        }
+        tagSelect.appendChild(option);
+      });
+
+      editQuestionModal.classList.add("visible");
+    } catch (error) {
+      showErrorToast("Error al cargar los datos de la pregunta.");
+    }
+  };
   questionsList.addEventListener("click", async (event) => {
-    // --- Lógica para el menú de opciones ---
     const toggleBtn = event.target.closest(".options-toggle-btn");
     if (toggleBtn) {
       const dropdown = toggleBtn.nextElementSibling;
@@ -179,7 +181,6 @@ const initializeIndexPage = async () => {
       dropdown.classList.toggle("visible");
     }
 
-    // --- Lógica para el botón de eliminar ---
     const deleteBtn = event.target.closest(".delete-btn");
     if (deleteBtn) {
       articleIdToDelete = deleteBtn.dataset.id;
@@ -187,7 +188,13 @@ const initializeIndexPage = async () => {
       deleteBtn.closest(".options-dropdown").classList.remove("visible");
     }
 
-    // --- Lógica para los botones de voto ---
+    const editBtn = event.target.closest(".edit-btn");
+    if (editBtn) {
+      const articleId = editBtn.dataset.id;
+      openEditModal(articleId);
+      editBtn.closest(".options-dropdown").classList.remove("visible");
+    }
+
     const voteBtn = event.target.closest(".vote-btn");
     if (voteBtn) {
       const articleId = voteBtn.dataset.articleId;
@@ -195,7 +202,6 @@ const initializeIndexPage = async () => {
 
       try {
         const updatedVotes = await voteOnArticle(articleId, voteType);
-
         const articleCard = document.querySelector(
           `.article-card[data-id="${articleId}"]`
         );
@@ -208,7 +214,6 @@ const initializeIndexPage = async () => {
           const likeBtn = articleCard.querySelector(".vote-btn.like");
           const dislikeBtn = articleCard.querySelector(".vote-btn.dislike");
           const userId = authData.data.id;
-
           likeBtn.classList.toggle(
             "active",
             updatedVotes.votedUp.includes(userId)
@@ -222,6 +227,25 @@ const initializeIndexPage = async () => {
         showErrorToast(error.message);
       }
     }
+  });
+
+  editQuestionForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const articleId = document.getElementById("edit-article-id").value;
+    const formData = new FormData(event.target);
+
+    try {
+      await updateArticle(articleId, formData);
+      showSuccessToast("Pregunta actualizada con éxito.");
+      editQuestionModal.classList.remove("visible");
+      initializeArticleFeed(authData.data);
+    } catch (error) {
+      showErrorToast(error.message);
+    }
+  });
+
+  cancelEditBtn.addEventListener("click", () => {
+    editQuestionModal.classList.remove("visible");
   });
 
   document.addEventListener("click", (event) => {

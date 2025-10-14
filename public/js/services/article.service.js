@@ -110,3 +110,17 @@ export const voteOnArticle = async (articleId, voteType) => {
   }
   return data.data;
 };
+
+export const updateArticle = async (articleId, formData) => {
+  const response = await fetch(`${API_URL}/${articleId}`, {
+    method: "PUT",
+    body: formData,
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.message || "Error al actualizar la pregunta.");
+  }
+
+  return await response.json();
+};

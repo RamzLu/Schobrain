@@ -257,3 +257,11 @@ body {
   position: relative;
   margin-left: auto;
 }
+.options-button {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: #6b7280;
+  transition: color 0.2s;
+}

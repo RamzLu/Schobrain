@@ -57,6 +57,7 @@ routeArticle.put(
   "/articles/:id",
   validateToken,
   ownerOrAdmin(ArticleModel),
+  uploadImages,
   updateArticleValidation,
   validator,
   updateArticle

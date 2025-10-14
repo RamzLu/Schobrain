@@ -134,34 +134,52 @@ export const deleteArticle = async (req, res) => {
 
 export const updateArticle = async (req, res) => {
   const { id } = req.params;
-  const { content, status, tags } = req.body;
+  const { content, tags, imagesToDelete } = req.body;
+
   try {
-    const article = await ArticleModel.findByIdAndUpdate(
+    const article = await ArticleModel.findById(id);
+    if (!article) {
+      return res.status(404).json({ message: "Artículo no encontrado" });
+    }
+
+    let updatedImageUrls = article.imageUrls || [];
+
+    // Eliminar imágenes marcadas
+    if (imagesToDelete) {
+      const toDelete = Array.isArray(imagesToDelete)
+        ? imagesToDelete
+        : [imagesToDelete];
+      updatedImageUrls = updatedImageUrls.filter(
+        (url) => !toDelete.includes(url)
+      );
+    }
+
+    // Añadir nuevas imágenes
+    if (req.files && req.files.length > 0) {
+      const newImageUrls = req.files.map((file) => `/uploads/${file.filename}`);
+      updatedImageUrls.push(...newImageUrls);
+    }
+
+    const updatedArticle = await ArticleModel.findByIdAndUpdate(
       id,
       {
         content,
-        status,
-        tags,
+        tags: Array.isArray(tags) ? tags : [tags],
+        imageUrls: updatedImageUrls,
       },
       { new: true }
-    ).populate([
-      {
-        path: "comments",
-        populate: {
-          path: "author",
-          model: "User",
-          select: "-password",
-        },
-      },
-    ]);
-    return res.status(201).json({
-      msg: "Articulo actualizado correctamente",
-      data: article,
+    )
+      .populate("author", "-password")
+      .populate("tags", "name");
+
+    return res.status(200).json({
+      message: "Artículo actualizado correctamente",
+      data: updatedArticle,
     });
   } catch (error) {
-    console.log(error);
-    return res.status(501).json({
-      msg: "Error interno del servidor",
+    console.error(error);
+    return res.status(500).json({
+      message: "Error interno del servidor",
     });
   }
 };

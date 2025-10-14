@@ -109,10 +109,9 @@ export const renderArticleCard = (article, currentUser) => {
   let authorName = "Usuario Desconocido";
   let statusBadges = "";
   const author = article.author;
-
-  const canDelete =
-    currentUser &&
-    (currentUser.role === "admin" || currentUser.id === author?._id);
+  const isAuthor = currentUser && currentUser.id === author?._id;
+  const isAdmin = currentUser && currentUser.role === "admin";
+  const canDelete = isAdmin || isAuthor;
 
   let optionsMenu = "";
   if (canDelete) {
@@ -120,7 +119,14 @@ export const renderArticleCard = (article, currentUser) => {
       <div class="article-options-menu">
         <button class="options-toggle-btn"><i class="fas fa-ellipsis-v"></i></button>
         <div class="options-dropdown">
-          <button class="dropdown-item delete-btn" data-id="${article._id}"><i class="fas fa-trash-alt"></i> Eliminar</button>
+          ${
+            isAuthor
+              ? `<button class="dropdown-item edit-btn" data-id="${article._id}"><i class="fas fa-edit"></i> Editar</button>`
+              : ""
+          }
+          <button class="dropdown-item delete-btn" data-id="${
+            article._id
+          }"><i class="fas fa-trash-alt"></i> Eliminar</button>
         </div>
       </div>`;
   }
@@ -209,20 +215,18 @@ export const renderArticleCard = (article, currentUser) => {
 export const loadArticles = (articles, currentUser) => {
   if (questionsList) {
     if (articles.length === 0) {
-      // ✅ INICIO DEL CAMBIO: Contenedor con mensaje e imagen
       questionsList.innerHTML = `
         <div style="text-align: center; padding: 2rem; opacity: 0.8;">
           <p style="color: #808090; font-size: 1.2rem; margin-bottom: 1.5rem;">
             No hay preguntas para esta asignatura. ¡Sé el primero!
           </p>
-          <img 
-            src="/assets/img/errorImg.png" 
-            alt="No hay preguntas" 
+          <img
+            src="/assets/img/errorImg.png"
+            alt="No hay preguntas"
             style="max-width: 250px; width: 100%;"
           />
         </div>
       `;
-      // ✅ FIN DEL CAMBIO
       return;
     }
     questionsList.innerHTML = articles

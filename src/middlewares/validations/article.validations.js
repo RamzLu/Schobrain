@@ -20,17 +20,11 @@ export const createArticleValidation = [
   body("tags")
     .notEmpty()
     .withMessage("Debes seleccionar una asignatura.")
-    .toArray()
-    .custom(async (tagIds = []) => {
-      if (tagIds.length === 0) {
-        throw new Error("La selección de asignatura no puede estar vacía.");
-      }
-      const existingTags = await TagModel.find({ _id: { $in: tagIds } });
-      if (existingTags.length !== tagIds.length) {
+    .custom(async (tagId) => {
+      if (!(await TagModel.findById(tagId))) {
         throw new Error("La asignatura seleccionada no es válida.");
       }
     }),
-
   body("imageFiles")
     .optional()
     .isArray()
@@ -83,18 +77,10 @@ export const updateArticleValidation = [
       }
     }),
   body("tags")
-    .optional()
-    .isArray()
-    .withMessage("Los tags deben ser un array.")
-    .custom(async (tagIds) => {
-      if (tagIds.length === 0) {
-        return true;
-      }
-      const existingTags = await TagModel.find({ _id: { $in: tagIds } });
-      if (existingTags.length !== tagIds.length) {
-        throw new Error("Al menos uno de los tags referenciados no existe.");
-      }
-    }),
+    .notEmpty()
+    .withMessage("Debes seleccionar una asignatura.")
+    .isMongoId()
+    .withMessage("La asignatura seleccionada no es válida."),
 ];
 
 const articleIdValidation = [
