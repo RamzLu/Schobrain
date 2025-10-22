@@ -474,7 +474,9 @@ body {
   flex-shrink: 0; /* Evita que el botón se encoja */
 }
 
-/* --- ESTILOS PARA MODAL DE CONFIRMACIÓN (NUEVO) --- */
+/* ... (Estilos existentes hasta el final) ... */
+
+/* --- ESTILOS PARA MODAL DE CONFIRMACIÓN (NUEVO y Modificado) --- */
 #delete-account-modal .modal-content {
   max-width: 450px; /* Más pequeño para confirmación */
 }
@@ -488,6 +490,34 @@ body {
 
 .warning-text strong {
   font-weight: 700;
+}
+
+/* Estilo para el grupo de contraseña en modal de eliminación */
+.delete-password-group {
+  margin-top: 1.5rem; /* Espacio antes del campo */
+  margin-bottom: 1.5rem; /* Espacio después del campo */
+}
+
+.delete-password-group label {
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 0.5rem;
+  display: block;
+}
+
+.delete-password-group input {
+  width: 100%;
+  padding: 0.7rem 0.9rem;
+  border-radius: 6px;
+  border: 1px solid #d1d5db;
+  font-size: 0.95rem;
+  background: #f9fafb;
+}
+
+.delete-password-group input:focus {
+  border-color: #ef4444; /* Borde rojo al enfocar */
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.15);
+  outline: none;
 }
 
 #delete-account-modal .modal-actions {

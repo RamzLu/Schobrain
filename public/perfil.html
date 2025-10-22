@@ -237,7 +237,6 @@
         </form>
       </div>
     </div>
-
     <div id="edit-account-modal" class="modal-overlay">
       <div class="modal-content rectangular-modal">
         <h2>Editar Cuenta</h2>
@@ -293,7 +292,6 @@
         </form>
       </div>
     </div>
-
     <div id="logout-modal" class="modal-overlay">
       <div class="modal-content">
         <h2>¿Seguro que quieres cerrar sesión?</h2>
@@ -312,13 +310,15 @@
       <div class="modal-content">
         <h2>Confirmar Eliminación de Cuenta</h2>
         <p class="warning-text">
-          Estás a punto de eliminar tu cuenta permanentemente. Esta acción no se
-          puede deshacer. Se eliminarán todos tus datos, incluyendo preguntas y
-          respuestas.
+          Esta acción es permanente y no se puede deshacer. Se eliminarán todos
+          tus datos.
         </p>
-        <p class="warning-text">
-          <strong>¿Estás completamente seguro?</strong>
-        </p>
+        <div class="info-group delete-password-group">
+          <label for="delete-confirm-password"
+            >Ingresa tu contraseña para confirmar:</label
+          >
+          <input type="password" id="delete-confirm-password" required />
+        </div>
         <div class="modal-actions">
           <button id="cancel-delete-account-btn" class="modal-button secondary">
             Cancelar

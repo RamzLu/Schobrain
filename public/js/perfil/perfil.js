@@ -2,7 +2,7 @@ import {
   verifyAuth,
   logoutUser,
   deleteAccount,
-} from "../services/auth.service.js"; // Importa deleteAccount
+} from "../services/auth.service.js";
 import { showSuccessToast, showErrorToast } from "../utils/notifications.js";
 
 const API_URL = "/api/profile";
@@ -54,7 +54,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const cancelAccountBtn = document.getElementById("cancel-edit-account-btn");
   const editAccountForm = document.getElementById("edit-account-form");
 
-  // --- Elementos de Zona de Peligro --- (NUEVO)
+  // --- Elementos de Zona de Peligro ---
   const deleteAccountBtn = document.getElementById("delete-account-btn");
   const deleteAccountModal = document.getElementById("delete-account-modal");
   const cancelDeleteAccountBtn = document.getElementById(
@@ -63,6 +63,9 @@ document.addEventListener("DOMContentLoaded", async () => {
   const confirmDeleteAccountBtn = document.getElementById(
     "confirm-delete-account-btn"
   );
+  const deleteConfirmPasswordInput = document.getElementById(
+    "delete-confirm-password"
+  ); // Input de contraseña
 
   let fullProfileData = null;
 
@@ -357,8 +360,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   });
 
-  // --- Zona de Peligro --- (NUEVO)
+  // --- Zona de Peligro --- (Modificado)
   deleteAccountBtn?.addEventListener("click", () => {
+    deleteConfirmPasswordInput.value = ""; // Limpia el campo de contraseña al abrir
     deleteAccountModal.classList.add("visible");
   });
 
@@ -367,20 +371,26 @@ document.addEventListener("DOMContentLoaded", async () => {
   });
 
   confirmDeleteAccountBtn?.addEventListener("click", async () => {
+    const password = deleteConfirmPasswordInput.value; // Obtiene la contraseña ingresada
+
+    if (!password) {
+      showErrorToast("Ingresa tu contraseña para confirmar la eliminación.");
+      return;
+    }
+
     try {
-      // ! ¡¡¡ IMPORTANTE !!! ****
-      // Aquí iría la llamada REAL al backend para eliminar la cuenta.
-      await deleteAccount(); // Llama a la función del servicio
-      // ! ¡¡¡ IMPORTANTE !!! ****
+      // Llama al servicio con la contraseña
+      await deleteAccount(password);
 
       showSuccessToast("Cuenta eliminada correctamente. Serás redirigido.");
-      // Espera un poco para que el usuario vea el mensaje
       setTimeout(() => {
-        window.location.href = "/login.html"; // Redirige al login después de eliminar
+        window.location.href = "/login.html";
       }, 2000);
     } catch (error) {
-      showErrorToast(`Error al eliminar la cuenta: ${error.message}`);
-      deleteAccountModal.classList.remove("visible"); // Cierra el modal en caso de error
+      // Muestra el error específico (ej. "Contraseña incorrecta")
+      showErrorToast(`Error al eliminar: ${error.message}`);
+      // No cerramos el modal automáticamente en caso de error de contraseña
+      // deleteAccountModal.classList.remove("visible");
     }
   });
 

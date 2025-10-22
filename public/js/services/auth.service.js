@@ -1,4 +1,4 @@
-// No es necesario el localhost:3005 porque frontend y backend están en el mismo origen
+// ... (otras funciones como registerUser, loginUser, etc. sin cambios) ...
 const API_URL = "/auth";
 const PROFILE_API_URL = "/api/profile"; // URL base para perfil
 
@@ -75,22 +75,29 @@ export const verifyAuth = async () => {
   }
 };
 
-// NUEVA FUNCIÓN para eliminar la cuenta
-export const deleteAccount = async () => {
+// FUNCIÓN para eliminar la cuenta (Modificada)
+export const deleteAccount = async (password) => {
+  // Recibe la contraseña
   try {
     const response = await fetch(`${PROFILE_API_URL}/account`, {
-      // Llama a la nueva ruta DELETE
       method: "DELETE",
+      headers: {
+        // Necesario para enviar JSON en el body
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ password: password }), // Envía la contraseña
     });
 
+    const data = await response.json().catch(() => ({})); // Intenta parsear JSON siempre
+
     if (!response.ok) {
-      const data = await response.json().catch(() => ({}));
+      // Lanza el mensaje de error específico del backend (ej. contraseña incorrecta)
       throw new Error(data.message || "Error al eliminar la cuenta.");
     }
 
-    return await response.json(); // Devuelve el mensaje de éxito del backend
+    return data; // Devuelve el mensaje de éxito
   } catch (error) {
-    console.error("Error en deleteAccount:", error);
-    throw error; // Relanza el error para que el JS lo capture
+    console.error("Error en deleteAccount service:", error);
+    throw error;
   }
 };
