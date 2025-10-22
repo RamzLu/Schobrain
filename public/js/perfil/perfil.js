@@ -3,15 +3,21 @@ import {
   logoutUser,
   deleteAccount,
 } from "../services/auth.service.js";
+import {
+  getProfile,
+  updateProfileData,
+  updateAccountData,
+  updateAvatarImage,
+  getFavoriteArticles, // Importa la nueva función
+} from "../services/profile.service.js"; // Asume que creaste este archivo
 import { showSuccessToast, showErrorToast } from "../utils/notifications.js";
-
-const API_URL = "/api/profile";
-const ACCOUNT_API_URL = "/api/profile/account";
-const AVATAR_API_URL = "/api/profile/avatar"; // URL para el avatar
+import { renderArticleCard } from "../article/article.ui.js"; // Importa para reutilizar
+import { initializeLightbox } from "../utils/lightbox.js"; // Importa lightbox
 
 document.addEventListener("DOMContentLoaded", async () => {
-  // ... (Variables y lógica de autenticación sin cambios) ...
   let currentUser;
+  let fullProfileData = null; // Para almacenar todos los datos del perfil, incluidos favoritos
+
   try {
     const authData = await verifyAuth();
     currentUser = authData.data;
@@ -22,18 +28,18 @@ document.addEventListener("DOMContentLoaded", async () => {
     return;
   }
 
-  // --- Elementos Comunes, Perfil, Cuenta, Zona Peligro (sin cambios) ---
   // --- Elementos Comunes ---
   const logoutBtnPerfil = document.getElementById("logout-btn-perfil");
   const logoutModal = document.getElementById("logout-modal");
   const cancelLogoutBtn = document.getElementById("cancel-logout");
   const confirmLogoutBtn = document.getElementById("confirm-logout");
-  const profileSection = document.getElementById("profile-section");
-  const accountSection = document.getElementById("account-section");
   const navLinks = document.querySelectorAll(".profile-nav .nav-link");
 
   // --- Elementos de Perfil ---
-  const profileOptionsMenu = document.querySelector(".profile-options-menu");
+  const profileSection = document.getElementById("profile-section");
+  const profileOptionsMenu = profileSection?.querySelector(
+    ".profile-options-menu"
+  );
   const profileOptionsToggleBtn = profileOptionsMenu?.querySelector(
     ".options-toggle-btn"
   );
@@ -43,12 +49,15 @@ document.addEventListener("DOMContentLoaded", async () => {
   const profileModal = document.getElementById("edit-profile-modal");
   const cancelProfileBtn = document.getElementById("cancel-edit-btn");
   const editProfileForm = document.getElementById("edit-profile-form");
-  const avatarWrapper = document.getElementById("avatar-wrapper"); // Contenedor del avatar
-  const avatarInput = document.getElementById("avatar-input"); // Input file oculto
-  const avatarDisplay = document.getElementById("avatarUrl"); // La imagen <img>
+  const avatarWrapper = document.getElementById("avatar-wrapper");
+  const avatarInput = document.getElementById("avatar-input");
+  const avatarDisplay = document.getElementById("avatarUrl");
 
   // --- Elementos de Cuenta ---
-  const accountOptionsMenu = document.querySelector(".account-options-menu");
+  const accountSection = document.getElementById("account-section");
+  const accountOptionsMenu = accountSection?.querySelector(
+    ".account-options-menu"
+  );
   const accountOptionsToggleBtn = accountOptionsMenu?.querySelector(
     ".account-options-toggle"
   );
@@ -59,7 +68,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const cancelAccountBtn = document.getElementById("cancel-edit-account-btn");
   const editAccountForm = document.getElementById("edit-account-form");
 
-  // --- Elementos de Zona de Peligro --- (NUEVO)
+  // --- Elementos de Zona de Peligro ---
   const deleteAccountBtn = document.getElementById("delete-account-btn");
   const deleteAccountModal = document.getElementById("delete-account-modal");
   const cancelDeleteAccountBtn = document.getElementById(
@@ -70,12 +79,15 @@ document.addEventListener("DOMContentLoaded", async () => {
   );
   const deleteConfirmPasswordInput = document.getElementById(
     "delete-confirm-password"
-  ); // Input de contraseña
+  );
 
-  let fullProfileData = null;
+  // --- NUEVOS ELEMENTOS PARA FAVORITOS ---
+  const favoritesSection = document.getElementById("favorites-section");
+  const favoritesListContainer = document.getElementById("favorites-list");
 
-  // --- Funciones (setProfileFields, fetchProfile, switchSection sin cambios) ---
+  // --- Funciones ---
   const setProfileFields = (data) => {
+    // ... (sin cambios) ...
     const { profile, email, username, role } = data;
     // Perfil
     document.getElementById("firstName").textContent =
@@ -85,16 +97,20 @@ document.addEventListener("DOMContentLoaded", async () => {
     document.getElementById("username").textContent = `@${
       username || "username"
     }`;
-    avatarDisplay.src = // Usa la variable del elemento img
+    avatarDisplay.src =
       profile.avatarUrl ||
       `https://ui-avatars.com/api/?name=${encodeURIComponent(
-        profile.firstName || "NN" // Fallback si no hay nombre
+        profile.firstName || "NN"
       )}+${encodeURIComponent(profile.lastName || "")}&background=random`;
     document.getElementById("role").textContent = role || "Usuario";
     document.getElementById("biography-display").textContent =
       profile.biography || "No has añadido una biografía.";
-    document.getElementById("birthdate-display").textContent = profile.birthDate
-      ? new Date(profile.birthDate).toLocaleDateString("es-ES")
+    // Formatear fecha si existe
+    const birthDate = profile.birthDate
+      ? new Date(profile.birthDate + "T00:00:00")
+      : null; // Asegura que se interprete como local
+    document.getElementById("birthdate-display").textContent = birthDate
+      ? birthDate.toLocaleDateString("es-ES", { timeZone: "UTC" }) // Usa UTC para evitar desfasajes
       : "No especificada.";
 
     // Cuenta
@@ -103,13 +119,47 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   const fetchProfile = async () => {
     try {
-      const res = await fetch(API_URL);
-      if (!res.ok) throw new Error("No se pudo cargar el perfil.");
-      const data = await res.json();
+      const data = await getProfile(); // Usa la función del servicio
       fullProfileData = data;
       setProfileFields(data);
+      // Podrías precargar favoritos aquí si quieres, o hacerlo al cambiar de sección
     } catch (err) {
       showErrorToast(`Error al cargar datos: ${err.message}`);
+    }
+  };
+
+  // NUEVA FUNCIÓN para cargar y mostrar favoritos
+  const loadFavorites = async () => {
+    if (!favoritesListContainer) return;
+    favoritesListContainer.innerHTML = "<p>Cargando favoritos...</p>"; // Mensaje de carga
+
+    try {
+      const favoriteArticles = await getFavoriteArticles(); // Llama al servicio
+
+      if (favoriteArticles.length === 0) {
+        favoritesListContainer.innerHTML =
+          "<p>Aún no has añadido ninguna pregunta a favoritos.</p>";
+        return;
+      }
+
+      // Reutiliza renderArticleCard para mostrar cada favorito
+      favoritesListContainer.innerHTML = favoriteArticles
+        .map((article) =>
+          renderArticleCard(
+            article,
+            currentUser,
+            fullProfileData?.favorites || [] // Pasa la lista de IDs favoritos
+          )
+        )
+        .join("");
+
+      // Inicializa lightbox para las imágenes en la lista de favoritos
+      initializeLightbox("favorites-list");
+    } catch (error) {
+      console.error("Error al cargar favoritos:", error);
+      showErrorToast(`Error al cargar favoritos: ${error.message}`);
+      favoritesListContainer.innerHTML =
+        "<p>Ocurrió un error al cargar tus favoritos.</p>";
     }
   };
 
@@ -125,11 +175,15 @@ document.addEventListener("DOMContentLoaded", async () => {
     navLinks.forEach((link) => {
       link.classList.toggle("active", link.dataset.section === sectionId);
     });
+
+    // Si la sección es 'favorites', carga los artículos
+    if (sectionId === "favorites") {
+      loadFavorites();
+    }
   };
 
   // --- Event Listeners ---
 
-  // ... (Navegación, Menús Opciones, Logout, Editar Perfil, Editar Cuenta, Zona Peligro sin cambios)...
   // Navegación entre secciones
   navLinks.forEach((link) => {
     link.addEventListener("click", (e) => {
@@ -139,24 +193,21 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
   });
 
-  // Menú Opciones Perfil
+  // --- Menús Opciones (Perfil y Cuenta) ---
   if (profileOptionsToggleBtn) {
     profileOptionsToggleBtn.addEventListener("click", (e) => {
       e.stopPropagation();
       profileOptionsDropdown?.classList.toggle("visible");
-      accountOptionsDropdown?.classList.remove("visible");
+      accountOptionsDropdown?.classList.remove("visible"); // Cierra el otro
     });
   }
-
-  // Menú Opciones Cuenta
   if (accountOptionsToggleBtn) {
     accountOptionsToggleBtn.addEventListener("click", (e) => {
       e.stopPropagation();
       accountOptionsDropdown?.classList.toggle("visible");
-      profileOptionsDropdown?.classList.remove("visible");
+      profileOptionsDropdown?.classList.remove("visible"); // Cierra el otro
     });
   }
-
   // Cerrar menús al hacer clic fuera
   document.addEventListener("click", (event) => {
     if (!profileOptionsMenu?.contains(event.target)) {
@@ -167,13 +218,13 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   });
 
-  // Botón Logout (común)
+  // --- Botón Logout ---
   logoutBtnPerfil?.addEventListener("click", () => {
-    logoutModal.classList.add("visible");
-    profileOptionsDropdown?.classList.remove("visible");
+    logoutModal?.classList.add("visible");
+    profileOptionsDropdown?.classList.remove("visible"); // Cierra dropdown si está abierto
   });
   cancelLogoutBtn?.addEventListener("click", () =>
-    logoutModal.classList.remove("visible")
+    logoutModal?.classList.remove("visible")
   );
   confirmLogoutBtn?.addEventListener("click", async () => {
     try {
@@ -198,17 +249,20 @@ document.addEventListener("DOMContentLoaded", async () => {
         fullProfileData.profile.lastName || "";
       document.getElementById("modal-biography").value =
         fullProfileData.profile.biography || "";
-      document.getElementById("modal-birthDate").value = fullProfileData.profile
-        .birthDate
-        ? fullProfileData.profile.birthDate.split("T")[0]
+      // Formatear fecha para input type="date" (YYYY-MM-DD)
+      const birthDate = fullProfileData.profile.birthDate
+        ? new Date(fullProfileData.profile.birthDate + "T00:00:00") // Asegura local
+            .toISOString()
+            .split("T")[0]
         : "";
+      document.getElementById("modal-birthDate").value = birthDate;
     }
-    profileModal.classList.add("visible");
+    profileModal?.classList.add("visible");
     profileOptionsDropdown?.classList.remove("visible");
   });
 
   cancelProfileBtn?.addEventListener("click", () =>
-    profileModal.classList.remove("visible")
+    profileModal?.classList.remove("visible")
   );
   profileModal?.addEventListener("click", (e) => {
     if (e.target === profileModal) profileModal.classList.remove("visible");
@@ -216,16 +270,17 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   editProfileForm?.addEventListener("submit", async (e) => {
     e.preventDefault();
-    // ... (lógica submit perfil sin cambios) ...
     const profileData = {
       username: document.getElementById("modal-username").value.trim(),
       profile: {
         firstName: document.getElementById("modal-firstName").value.trim(),
         lastName: document.getElementById("modal-lastName").value.trim(),
         biography: document.getElementById("modal-biography").value.trim(),
-        birthDate: document.getElementById("modal-birthDate").value,
+        birthDate: document.getElementById("modal-birthDate").value || null, // Enviar null si está vacío
       },
     };
+
+    // Validaciones básicas
     if (!profileData.username || profileData.username.length < 3) {
       showErrorToast("El nombre de usuario debe tener al menos 3 caracteres.");
       return;
@@ -244,19 +299,12 @@ document.addEventListener("DOMContentLoaded", async () => {
       showErrorToast("El apellido debe tener al menos 2 caracteres.");
       return;
     }
+
     try {
-      const res = await fetch(API_URL, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(profileData),
-      });
-      const result = await res.json();
-      if (!res.ok) {
-        throw new Error(result.message || "Error al guardar el perfil.");
-      }
+      const result = await updateProfileData(profileData); // Usa servicio
       showSuccessToast("Perfil guardado correctamente.");
-      profileModal.classList.remove("visible");
-      await fetchProfile();
+      profileModal?.classList.remove("visible");
+      await fetchProfile(); // Recarga los datos del perfil
     } catch (err) {
       showErrorToast(err.message);
     }
@@ -264,7 +312,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   // --- Modal Editar Cuenta ---
   editAccountBtn?.addEventListener("click", () => {
-    // ... (lógica abrir modal cuenta sin cambios) ...
+    // ... (lógica llenar modal sin cambios) ...
     if (fullProfileData) {
       document.getElementById("modal-email").value =
         fullProfileData.email || "";
@@ -272,12 +320,12 @@ document.addEventListener("DOMContentLoaded", async () => {
       document.getElementById("modal-newPassword").value = "";
       document.getElementById("modal-confirmPassword").value = "";
     }
-    accountModal.classList.add("visible");
+    accountModal?.classList.add("visible");
     accountOptionsDropdown?.classList.remove("visible");
   });
 
   cancelAccountBtn?.addEventListener("click", () =>
-    accountModal.classList.remove("visible")
+    accountModal?.classList.remove("visible")
   );
   accountModal?.addEventListener("click", (e) => {
     if (e.target === accountModal) accountModal.classList.remove("visible");
@@ -285,7 +333,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   editAccountForm?.addEventListener("submit", async (e) => {
     e.preventDefault();
-    // ... (lógica submit cuenta sin cambios) ...
+    // ... (lógica validación y preparación datos sin cambios) ...
     const email = document.getElementById("modal-email").value.trim();
     const currentPassword = document.getElementById(
       "modal-currentPassword"
@@ -295,6 +343,13 @@ document.addEventListener("DOMContentLoaded", async () => {
       "modal-confirmPassword"
     ).value;
     let dataToSend = { email };
+    // Validar email
+    const emailRegex = /^\S+@\S+\.\S+$/;
+    if (!emailRegex.test(email)) {
+      showErrorToast("El formato del correo electrónico no es válido.");
+      return;
+    }
+    // Validar y añadir contraseña si se intenta cambiar
     if (newPassword || currentPassword || confirmPassword) {
       if (!currentPassword) {
         showErrorToast("Ingresa tu contraseña actual para cambiarla.");
@@ -323,24 +378,12 @@ document.addEventListener("DOMContentLoaded", async () => {
       dataToSend.currentPassword = currentPassword;
       dataToSend.newPassword = newPassword;
     }
-    const emailRegex = /^\S+@\S+\.\S+$/;
-    if (!emailRegex.test(email)) {
-      showErrorToast("El formato del correo electrónico no es válido.");
-      return;
-    }
+
     try {
-      const res = await fetch(ACCOUNT_API_URL, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(dataToSend),
-      });
-      const result = await res.json();
-      if (!res.ok) {
-        throw new Error(result.message || "Error al actualizar la cuenta.");
-      }
+      const result = await updateAccountData(dataToSend); // Usa servicio
       showSuccessToast("Cuenta actualizada correctamente.");
-      accountModal.classList.remove("visible");
-      await fetchProfile();
+      accountModal?.classList.remove("visible");
+      await fetchProfile(); // Recarga los datos del perfil
     } catch (err) {
       showErrorToast(err.message);
     }
@@ -348,25 +391,23 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   // --- Zona de Peligro ---
   deleteAccountBtn?.addEventListener("click", () => {
-    // ... (lógica abrir modal eliminación sin cambios) ...
-    deleteConfirmPasswordInput.value = "";
-    deleteAccountModal.classList.add("visible");
+    deleteConfirmPasswordInput.value = ""; // Limpia contraseña anterior
+    deleteAccountModal?.classList.add("visible");
   });
 
   cancelDeleteAccountBtn?.addEventListener("click", () => {
-    // ... (lógica cancelar eliminación sin cambios) ...
-    deleteAccountModal.classList.remove("visible");
+    deleteAccountModal?.classList.remove("visible");
   });
 
   confirmDeleteAccountBtn?.addEventListener("click", async () => {
-    // ... (lógica confirmar eliminación sin cambios) ...
+    // ... (lógica confirmación sin cambios) ...
     const password = deleteConfirmPasswordInput.value;
     if (!password) {
       showErrorToast("Ingresa tu contraseña para confirmar la eliminación.");
       return;
     }
     try {
-      await deleteAccount(password);
+      await deleteAccount(password); // Usa servicio de auth
       showSuccessToast("Cuenta eliminada correctamente. Serás redirigido.");
       setTimeout(() => {
         window.location.href = "/login.html";
@@ -377,67 +418,44 @@ document.addEventListener("DOMContentLoaded", async () => {
   });
 
   deleteAccountModal?.addEventListener("click", (e) => {
-    // ... (lógica cerrar modal eliminación clic fuera sin cambios) ...
     if (e.target === deleteAccountModal) {
       deleteAccountModal.classList.remove("visible");
     }
   });
 
-  // --- Lógica para Editar Avatar (NUEVO) ---
+  // --- Lógica para Editar Avatar ---
   avatarWrapper?.addEventListener("click", () => {
-    avatarInput.click(); // Abre el selector de archivos al hacer clic en el contenedor
+    avatarInput?.click();
   });
 
   avatarInput?.addEventListener("change", async (event) => {
-    const file = event.target.files[0];
-    if (!file) {
-      return; // No se seleccionó archivo
-    }
+    const file = event.target.files?.[0];
+    if (!file) return;
 
-    // Validación simple de tipo y tamaño (opcional, el backend también valida)
     if (!file.type.startsWith("image/")) {
       showErrorToast("Por favor, selecciona un archivo de imagen.");
       return;
     }
     if (file.size > 5 * 1024 * 1024) {
-      // Límite de 5MB (igual que en backend)
       showErrorToast("La imagen no debe superar los 5MB.");
       return;
     }
 
-    // Crear FormData para enviar el archivo
     const formData = new FormData();
-    formData.append("avatar", file); // 'avatar' debe coincidir con upload.single('avatar') en la ruta
+    formData.append("avatar", file);
 
     try {
-      // Mostrar feedback visual (ej. un spinner o texto "Subiendo...") - Opcional
-      // avatarDisplay.style.opacity = '0.5';
-
-      const response = await fetch(AVATAR_API_URL, {
-        method: "PUT",
-        body: formData, // No necesitas 'Content-Type', el navegador lo pone automáticamente para FormData
-      });
-
-      const result = await response.json();
-
-      if (!response.ok) {
-        throw new Error(result.message || "Error al subir la imagen.");
-      }
-
-      // Actualizar la imagen en la UI con la nueva URL devuelta por el backend
-      avatarDisplay.src = result.avatarUrl + `?t=${new Date().getTime()}`; // Añade timestamp para evitar caché
+      const result = await updateAvatarImage(formData); // Usa servicio
+      avatarDisplay.src = result.avatarUrl + `?t=${new Date().getTime()}`; // Actualiza con timestamp
       showSuccessToast("Avatar actualizado correctamente.");
     } catch (error) {
       showErrorToast(`Error al actualizar avatar: ${error.message}`);
     } finally {
-      // Quitar feedback visual
-      // avatarDisplay.style.opacity = '1';
-      avatarInput.value = ""; // Resetea el input file para permitir seleccionar el mismo archivo de nuevo
+      avatarInput.value = ""; // Resetea input
     }
   });
-  // --- Fin Lógica Editar Avatar ---
 
   // --- Inicialización ---
-  await fetchProfile();
-  switchSection("profile");
-}); // Fin DOMContentLoaded
+  await fetchProfile(); // Carga inicial del perfil
+  switchSection("profile"); // Muestra la sección de perfil por defecto
+});

@@ -1,3 +1,6 @@
+// ... (imports y otras funciones sin cambios) ...
+import { verifyAuth } from "../services/auth.service.js"; // Necesario para obtener favoritos del usuario
+
 const askQuestionModal = document.getElementById("ask-question-modal");
 const questionsList = document.getElementById("questions-list");
 const closeQuestionModalButton = document.getElementById(
@@ -11,7 +14,8 @@ export const showAskQuestionModal = () => {
     askQuestionModal.classList.add("visible");
     document.getElementById("question-content").value = "";
     if (imageFileInput) imageFileInput.value = "";
-    fileNameDisplay.textContent = "Ningún archivo seleccionado";
+    if (fileNameDisplay)
+      fileNameDisplay.textContent = "Ningún archivo seleccionado";
     document
       .getElementById("question-error-message")
       .classList.remove("visible");
@@ -30,6 +34,7 @@ export const hideAskQuestionModal = () => {
 };
 
 const formatRelativeTime = (dateString) => {
+  // ... (sin cambios) ...
   const now = new Date();
   const past = new Date(dateString);
   const secondsElapsed = Math.floor((now - past) / 1000);
@@ -54,6 +59,7 @@ const formatRelativeTime = (dateString) => {
   return `hace ${yearsElapsed} año${yearsElapsed > 1 ? "s" : ""}`;
 };
 const getTagColor = (tagName) => {
+  // ... (sin cambios) ...
   const colors = {
     matemáticas: "tag-blue",
     lengua: "tag-green",
@@ -89,13 +95,14 @@ const getTagColor = (tagName) => {
 };
 
 export const populateTagSelector = (tags) => {
+  // ... (sin cambios) ...
   const tagSelect = document.getElementById("tag-select");
   if (tagSelect) {
     const defaultOption = tagSelect
       .querySelector('option[value=""]')
-      .cloneNode(true);
+      ?.cloneNode(true); // Manejo por si no existe
     tagSelect.innerHTML = "";
-    tagSelect.appendChild(defaultOption);
+    if (defaultOption) tagSelect.appendChild(defaultOption);
     tags.forEach((tag) => {
       const option = document.createElement("option");
       option.value = tag._id;
@@ -105,7 +112,8 @@ export const populateTagSelector = (tags) => {
   }
 };
 
-export const renderArticleCard = (article, currentUser) => {
+// Modificado para aceptar `userFavorites`
+export const renderArticleCard = (article, currentUser, userFavorites = []) => {
   let authorName = "Usuario Desconocido";
   let statusBadges = "";
   const author = article.author;
@@ -113,9 +121,14 @@ export const renderArticleCard = (article, currentUser) => {
   const isAdmin = currentUser && currentUser.role === "admin";
   const canDelete = isAdmin || isAuthor;
 
-  let optionsMenu = "";
-  if (canDelete) {
-    optionsMenu = `
+  // NUEVO: Verifica si el artículo está en favoritos
+  const isFavorite = userFavorites.includes(article._id);
+  const favoriteButtonText = isFavorite
+    ? "Quitar de favoritos"
+    : "Añadir a favoritos";
+  const favoriteButtonIcon = isFavorite ? "fas fa-star" : "far fa-star"; // Icono lleno vs vacío
+
+  let optionsMenu = `
       <div class="article-options-menu">
         <button class="options-toggle-btn"><i class="fas fa-ellipsis-v"></i></button>
         <div class="options-dropdown">
@@ -124,19 +137,26 @@ export const renderArticleCard = (article, currentUser) => {
               ? `<button class="dropdown-item edit-btn" data-id="${article._id}"><i class="fas fa-edit"></i> Editar</button>`
               : ""
           }
-          <button class="dropdown-item delete-btn" data-id="${
+          ${
+            canDelete
+              ? `<button class="dropdown-item delete-btn" data-id="${article._id}"><i class="fas fa-trash-alt"></i> Eliminar</button>`
+              : ""
+          }
+          <button class="dropdown-item favorite-btn" data-id="${
             article._id
-          }"><i class="fas fa-trash-alt"></i> Eliminar</button>
+          }" data-is-favorite="${isFavorite}">
+            <i class="${favoriteButtonIcon}"></i> ${favoriteButtonText}
+          </button>
         </div>
       </div>`;
-  }
 
+  // El resto de la lógica de renderizado (autor, fecha, tags, imágenes, votos) permanece igual
   if (author && typeof author === "object") {
     const profile = author.profile;
     authorName =
       profile && profile.firstName && profile.lastName
         ? `${profile.firstName} ${profile.lastName}`
-        : author.username;
+        : author.username || "Usuario"; // Fallback a username
 
     if (author.role === "admin")
       statusBadges += `<span class="admin-badge">Administrador</span>`;
@@ -166,8 +186,9 @@ export const renderArticleCard = (article, currentUser) => {
     imagesHtml = `<div class="article-images-gallery">${imageElements}</div>`;
   }
 
-  const userHasLiked = article.votedUp.includes(currentUser.id);
-  const userHasDisliked = article.votedDown.includes(currentUser.id);
+  const userHasLiked = currentUser && article.votedUp.includes(currentUser.id);
+  const userHasDisliked =
+    currentUser && article.votedDown.includes(currentUser.id);
 
   const voteControlsHtml = `
     <div class="vote-controls">
@@ -179,7 +200,7 @@ export const renderArticleCard = (article, currentUser) => {
   }" data-vote-type="like" title="Me gusta">
                 <i class="fas fa-thumbs-up"></i>
             </button>
-            <span class="vote-count like-count">${article.likes}</span>
+            <span class="vote-count like-count">${article.likes || 0}</span>
         </div>
         <div class="vote-group">
             <button class="vote-btn dislike ${
@@ -189,7 +210,9 @@ export const renderArticleCard = (article, currentUser) => {
   }" data-vote-type="dislike" title="No me gusta">
                 <i class="fas fa-thumbs-down"></i>
             </button>
-            <span class="vote-count dislike-count">${article.dislikes}</span>
+            <span class="vote-count dislike-count">${
+              article.dislikes || 0
+            }</span>
         </div>
     </div>
   `;
@@ -212,13 +235,14 @@ export const renderArticleCard = (article, currentUser) => {
     </article>`;
 };
 
-export const loadArticles = (articles, currentUser) => {
+// Modificado para pasar `userFavorites` a `renderArticleCard`
+export const loadArticles = (articles, currentUser, userFavorites = []) => {
   if (questionsList) {
-    if (articles.length === 0) {
+    if (!Array.isArray(articles) || articles.length === 0) {
       questionsList.innerHTML = `
         <div style="text-align: center; padding: 2rem; opacity: 0.8;">
           <p style="color: #808090; font-size: 1.2rem; margin-bottom: 1.5rem;">
-            No hay preguntas para esta asignatura. ¡Sé el primero!
+            No hay preguntas para mostrar. ¡Sé el primero en preguntar!
           </p>
           <img
             src="/assets/img/errorImg.png"
@@ -230,7 +254,7 @@ export const loadArticles = (articles, currentUser) => {
       return;
     }
     questionsList.innerHTML = articles
-      .map((article) => renderArticleCard(article, currentUser))
+      .map((article) => renderArticleCard(article, currentUser, userFavorites))
       .join("");
   }
 };
@@ -245,7 +269,7 @@ export const setupCancelButton = () => {
   if (imageFileInput && fileNameDisplay) {
     imageFileInput.addEventListener("change", (event) => {
       const { files } = event.target;
-      if (files.length === 0) {
+      if (!files || files.length === 0) {
         fileNameDisplay.textContent = "Ningún archivo seleccionado";
       } else if (files.length === 1) {
         fileNameDisplay.textContent = files[0].name;

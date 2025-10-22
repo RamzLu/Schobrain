@@ -1,10 +1,9 @@
-import { model, Schema } from "mongoose";
+import { model, Schema, Types } from "mongoose"; // Asegúrate de importar Types
 
 const userSchema = new Schema(
   {
     username: {
       type: String,
-      // * username es único
       unique: true,
       required: true,
       minlength: 3,
@@ -13,20 +12,15 @@ const userSchema = new Schema(
     email: {
       type: String,
       unique: true,
-      // * email es único
       required: true,
       match: [/^\S+@\S+\.\S+$/, "Ingrese un email válido."],
     },
     password: {
       type: String,
-      // *la password es obligatoria
-      // TODO: Si se desea mandar un mensaje con validaciones basta con poner el valor del requisito en array []
       required: [true, "La contraseña es obligatoria"],
-      // * debe contener al menos 8 caracteres
       minlength: [8, "La contraseña debe tener al menos 8 caracteres"],
       validate: {
         validator: function (v) {
-          // * Aqui validamos  que contenga al menos una mayúscula, una  minuscula, un numero y un simbolo
           return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/.test(v);
         },
         message:
@@ -59,9 +53,16 @@ const userSchema = new Schema(
         type: String,
       },
       birthDate: {
-        type: String,
+        type: String, // Cambiado a String para consistencia con el frontend
       },
     },
+    // NUEVO CAMPO PARA FAVORITOS
+    favorites: [
+      {
+        type: Types.ObjectId,
+        ref: "Article",
+      },
+    ],
     deleteAt: {
       type: Date,
       default: null,

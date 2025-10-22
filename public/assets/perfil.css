@@ -575,3 +575,35 @@ body {
   border: 4px solid #ffffff;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
+/* ... (Estilos existentes de perfil.css) ... */
+
+/* --- ESTILOS PARA LA SECCIÓN DE FAVORITOS (NUEVO) --- */
+#favorites-section h2 {
+  font-size: 1.8rem;
+  color: #12121c;
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.favorites-list-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem; /* Espacio entre tarjetas de favoritos */
+}
+
+/* Ajustes para las tarjetas de artículo dentro de favoritos */
+.favorites-list-container .article-card {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05); /* Sombra más sutil */
+  border-left: 4px solid #fdc500; /* Borde izquierdo dorado para destacar favoritos */
+  margin-bottom: 0; /* Quitamos el margen inferior si usamos gap en el contenedor */
+}
+
+.favorites-list-container .article-card .article-actions a {
+  /* Opcional: Cambiar el texto o estilo del enlace "Ver discusión" */
+  color: #555;
+}
+
+.favorites-list-container .article-card .favorite-btn i {
+  color: #fdc500; /* Asegura que el icono de estrella sea dorado */
+}

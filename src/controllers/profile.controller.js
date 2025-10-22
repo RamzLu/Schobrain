@@ -1,13 +1,14 @@
 import { UserModel } from "../models/user.model.js";
+import { ArticleModel } from "../models/article.model.js"; // Importa ArticleModel
 import path from "path";
 import { comparePassword, hashPassword } from "../helpers/bcrypt.helper.js";
 
-// ... (getProfile, updateProfile, updateAccount sin cambios) ...
 // Obtener perfil (sin cambios)
 export const getProfile = async (req, res) => {
   try {
+    // Añadimos 'favorites' al select para obtener los IDs de favoritos
     const user = await UserModel.findById(req.userLog.id).select(
-      "profile email username role"
+      "profile email username role favorites"
     );
     if (!user)
       return res.status(404).json({ message: "Usuario no encontrado" });
@@ -18,7 +19,7 @@ export const getProfile = async (req, res) => {
   }
 };
 
-// Actualizar datos del perfil (nombre, apellido, bio, fecha nac, username)
+// Actualizar datos del perfil (nombre, apellido, bio, fecha nac, username) (sin cambios)
 export const updateProfile = async (req, res) => {
   try {
     const { profile, username } = req.body; // Email se maneja en updateAccount
@@ -57,6 +58,7 @@ export const updateProfile = async (req, res) => {
       email: user.email, // Mantenemos el email aquí por si acaso, aunque se edite en otra ruta
       username: user.username,
       role: user.role,
+      favorites: user.favorites, // Devolver también los favoritos actualizados
     });
   } catch (error) {
     console.error("Error al actualizar perfil:", error);
@@ -70,7 +72,7 @@ export const updateProfile = async (req, res) => {
   }
 };
 
-// NUEVA FUNCIÓN para actualizar Email y Contraseña
+// NUEVA FUNCIÓN para actualizar Email y Contraseña (sin cambios)
 export const updateAccount = async (req, res) => {
   const { email, currentPassword, newPassword } = req.body;
   const userId = req.userLog.id;
@@ -86,11 +88,9 @@ export const updateAccount = async (req, res) => {
     // --- Actualizar Contraseña ---
     if (newPassword) {
       if (!currentPassword) {
-        return res
-          .status(400)
-          .json({
-            message: "Se requiere la contraseña actual para cambiarla.",
-          });
+        return res.status(400).json({
+          message: "Se requiere la contraseña actual para cambiarla.",
+        });
       }
 
       // Verificar contraseña actual
@@ -105,12 +105,9 @@ export const updateAccount = async (req, res) => {
       const strongPasswordRegex =
         /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
       if (!strongPasswordRegex.test(newPassword)) {
-        return res
-          .status(400)
-          .json({
-            message:
-              "La nueva contraseña no cumple los requisitos de seguridad.",
-          });
+        return res.status(400).json({
+          message: "La nueva contraseña no cumple los requisitos de seguridad.",
+        });
       }
 
       // Hashear y guardar nueva contraseña
@@ -118,11 +115,9 @@ export const updateAccount = async (req, res) => {
       changesMade = true;
     } else if (currentPassword && !newPassword) {
       // Si mandó la actual pero no la nueva, es un error del usuario
-      return res
-        .status(400)
-        .json({
-          message: "Ingresa la nueva contraseña si proporcionaste la actual.",
-        });
+      return res.status(400).json({
+        message: "Ingresa la nueva contraseña si proporcionaste la actual.",
+      });
     }
     // --- Fin Actualizar Contraseña ---
 
@@ -170,7 +165,7 @@ export const updateAccount = async (req, res) => {
   }
 };
 
-// FUNCIÓN para eliminar la cuenta (Modificada para verificar contraseña)
+// FUNCIÓN para eliminar la cuenta (Modificada para verificar contraseña) (sin cambios)
 export const deleteAccount = async (req, res) => {
   const userId = req.userLog.id;
   const { password } = req.body; // Recibe la contraseña del body
@@ -229,5 +224,86 @@ export const updateAvatar = async (req, res) => {
   } catch (error) {
     console.error("Error al actualizar avatar:", error);
     res.status(500).json({ message: "Error interno al actualizar avatar" });
+  }
+};
+
+// NUEVA FUNCIÓN para añadir/quitar artículo de favoritos
+export const toggleFavoriteArticle = async (req, res) => {
+  const userId = req.userLog.id;
+  const { articleId } = req.params;
+
+  try {
+    const user = await UserModel.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "Usuario no encontrado." });
+    }
+
+    // Verificar si el artículo existe
+    const articleExists = await ArticleModel.findById(articleId);
+    if (!articleExists) {
+      return res.status(404).json({ message: "Artículo no encontrado." });
+    }
+
+    const isFavorite = user.favorites.includes(articleId);
+    let updatedUser;
+
+    if (isFavorite) {
+      // Eliminar de favoritos
+      updatedUser = await UserModel.findByIdAndUpdate(
+        userId,
+        { $pull: { favorites: articleId } },
+        { new: true } // Devuelve el documento actualizado
+      ).select("favorites");
+      return res.json({
+        message: "Artículo eliminado de favoritos.",
+        favorites: updatedUser.favorites,
+      });
+    } else {
+      // Añadir a favoritos
+      updatedUser = await UserModel.findByIdAndUpdate(
+        userId,
+        { $addToSet: { favorites: articleId } }, // addToSet evita duplicados
+        { new: true }
+      ).select("favorites");
+      return res.json({
+        message: "Artículo añadido a favoritos.",
+        favorites: updatedUser.favorites,
+      });
+    }
+  } catch (error) {
+    console.error("Error al gestionar favoritos:", error);
+    res.status(500).json({ message: "Error interno al gestionar favoritos." });
+  }
+};
+
+// NUEVA FUNCIÓN para obtener los artículos favoritos del usuario
+export const getFavoriteArticles = async (req, res) => {
+  const userId = req.userLog.id;
+
+  try {
+    const user = await UserModel.findById(userId)
+      .populate({
+        path: "favorites",
+        model: "Article",
+        populate: [
+          // Populamos autor y tags de los artículos favoritos
+          { path: "author", select: "-password" },
+          { path: "tags", select: "name" },
+        ],
+        // Ordenamos los favoritos por fecha de creación (los más recientes primero)
+        options: { sort: { createdAt: -1 } },
+      })
+      .select("favorites"); // Solo necesitamos el campo 'favorites' populado
+
+    if (!user) {
+      return res.status(404).json({ message: "Usuario no encontrado." });
+    }
+
+    res.json(user.favorites); // Devolvemos el array de artículos populados
+  } catch (error) {
+    console.error("Error al obtener artículos favoritos:", error);
+    res
+      .status(500)
+      .json({ message: "Error interno al obtener artículos favoritos." });
   }
 };
