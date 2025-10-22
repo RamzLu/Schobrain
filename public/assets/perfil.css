@@ -523,3 +523,55 @@ body {
 #delete-account-modal .modal-actions {
   justify-content: space-between; /* Botones en extremos */
 }
+/* ... (Estilos existentes hasta el final, incluyendo los de Zona de Peligro y modal de eliminación) ... */
+
+/* --- ESTILOS PARA AVATAR CLICKEABLE (NUEVO) --- */
+.avatar-container {
+  position: relative; /* Necesario para posicionar el overlay */
+  flex-shrink: 0;
+}
+
+.clickable-avatar {
+  cursor: pointer;
+  overflow: hidden; /* Oculta el overlay si excede el borde redondeado */
+  border-radius: 50%; /* Asegura que el contenedor sea redondo */
+}
+
+.avatar-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* Fondo oscuro semitransparente */
+  color: white;
+  display: flex;
+  flex-direction: column; /* Icono arriba, texto abajo */
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  opacity: 0; /* Oculto por defecto */
+  transition: opacity 0.3s ease;
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+.avatar-overlay i {
+  font-size: 1.5rem;
+  margin-bottom: 0.3rem;
+}
+
+.clickable-avatar:hover .avatar-overlay {
+  opacity: 1; /* Mostrar al pasar el ratón */
+}
+
+.profile-avatar {
+  /* Asegura que la imagen no interfiera con el clic del contenedor */
+  display: block;
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 4px solid #ffffff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}

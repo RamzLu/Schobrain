@@ -85,12 +85,24 @@
         <section id="profile-section" class="profile-content active-section">
           <div class="profile-card">
             <div class="profile-card-header">
-              <div class="avatar-container">
+              <div
+                id="avatar-wrapper"
+                class="avatar-container clickable-avatar"
+              >
                 <img
                   id="avatarUrl"
                   src="https://ui-avatars.com/api/?name=S&background=random"
                   alt="Avatar del usuario"
                   class="profile-avatar"
+                />
+                <div class="avatar-overlay">
+                  <i class="fas fa-camera"></i> Cambiar
+                </div>
+                <input
+                  type="file"
+                  id="avatar-input"
+                  accept="image/jpeg, image/png, image/gif"
+                  style="display: none"
                 />
               </div>
               <div class="user-details">
@@ -305,7 +317,6 @@
         </div>
       </div>
     </div>
-
     <div id="delete-account-modal" class="modal-overlay">
       <div class="modal-content">
         <h2>Confirmar Eliminación de Cuenta</h2>
@@ -329,6 +340,7 @@
         </div>
       </div>
     </div>
+
     <script type="module" src="/js/perfil/perfil.js"></script>
   </body>
 </html>

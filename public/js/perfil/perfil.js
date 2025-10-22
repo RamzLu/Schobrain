@@ -7,6 +7,7 @@ import { showSuccessToast, showErrorToast } from "../utils/notifications.js";
 
 const API_URL = "/api/profile";
 const ACCOUNT_API_URL = "/api/profile/account";
+const AVATAR_API_URL = "/api/profile/avatar"; // URL para el avatar
 
 document.addEventListener("DOMContentLoaded", async () => {
   // ... (Variables y lógica de autenticación sin cambios) ...
@@ -21,6 +22,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     return;
   }
 
+  // --- Elementos Comunes, Perfil, Cuenta, Zona Peligro (sin cambios) ---
   // --- Elementos Comunes ---
   const logoutBtnPerfil = document.getElementById("logout-btn-perfil");
   const logoutModal = document.getElementById("logout-modal");
@@ -41,6 +43,9 @@ document.addEventListener("DOMContentLoaded", async () => {
   const profileModal = document.getElementById("edit-profile-modal");
   const cancelProfileBtn = document.getElementById("cancel-edit-btn");
   const editProfileForm = document.getElementById("edit-profile-form");
+  const avatarWrapper = document.getElementById("avatar-wrapper"); // Contenedor del avatar
+  const avatarInput = document.getElementById("avatar-input"); // Input file oculto
+  const avatarDisplay = document.getElementById("avatarUrl"); // La imagen <img>
 
   // --- Elementos de Cuenta ---
   const accountOptionsMenu = document.querySelector(".account-options-menu");
@@ -54,7 +59,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const cancelAccountBtn = document.getElementById("cancel-edit-account-btn");
   const editAccountForm = document.getElementById("edit-account-form");
 
-  // --- Elementos de Zona de Peligro ---
+  // --- Elementos de Zona de Peligro --- (NUEVO)
   const deleteAccountBtn = document.getElementById("delete-account-btn");
   const deleteAccountModal = document.getElementById("delete-account-modal");
   const cancelDeleteAccountBtn = document.getElementById(
@@ -80,16 +85,16 @@ document.addEventListener("DOMContentLoaded", async () => {
     document.getElementById("username").textContent = `@${
       username || "username"
     }`;
-    document.getElementById("avatarUrl").src =
+    avatarDisplay.src = // Usa la variable del elemento img
       profile.avatarUrl ||
       `https://ui-avatars.com/api/?name=${encodeURIComponent(
-        profile.firstName || ""
+        profile.firstName || "NN" // Fallback si no hay nombre
       )}+${encodeURIComponent(profile.lastName || "")}&background=random`;
     document.getElementById("role").textContent = role || "Usuario";
     document.getElementById("biography-display").textContent =
       profile.biography || "No has añadido una biografía.";
     document.getElementById("birthdate-display").textContent = profile.birthDate
-      ? new Date(profile.birthDate).toLocaleDateString("es-ES") // Formato localizado
+      ? new Date(profile.birthDate).toLocaleDateString("es-ES")
       : "No especificada.";
 
     // Cuenta
@@ -101,7 +106,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       const res = await fetch(API_URL);
       if (!res.ok) throw new Error("No se pudo cargar el perfil.");
       const data = await res.json();
-      fullProfileData = data; // Guarda los datos completos
+      fullProfileData = data;
       setProfileFields(data);
     } catch (err) {
       showErrorToast(`Error al cargar datos: ${err.message}`);
@@ -110,22 +115,21 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   // Función para cambiar la sección visible
   const switchSection = (sectionId) => {
-    // Ocultar todas las secciones
     document.querySelectorAll(".profile-content").forEach((section) => {
       section.classList.remove("active-section");
     });
-    // Mostrar la sección deseada
     const sectionToShow = document.getElementById(`${sectionId}-section`);
     if (sectionToShow) {
       sectionToShow.classList.add("active-section");
     }
-    // Actualizar clase 'active' en la navegación
     navLinks.forEach((link) => {
       link.classList.toggle("active", link.dataset.section === sectionId);
     });
   };
 
-  // --- Event Listeners (Navegación, Menús Opciones, Logout, Editar Perfil, Editar Cuenta sin cambios) ---
+  // --- Event Listeners ---
+
+  // ... (Navegación, Menús Opciones, Logout, Editar Perfil, Editar Cuenta, Zona Peligro sin cambios)...
   // Navegación entre secciones
   navLinks.forEach((link) => {
     link.addEventListener("click", (e) => {
@@ -138,18 +142,18 @@ document.addEventListener("DOMContentLoaded", async () => {
   // Menú Opciones Perfil
   if (profileOptionsToggleBtn) {
     profileOptionsToggleBtn.addEventListener("click", (e) => {
-      e.stopPropagation(); // Evita que se cierre inmediatamente
+      e.stopPropagation();
       profileOptionsDropdown?.classList.toggle("visible");
-      accountOptionsDropdown?.classList.remove("visible"); // Cierra el otro menú
+      accountOptionsDropdown?.classList.remove("visible");
     });
   }
 
   // Menú Opciones Cuenta
   if (accountOptionsToggleBtn) {
     accountOptionsToggleBtn.addEventListener("click", (e) => {
-      e.stopPropagation(); // Evita que se cierre inmediatamente
+      e.stopPropagation();
       accountOptionsDropdown?.classList.toggle("visible");
-      profileOptionsDropdown?.classList.remove("visible"); // Cierra el otro menú
+      profileOptionsDropdown?.classList.remove("visible");
     });
   }
 
@@ -212,6 +216,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   editProfileForm?.addEventListener("submit", async (e) => {
     e.preventDefault();
+    // ... (lógica submit perfil sin cambios) ...
     const profileData = {
       username: document.getElementById("modal-username").value.trim(),
       profile: {
@@ -221,8 +226,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         birthDate: document.getElementById("modal-birthDate").value,
       },
     };
-
-    // Validación simple de frontend
     if (!profileData.username || profileData.username.length < 3) {
       showErrorToast("El nombre de usuario debe tener al menos 3 caracteres.");
       return;
@@ -241,23 +244,19 @@ document.addEventListener("DOMContentLoaded", async () => {
       showErrorToast("El apellido debe tener al menos 2 caracteres.");
       return;
     }
-
     try {
       const res = await fetch(API_URL, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(profileData),
       });
-
       const result = await res.json();
       if (!res.ok) {
-        // Si el backend devuelve un mensaje específico (ej. "usuario ya en uso"), lo mostramos
         throw new Error(result.message || "Error al guardar el perfil.");
       }
-
       showSuccessToast("Perfil guardado correctamente.");
       profileModal.classList.remove("visible");
-      await fetchProfile(); // Recarga los datos
+      await fetchProfile();
     } catch (err) {
       showErrorToast(err.message);
     }
@@ -265,10 +264,10 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   // --- Modal Editar Cuenta ---
   editAccountBtn?.addEventListener("click", () => {
+    // ... (lógica abrir modal cuenta sin cambios) ...
     if (fullProfileData) {
       document.getElementById("modal-email").value =
         fullProfileData.email || "";
-      // Limpia los campos de contraseña cada vez que se abre
       document.getElementById("modal-currentPassword").value = "";
       document.getElementById("modal-newPassword").value = "";
       document.getElementById("modal-confirmPassword").value = "";
@@ -286,7 +285,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   editAccountForm?.addEventListener("submit", async (e) => {
     e.preventDefault();
-
+    // ... (lógica submit cuenta sin cambios) ...
     const email = document.getElementById("modal-email").value.trim();
     const currentPassword = document.getElementById(
       "modal-currentPassword"
@@ -295,12 +294,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     const confirmPassword = document.getElementById(
       "modal-confirmPassword"
     ).value;
-
     let dataToSend = { email };
-
-    // --- Validaciones de Contraseña ---
     if (newPassword || currentPassword || confirmPassword) {
-      // Si intenta cambiar contraseña
       if (!currentPassword) {
         showErrorToast("Ingresa tu contraseña actual para cambiarla.");
         return;
@@ -313,7 +308,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         showErrorToast("La nueva contraseña debe tener al menos 8 caracteres.");
         return;
       }
-      // Expresión regular para contraseña fuerte (igual que en el backend)
       const strongPasswordRegex =
         /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
       if (!strongPasswordRegex.test(newPassword)) {
@@ -326,82 +320,124 @@ document.addEventListener("DOMContentLoaded", async () => {
         showErrorToast("Las nuevas contraseñas no coinciden.");
         return;
       }
-      // Si todo está bien, añadimos las contraseñas a los datos
       dataToSend.currentPassword = currentPassword;
       dataToSend.newPassword = newPassword;
     }
-    // --- Fin Validaciones Contraseña ---
-
-    // Validación simple de Email
     const emailRegex = /^\S+@\S+\.\S+$/;
     if (!emailRegex.test(email)) {
       showErrorToast("El formato del correo electrónico no es válido.");
       return;
     }
-
     try {
       const res = await fetch(ACCOUNT_API_URL, {
-        // Llama a la nueva ruta
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(dataToSend),
       });
-
       const result = await res.json();
       if (!res.ok) {
         throw new Error(result.message || "Error al actualizar la cuenta.");
       }
-
       showSuccessToast("Cuenta actualizada correctamente.");
       accountModal.classList.remove("visible");
-      await fetchProfile(); // Recarga los datos (el email podría haber cambiado)
+      await fetchProfile();
     } catch (err) {
       showErrorToast(err.message);
     }
   });
 
-  // --- Zona de Peligro --- (Modificado)
+  // --- Zona de Peligro ---
   deleteAccountBtn?.addEventListener("click", () => {
-    deleteConfirmPasswordInput.value = ""; // Limpia el campo de contraseña al abrir
+    // ... (lógica abrir modal eliminación sin cambios) ...
+    deleteConfirmPasswordInput.value = "";
     deleteAccountModal.classList.add("visible");
   });
 
   cancelDeleteAccountBtn?.addEventListener("click", () => {
+    // ... (lógica cancelar eliminación sin cambios) ...
     deleteAccountModal.classList.remove("visible");
   });
 
   confirmDeleteAccountBtn?.addEventListener("click", async () => {
-    const password = deleteConfirmPasswordInput.value; // Obtiene la contraseña ingresada
-
+    // ... (lógica confirmar eliminación sin cambios) ...
+    const password = deleteConfirmPasswordInput.value;
     if (!password) {
       showErrorToast("Ingresa tu contraseña para confirmar la eliminación.");
       return;
     }
-
     try {
-      // Llama al servicio con la contraseña
       await deleteAccount(password);
-
       showSuccessToast("Cuenta eliminada correctamente. Serás redirigido.");
       setTimeout(() => {
         window.location.href = "/login.html";
       }, 2000);
     } catch (error) {
-      // Muestra el error específico (ej. "Contraseña incorrecta")
       showErrorToast(`Error al eliminar: ${error.message}`);
-      // No cerramos el modal automáticamente en caso de error de contraseña
-      // deleteAccountModal.classList.remove("visible");
     }
   });
 
   deleteAccountModal?.addEventListener("click", (e) => {
+    // ... (lógica cerrar modal eliminación clic fuera sin cambios) ...
     if (e.target === deleteAccountModal) {
       deleteAccountModal.classList.remove("visible");
     }
   });
-  // --- Fin Zona de Peligro ---
+
+  // --- Lógica para Editar Avatar (NUEVO) ---
+  avatarWrapper?.addEventListener("click", () => {
+    avatarInput.click(); // Abre el selector de archivos al hacer clic en el contenedor
+  });
+
+  avatarInput?.addEventListener("change", async (event) => {
+    const file = event.target.files[0];
+    if (!file) {
+      return; // No se seleccionó archivo
+    }
+
+    // Validación simple de tipo y tamaño (opcional, el backend también valida)
+    if (!file.type.startsWith("image/")) {
+      showErrorToast("Por favor, selecciona un archivo de imagen.");
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      // Límite de 5MB (igual que en backend)
+      showErrorToast("La imagen no debe superar los 5MB.");
+      return;
+    }
+
+    // Crear FormData para enviar el archivo
+    const formData = new FormData();
+    formData.append("avatar", file); // 'avatar' debe coincidir con upload.single('avatar') en la ruta
+
+    try {
+      // Mostrar feedback visual (ej. un spinner o texto "Subiendo...") - Opcional
+      // avatarDisplay.style.opacity = '0.5';
+
+      const response = await fetch(AVATAR_API_URL, {
+        method: "PUT",
+        body: formData, // No necesitas 'Content-Type', el navegador lo pone automáticamente para FormData
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.message || "Error al subir la imagen.");
+      }
+
+      // Actualizar la imagen en la UI con la nueva URL devuelta por el backend
+      avatarDisplay.src = result.avatarUrl + `?t=${new Date().getTime()}`; // Añade timestamp para evitar caché
+      showSuccessToast("Avatar actualizado correctamente.");
+    } catch (error) {
+      showErrorToast(`Error al actualizar avatar: ${error.message}`);
+    } finally {
+      // Quitar feedback visual
+      // avatarDisplay.style.opacity = '1';
+      avatarInput.value = ""; // Resetea el input file para permitir seleccionar el mismo archivo de nuevo
+    }
+  });
+  // --- Fin Lógica Editar Avatar ---
 
   // --- Inicialización ---
-  await fetchProfile(); // Carga inicial de datos
-  switchSection("profile"); // Muestra la sección de perfil por defecto
+  await fetchProfile();
+  switchSection("profile");
 }); // Fin DOMContentLoaded
