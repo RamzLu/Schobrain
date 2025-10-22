@@ -24,6 +24,7 @@ body {
   margin-bottom: 1.5rem;
 }
 
+/* --- Estilos para la navegación de secciones --- */
 .profile-nav .nav-link {
   display: block;
   padding: 0.8rem 1rem;
@@ -44,11 +45,17 @@ body {
   color: #4338ca;
 }
 
-/* Contenido principal derecho */
+/* --- Ocultar secciones no activas --- */
 .profile-content {
+  display: none; /* Oculto por defecto */
   flex-grow: 1;
 }
 
+.profile-content.active-section {
+  display: block; /* Mostrar solo la activa */
+}
+
+/* --- Estilos Tarjeta de Perfil (Ajustes) --- */
 .profile-card {
   background-color: #ffffff;
   border-radius: 12px;
@@ -141,8 +148,113 @@ body {
   padding: 2rem;
 }
 
+/* --- Estilos Tarjeta de Cuenta (NUEVO) --- */
+.account-card {
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+}
+
+.account-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem 2rem;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.account-card-header h2 {
+  font-size: 1.3rem;
+  color: #111827;
+  margin: 0;
+}
+
+.account-card-body {
+  padding: 2rem;
+}
+
+.password-display {
+  font-family: monospace; /* Para que los puntos se vean uniformes */
+}
+
+/* --- Estilos Menú Opciones (General) --- */
+.profile-options-menu,
+.account-options-menu {
+  position: relative;
+  /* margin-left: auto; */ /* Quitamos esto si interfiere con el layout del header */
+}
+
+.options-toggle-btn {
+  background: none;
+  border: none;
+  font-size: 1rem; /* Ajustado */
+  cursor: pointer;
+  color: #6b7280;
+  padding: 0.4rem; /* Padding para hacer clic más fácil */
+  border-radius: 50%;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.options-toggle-btn:hover {
+  background-color: #f3f4f6; /* Fondo sutil al pasar el ratón */
+  color: #111827;
+}
+
+.options-dropdown {
+  display: none;
+  position: absolute;
+  top: 100%; /* Justo debajo del botón */
+  right: 0;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+  width: 160px; /* Ancho ajustado */
+  overflow: hidden; /* Para que el border-radius funcione bien */
+}
+
+.options-dropdown.visible {
+  display: block;
+}
+
+.dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  background: none;
+  border: none;
+  width: 100%;
+  text-align: left;
+  padding: 0.8rem 1rem;
+  font-size: 0.9rem;
+  color: #374151; /* Color de texto base */
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.dropdown-item i {
+  color: #6b7280; /* Color del icono */
+  width: 16px; /* Para alinear iconos */
+  text-align: center;
+}
+
+.dropdown-item:hover {
+  background-color: #f9fafb; /* Fondo sutil al pasar el ratón */
+}
+
+.dropdown-item#logout-btn-perfil {
+  /* ID específico para Logout */
+  color: #e05d5d; /* Color rojo para cerrar sesión */
+}
+
+.dropdown-item#logout-btn-perfil i {
+  color: #e05d5d;
+}
+
+/* --- Estilos Generales Info Group (Para ambos Modales) --- */
 .info-group {
-  margin-bottom: 1.5rem;
+  margin-bottom: 1.2rem; /* Reducido un poco */
 }
 
 .info-group label {
@@ -150,15 +262,16 @@ body {
   font-weight: 600;
   color: #374151;
   margin-bottom: 0.5rem;
+  font-size: 0.9rem; /* Ligeramente más pequeño */
 }
 
 .info-group input,
 .info-group textarea {
   width: 100%;
-  padding: 0.8rem 1rem;
-  border-radius: 8px;
+  padding: 0.7rem 0.9rem; /* Reducido */
+  border-radius: 6px; /* Menos redondeado */
   border: 1px solid #d1d5db;
-  font-size: 1rem;
+  font-size: 0.95rem; /* Reducido */
   background: #f9fafb;
   transition: border-color 0.2s, box-shadow 0.2s;
   font-family: "Outfit", sans-serif;
@@ -167,13 +280,21 @@ body {
 .info-group input:focus,
 .info-group textarea:focus {
   border-color: #4f46e5;
-  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15); /* Sombra más sutil */
   outline: none;
 }
 
 .info-group textarea {
-  min-height: 120px;
+  min-height: 100px; /* Reducido */
   resize: vertical;
+}
+
+.info-group small {
+  /* Estilo para texto de ayuda */
+  display: block;
+  font-size: 0.8rem;
+  color: #6b7280;
+  margin-top: 0.3rem;
 }
 
 .profile-text {
@@ -181,37 +302,11 @@ body {
   font-size: 1rem;
 }
 
-.profile-card-footer {
-  padding: 1.5rem 2rem;
-  background-color: #f9fafb;
-  text-align: right;
-  border-top: 1px solid #e9ecef;
-}
+/* Footer (ya no es necesario si no hay botón Save directo en perfil) */
+/* .profile-card-footer { ... } */
+/* .save-button { ... } */
 
-.save-button,
-.modal-button {
-  background-color: #4f46e5;
-  color: white;
-  border: none;
-  padding: 0.8rem 2rem;
-  border-radius: 8px;
-  font-size: 1rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background-color 0.2s, transform 0.1s;
-}
-
-.save-button:hover,
-.modal-button:hover {
-  background-color: #4338ca;
-}
-
-.save-button:active,
-.modal-button:active {
-  transform: scale(0.98);
-}
-
-/* --- ESTILOS PARA EL MODAL DE EDICIÓN --- */
+/* --- Estilos para Modal Overlay (General) --- */
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -224,44 +319,90 @@ body {
   justify-content: center;
   align-items: center;
   z-index: 1000;
+  padding: 1rem; /* Añade padding para evitar que toque los bordes en móvil */
 }
 
 .modal-overlay.visible {
   display: flex;
 }
 
+/* --- Estilos para Modal Content (General) --- */
 .modal-content {
   background: #fff;
-  padding: 2rem;
+  padding: 2rem; /* Padding reducido */
   border-radius: 10px;
   box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
   width: 100%;
-  max-width: 500px;
-  text-align: left;
+  max-width: 500px; /* Ancho máximo por defecto */
+  text-align: left; /* Alineación izquierda por defecto */
 }
 
 .modal-content h2 {
-  color: #333;
+  color: #111827; /* Título oscuro */
   margin-bottom: 1.5rem;
+  font-size: 1.4rem; /* Reducido */
+  text-align: center; /* Centrar título del modal */
 }
 
 .modal-actions {
   display: flex;
-  justify-content: flex-end;
-  gap: 1rem;
-  margin-top: 1.5rem;
+  justify-content: flex-end; /* Botones a la derecha */
+  gap: 0.8rem; /* Reducido */
+  margin-top: 1.5rem; /* Espacio sobre los botones */
 }
 
-/* --- ESTILOS PARA EL MENÚ DE OPCIONES DEL PERFIL --- */
-.profile-options-menu {
-  position: relative;
-  margin-left: auto;
-}
-.options-button {
-  background: none;
+/* --- Estilos para Botones del Modal (General) --- */
+.modal-button {
+  background-color: #4f46e5; /* Color primario */
+  color: white;
   border: none;
-  font-size: 1.5rem;
+  padding: 0.7rem 1.4rem; /* Reducido */
+  border-radius: 6px;
+  font-size: 0.95rem; /* Reducido */
+  font-weight: 600;
   cursor: pointer;
+  transition: background-color 0.2s, transform 0.1s;
+}
+
+.modal-button:hover {
+  background-color: #4338ca; /* Color primario más oscuro */
+}
+.modal-button:active {
+  transform: scale(0.98); /* Efecto al presionar */
+}
+
+.modal-button.secondary {
+  background-color: #e5e7eb; /* Gris claro */
+  color: #374151; /* Texto oscuro */
+}
+
+.modal-button.secondary:hover {
+  background-color: #d1d5db; /* Gris un poco más oscuro */
+}
+
+.modal-button.danger {
+  background-color: #ef4444; /* Rojo */
+}
+.modal-button.danger:hover {
+  background-color: #dc2626; /* Rojo más oscuro */
+}
+
+/* --- Estilos Específicos para Modal Editar Cuenta (NUEVO) --- */
+.rectangular-modal {
+  max-width: 550px; /* Un poco más ancho si es necesario */
+}
+
+.modal-divider {
+  /* Separador visual */
+  border: none;
+  border-top: 1px solid #e5e7eb; /* Línea gris clara */
+  margin: 1.5rem 0; /* Espaciado vertical */
+}
+
+.password-change-info {
+  /* Texto informativo */
+  font-size: 0.9rem;
   color: #6b7280;
-  transition: color 0.2s;
+  margin-bottom: 1rem;
+  text-align: center;
 }

@@ -75,11 +75,14 @@
         <aside class="profile-sidebar">
           <h2>Configuración</h2>
           <nav class="profile-nav">
-            <a href="/perfil.html" class="nav-link active">Mi Perfil</a>
+            <a href="#" class="nav-link active" data-section="profile"
+              >Mi Perfil</a
+            >
+            <a href="#" class="nav-link" data-section="account">Cuenta</a>
           </nav>
         </aside>
 
-        <section class="profile-content">
+        <section id="profile-section" class="profile-content active-section">
           <div class="profile-card">
             <div class="profile-card-header">
               <div class="avatar-container">
@@ -97,7 +100,6 @@
                   <span id="lastName">Apellido</span>
                 </p>
                 <div class="user-meta">
-                  <span id="email" class="email-display"></span>
                   <span id="role" class="role-badge">Usuario</span>
                 </div>
               </div>
@@ -105,7 +107,7 @@
                 <button class="options-toggle-btn">
                   <i class="fas fa-ellipsis-v"></i>
                 </button>
-                <div class="options-dropdown">
+                <div class="options-dropdown profile-dropdown">
                   <button class="dropdown-item" id="edit-profile-btn">
                     <i class="fas fa-edit"></i> Editar Perfil
                   </button>
@@ -127,29 +129,77 @@
             </div>
           </div>
         </section>
+
+        <section id="account-section" class="profile-content">
+          <div class="account-card">
+            <div class="account-card-header">
+              <h2>Información de la Cuenta</h2>
+              <div class="account-options-menu">
+                <button class="options-toggle-btn account-options-toggle">
+                  <i class="fas fa-ellipsis-v"></i>
+                </button>
+                <div class="options-dropdown account-dropdown">
+                  <button class="dropdown-item" id="edit-account-btn">
+                    <i class="fas fa-user-shield"></i> Editar Cuenta
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div class="account-card-body">
+              <div class="info-group">
+                <label>Correo Electrónico</label>
+                <p id="email-display" class="profile-text"></p>
+              </div>
+              <div class="info-group">
+                <label>Contraseña</label>
+                <p class="profile-text password-display">••••••••</p>
+              </div>
+            </div>
+          </div>
+        </section>
       </main>
     </div>
+
     <div id="edit-profile-modal" class="modal-overlay">
       <div class="modal-content">
         <h2>Editar Perfil</h2>
         <form id="edit-profile-form">
           <div class="info-group">
             <label for="modal-username">Nombre de usuario</label>
-            <input type="text" id="modal-username" />
+            <input
+              type="text"
+              id="modal-username"
+              minlength="3"
+              maxlength="20"
+              required
+            />
           </div>
           <div class="info-group">
             <label for="modal-firstName">Nombre</label>
-            <input type="text" id="modal-firstName" />
+            <input
+              type="text"
+              id="modal-firstName"
+              minlength="2"
+              maxlength="50"
+              required
+            />
           </div>
           <div class="info-group">
             <label for="modal-lastName">Apellido</label>
-            <input type="text" id="modal-lastName" />
+            <input
+              type="text"
+              id="modal-lastName"
+              minlength="2"
+              maxlength="50"
+              required
+            />
           </div>
           <div class="info-group">
             <label for="modal-biography">Biografía</label>
             <textarea
               id="modal-biography"
-              placeholder="Hola, soy un alumno de la escuela XXXXX y quiero aprender..."
+              placeholder="Hola, soy un alumno de..."
+              maxlength="500"
             ></textarea>
           </div>
           <div class="info-group">
@@ -160,6 +210,62 @@
             <button
               type="button"
               id="cancel-edit-btn"
+              class="modal-button secondary"
+            >
+              Cancelar
+            </button>
+            <button type="submit" class="modal-button">Guardar Cambios</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div id="edit-account-modal" class="modal-overlay">
+      <div class="modal-content rectangular-modal">
+        <h2>Editar Cuenta</h2>
+        <form id="edit-account-form">
+          <div class="info-group">
+            <label for="modal-email">Correo Electrónico</label>
+            <input type="email" id="modal-email" required />
+          </div>
+          <hr class="modal-divider" />
+          <p class="password-change-info">
+            Para cambiar tu contraseña, completa los siguientes campos:
+          </p>
+          <div class="info-group">
+            <label for="modal-currentPassword">Contraseña Actual</label>
+            <input
+              type="password"
+              id="modal-currentPassword"
+              placeholder="Escribe tu contraseña actual"
+            />
+            <small>Necesaria si quieres cambiar la contraseña.</small>
+          </div>
+          <div class="info-group">
+            <label for="modal-newPassword">Nueva Contraseña</label>
+            <input
+              type="password"
+              id="modal-newPassword"
+              placeholder="Mínimo 8 caracteres"
+            />
+            <small
+              >Debe incluir mayúsculas, minúsculas, números y símbolos.</small
+            >
+          </div>
+          <div class="info-group">
+            <label for="modal-confirmPassword"
+              >Confirmar Nueva Contraseña</label
+            >
+            <input
+              type="password"
+              id="modal-confirmPassword"
+              placeholder="Repite la nueva contraseña"
+            />
+          </div>
+          <div class="modal-actions">
+            <button
+              type="button"
+              id="cancel-edit-account-btn"
               class="modal-button secondary"
             >
               Cancelar
