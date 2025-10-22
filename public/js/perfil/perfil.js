@@ -1,10 +1,15 @@
-import { verifyAuth, logoutUser } from "../services/auth.service.js";
+import {
+  verifyAuth,
+  logoutUser,
+  deleteAccount,
+} from "../services/auth.service.js"; // Importa deleteAccount
 import { showSuccessToast, showErrorToast } from "../utils/notifications.js";
 
 const API_URL = "/api/profile";
-const ACCOUNT_API_URL = "/api/profile/account"; // Nueva URL para la cuenta
+const ACCOUNT_API_URL = "/api/profile/account";
 
 document.addEventListener("DOMContentLoaded", async () => {
+  // ... (Variables y lógica de autenticación sin cambios) ...
   let currentUser;
   try {
     const authData = await verifyAuth();
@@ -49,9 +54,19 @@ document.addEventListener("DOMContentLoaded", async () => {
   const cancelAccountBtn = document.getElementById("cancel-edit-account-btn");
   const editAccountForm = document.getElementById("edit-account-form");
 
-  let fullProfileData = null; // Para almacenar los datos completos
+  // --- Elementos de Zona de Peligro --- (NUEVO)
+  const deleteAccountBtn = document.getElementById("delete-account-btn");
+  const deleteAccountModal = document.getElementById("delete-account-modal");
+  const cancelDeleteAccountBtn = document.getElementById(
+    "cancel-delete-account-btn"
+  );
+  const confirmDeleteAccountBtn = document.getElementById(
+    "confirm-delete-account-btn"
+  );
 
-  // --- Funciones ---
+  let fullProfileData = null;
+
+  // --- Funciones (setProfileFields, fetchProfile, switchSection sin cambios) ---
   const setProfileFields = (data) => {
     const { profile, email, username, role } = data;
     // Perfil
@@ -107,8 +122,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
   };
 
-  // --- Event Listeners ---
-
+  // --- Event Listeners (Navegación, Menús Opciones, Logout, Editar Perfil, Editar Cuenta sin cambios) ---
   // Navegación entre secciones
   navLinks.forEach((link) => {
     link.addEventListener("click", (e) => {
@@ -282,10 +296,14 @@ document.addEventListener("DOMContentLoaded", async () => {
     let dataToSend = { email };
 
     // --- Validaciones de Contraseña ---
-    if (newPassword || currentPassword) {
+    if (newPassword || currentPassword || confirmPassword) {
       // Si intenta cambiar contraseña
       if (!currentPassword) {
         showErrorToast("Ingresa tu contraseña actual para cambiarla.");
+        return;
+      }
+      if (!newPassword) {
+        showErrorToast("Ingresa la nueva contraseña.");
         return;
       }
       if (newPassword.length < 8) {
@@ -308,12 +326,15 @@ document.addEventListener("DOMContentLoaded", async () => {
       // Si todo está bien, añadimos las contraseñas a los datos
       dataToSend.currentPassword = currentPassword;
       dataToSend.newPassword = newPassword;
-    } else if (confirmPassword) {
-      // Si escribió en confirmar pero no en nueva contraseña
-      showErrorToast("Ingresa la nueva contraseña antes de confirmarla.");
-      return;
     }
     // --- Fin Validaciones Contraseña ---
+
+    // Validación simple de Email
+    const emailRegex = /^\S+@\S+\.\S+$/;
+    if (!emailRegex.test(email)) {
+      showErrorToast("El formato del correo electrónico no es válido.");
+      return;
+    }
 
     try {
       const res = await fetch(ACCOUNT_API_URL, {
@@ -335,6 +356,40 @@ document.addEventListener("DOMContentLoaded", async () => {
       showErrorToast(err.message);
     }
   });
+
+  // --- Zona de Peligro --- (NUEVO)
+  deleteAccountBtn?.addEventListener("click", () => {
+    deleteAccountModal.classList.add("visible");
+  });
+
+  cancelDeleteAccountBtn?.addEventListener("click", () => {
+    deleteAccountModal.classList.remove("visible");
+  });
+
+  confirmDeleteAccountBtn?.addEventListener("click", async () => {
+    try {
+      // ! ¡¡¡ IMPORTANTE !!! ****
+      // Aquí iría la llamada REAL al backend para eliminar la cuenta.
+      await deleteAccount(); // Llama a la función del servicio
+      // ! ¡¡¡ IMPORTANTE !!! ****
+
+      showSuccessToast("Cuenta eliminada correctamente. Serás redirigido.");
+      // Espera un poco para que el usuario vea el mensaje
+      setTimeout(() => {
+        window.location.href = "/login.html"; // Redirige al login después de eliminar
+      }, 2000);
+    } catch (error) {
+      showErrorToast(`Error al eliminar la cuenta: ${error.message}`);
+      deleteAccountModal.classList.remove("visible"); // Cierra el modal en caso de error
+    }
+  });
+
+  deleteAccountModal?.addEventListener("click", (e) => {
+    if (e.target === deleteAccountModal) {
+      deleteAccountModal.classList.remove("visible");
+    }
+  });
+  // --- Fin Zona de Peligro ---
 
   // --- Inicialización ---
   await fetchProfile(); // Carga inicial de datos

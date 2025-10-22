@@ -1,6 +1,6 @@
 import { UserModel } from "../models/user.model.js";
 import path from "path";
-import { comparePassword, hashPassword } from "../helpers/bcrypt.helper.js"; // Importa helpers de bcrypt
+import { comparePassword, hashPassword } from "../helpers/bcrypt.helper.js";
 
 // Obtener perfil (sin cambios)
 export const getProfile = async (req, res) => {
@@ -20,7 +20,7 @@ export const getProfile = async (req, res) => {
 // Actualizar datos del perfil (nombre, apellido, bio, fecha nac, username)
 export const updateProfile = async (req, res) => {
   try {
-    const { profile, username } = req.body; // Email se maneja en updateAccount
+    const { profile, username } = req.body;
     const userId = req.userLog.id;
     const user = await UserModel.findById(userId);
 
@@ -40,26 +40,21 @@ export const updateProfile = async (req, res) => {
     // Actualiza campos del perfil embebido si existen en req.body.profile
     if (profile && typeof profile === "object") {
       for (const key in profile) {
-        // Actualiza solo si la clave existe en el schema y se envió en el body
         if (profile.hasOwnProperty(key) && user.profile.hasOwnProperty(key)) {
-          // Asegura que no se añadan campos extraños
           user.profile[key] = profile[key];
         }
       }
     }
 
     await user.save();
-
-    // Devuelve los datos actualizados relevantes para la vista de perfil
     res.json({
       profile: user.profile,
-      email: user.email, // Mantenemos el email aquí por si acaso, aunque se edite en otra ruta
+      email: user.email,
       username: user.username,
       role: user.role,
     });
   } catch (error) {
     console.error("Error al actualizar perfil:", error);
-    // Devuelve un error más específico si es posible (ej. validación Mongoose)
     if (error.name === "ValidationError") {
       return res
         .status(400)
@@ -69,7 +64,7 @@ export const updateProfile = async (req, res) => {
   }
 };
 
-// NUEVA FUNCIÓN para actualizar Email y Contraseña
+// Actualizar Email y Contraseña (sin cambios respecto a la versión anterior)
 export const updateAccount = async (req, res) => {
   const { email, currentPassword, newPassword } = req.body;
   const userId = req.userLog.id;
@@ -91,16 +86,12 @@ export const updateAccount = async (req, res) => {
             message: "Se requiere la contraseña actual para cambiarla.",
           });
       }
-
-      // Verificar contraseña actual
       const isMatch = await comparePassword(currentPassword, user.password);
       if (!isMatch) {
         return res
           .status(401)
           .json({ message: "La contraseña actual es incorrecta." });
       }
-
-      // Validar fortaleza de la nueva contraseña (podrías usar la misma regex que en el modelo)
       const strongPasswordRegex =
         /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
       if (!strongPasswordRegex.test(newPassword)) {
@@ -111,33 +102,25 @@ export const updateAccount = async (req, res) => {
               "La nueva contraseña no cumple los requisitos de seguridad.",
           });
       }
-
-      // Hashear y guardar nueva contraseña
       user.password = await hashPassword(newPassword);
       changesMade = true;
     } else if (currentPassword && !newPassword) {
-      // Si mandó la actual pero no la nueva, es un error del usuario
       return res
         .status(400)
         .json({
           message: "Ingresa la nueva contraseña si proporcionaste la actual.",
         });
     }
-    // --- Fin Actualizar Contraseña ---
 
     // --- Actualizar Email ---
     if (email && email !== user.email) {
-      // Validar formato de email (básico)
       const emailRegex = /^\S+@\S+\.\S+$/;
       if (!emailRegex.test(email)) {
         return res
           .status(400)
           .json({ message: "El formato del correo electrónico no es válido." });
       }
-
-      // Validar email único
       const emailExists = await UserModel.findOne({ email });
-      // Permitir si el email encontrado pertenece al mismo usuario (aunque no debería pasar si email !== user.email)
       if (emailExists && emailExists._id.toString() !== userId) {
         return res
           .status(400)
@@ -146,7 +129,6 @@ export const updateAccount = async (req, res) => {
       user.email = email;
       changesMade = true;
     }
-    // --- Fin Actualizar Email ---
 
     if (!changesMade) {
       return res
@@ -169,6 +151,35 @@ export const updateAccount = async (req, res) => {
   }
 };
 
+// NUEVA FUNCIÓN para eliminar la cuenta (Soft Delete)
+export const deleteAccount = async (req, res) => {
+  const userId = req.userLog.id;
+
+  try {
+    const user = await UserModel.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "Usuario no encontrado" });
+    }
+
+    // --- Soft Delete ---
+    // Marcar la cuenta como eliminada estableciendo la fecha en deleteAt
+    user.deleteAt = new Date();
+    await user.save();
+
+    // --- Hard Delete (Alternativa - ¡CUIDADO!) ---
+    // Si prefieres eliminar permanentemente el documento:
+    // await UserModel.findByIdAndDelete(userId);
+
+    // Limpiar la cookie de sesión
+    res.clearCookie("token");
+
+    return res.status(200).json({ message: "Cuenta eliminada correctamente." });
+  } catch (error) {
+    console.error("Error al eliminar la cuenta:", error);
+    res.status(500).json({ message: "Error interno al eliminar la cuenta." });
+  }
+};
+
 // Subir/cambiar foto de perfil (sin cambios)
 export const updateAvatar = async (req, res) => {
   try {
@@ -178,7 +189,6 @@ export const updateAvatar = async (req, res) => {
     if (!user)
       return res.status(404).json({ message: "Usuario no encontrado" });
 
-    // Guarda la ruta pública de la imagen
     const avatarUrl = "/uploads/" + req.file.filename;
     user.profile.avatarUrl = avatarUrl;
     await user.save();

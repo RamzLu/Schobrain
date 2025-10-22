@@ -4,6 +4,7 @@ import {
   updateProfile,
   updateAvatar,
   updateAccount,
+  deleteAccount, // Importa el nuevo controlador
 } from "../controllers/profile.controller.js";
 import { validateToken } from "../middlewares/authMiddleware.js";
 import multer from "multer";
@@ -20,6 +21,13 @@ profileRouter.put("/", validateToken, validator, updateProfile);
 
 // Ruta para actualizar email y contraseña
 profileRouter.put("/account", validateToken, validator, updateAccount);
+
+// Ruta para eliminar la cuenta (NUEVO)
+profileRouter.delete(
+  "/account",
+  validateToken,
+  deleteAccount // Usa el nuevo controlador
+);
 
 profileRouter.put(
   "/avatar",

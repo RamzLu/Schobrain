@@ -1,5 +1,6 @@
 // No es necesario el localhost:3005 porque frontend y backend están en el mismo origen
 const API_URL = "/auth";
+const PROFILE_API_URL = "/api/profile"; // URL base para perfil
 
 export const registerUser = async (userData) => {
   const response = await fetch(`${API_URL}/register`, {
@@ -10,7 +11,6 @@ export const registerUser = async (userData) => {
 
   const data = await response.json();
   if (!response.ok) {
-    // Mapea los errores de validación para mostrarlos
     const errorMsg = data.errors
       ? Object.values(data.errors)
           .map((e) => e.msg)
@@ -37,12 +37,14 @@ export const loginUser = async (credentials) => {
 
 export const logoutUser = async () => {
   try {
-    const response = await fetch("/auth/logout", {
+    const response = await fetch(`${API_URL}/logout`, {
+      // Usa API_URL para logout
       method: "POST",
     });
 
     if (!response.ok) {
-      throw new Error("Error al cerrar sesión.");
+      const data = await response.json().catch(() => ({})); // Intenta parsear error
+      throw new Error(data.msg || "Error al cerrar sesión.");
     }
 
     return await response.json();
@@ -54,17 +56,41 @@ export const logoutUser = async () => {
 
 export const verifyAuth = async () => {
   try {
-    const response = await fetch("/auth/verify", {
+    const response = await fetch(`${API_URL}/verify`, {
+      // Usa API_URL para verify
       method: "GET",
       headers: { "Content-Type": "application/json" },
     });
-    // Si la respuesta no es OK (ej. 400, 401), lanzará un error
     if (!response.ok) {
-      throw new Error("Token no válido");
+      // Si el token no es válido o expiró, el backend debería devolver 400 o 401
+      const errorData = await response
+        .json()
+        .catch(() => ({ msg: "Token no válido o expirado" }));
+      throw new Error(errorData.msg || "Token no válido");
     }
     return await response.json();
   } catch (error) {
-    // ⬇️ CORRECCIÓN: Se elimina la redirección interna. Solo se lanza el error.
+    // Ya no redirige, solo lanza el error para que el JS que llama decida qué hacer
     throw error;
+  }
+};
+
+// NUEVA FUNCIÓN para eliminar la cuenta
+export const deleteAccount = async () => {
+  try {
+    const response = await fetch(`${PROFILE_API_URL}/account`, {
+      // Llama a la nueva ruta DELETE
+      method: "DELETE",
+    });
+
+    if (!response.ok) {
+      const data = await response.json().catch(() => ({}));
+      throw new Error(data.message || "Error al eliminar la cuenta.");
+    }
+
+    return await response.json(); // Devuelve el mensaje de éxito del backend
+  } catch (error) {
+    console.error("Error en deleteAccount:", error);
+    throw error; // Relanza el error para que el JS lo capture
   }
 };

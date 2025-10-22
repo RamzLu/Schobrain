@@ -406,3 +406,90 @@ body {
   margin-bottom: 1rem;
   text-align: center;
 }
+/* ... (Estilos existentes hasta el final) ... */
+
+/* --- Estilos Específicos para Modal Editar Cuenta (NUEVO) --- */
+.rectangular-modal {
+  max-width: 550px; /* Un poco más ancho si es necesario */
+}
+
+.modal-divider {
+  /* Separador visual */
+  border: none;
+  border-top: 1px solid #e5e7eb; /* Línea gris clara */
+  margin: 1.5rem 0; /* Espaciado vertical */
+}
+
+.password-change-info {
+  /* Texto informativo */
+  font-size: 0.9rem;
+  color: #6b7280;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+/* --- ESTILOS PARA ZONA DE PELIGRO (NUEVO) --- */
+.danger-zone {
+  margin-top: 2rem; /* Espacio separador de la tarjeta anterior */
+  border: 1px solid #fecaca; /* Borde rojo claro */
+  border-radius: 12px;
+  background-color: #fff1f2; /* Fondo rosa muy pálido */
+}
+
+.danger-zone h2 {
+  font-size: 1.3rem;
+  color: #b91c1c; /* Rojo oscuro */
+  padding: 1rem 2rem;
+  border-bottom: 1px solid #fecaca;
+  margin: 0;
+}
+
+.danger-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem 2rem;
+}
+
+.danger-item div {
+  flex-grow: 1;
+  margin-right: 1.5rem;
+}
+
+.danger-item h3 {
+  font-size: 1.1rem;
+  color: #dc2626; /* Rojo */
+  margin: 0 0 0.3rem 0;
+}
+
+.danger-item p {
+  font-size: 0.9rem;
+  color: #7f1d1d; /* Rojo más oscuro para texto */
+  line-height: 1.5;
+}
+
+.danger-zone-button {
+  padding: 0.6rem 1.2rem; /* Botón ligeramente más pequeño */
+  font-size: 0.9rem;
+  flex-shrink: 0; /* Evita que el botón se encoja */
+}
+
+/* --- ESTILOS PARA MODAL DE CONFIRMACIÓN (NUEVO) --- */
+#delete-account-modal .modal-content {
+  max-width: 450px; /* Más pequeño para confirmación */
+}
+
+.warning-text {
+  color: #b91c1c; /* Rojo oscuro */
+  font-size: 0.95rem;
+  line-height: 1.6;
+  margin-bottom: 1rem;
+}
+
+.warning-text strong {
+  font-weight: 700;
+}
+
+#delete-account-modal .modal-actions {
+  justify-content: space-between; /* Botones en extremos */
+}
