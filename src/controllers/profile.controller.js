@@ -16,7 +16,6 @@ export const getProfile = async (req, res) => {
 
 export const updateProfile = async (req, res) => {
   try {
-    console.log("Datos recibidos:", req.body); // <-- Agrega esto
     const { profile, email, username } = req.body;
     const user = await UserModel.findById(req.userLog.id);
     if (!user)

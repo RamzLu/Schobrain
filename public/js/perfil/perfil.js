@@ -96,6 +96,8 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   editProfileBtn.addEventListener("click", () => {
     if (fullProfileData) {
+      document.getElementById("modal-username").value =
+        fullProfileData.username || "";
       document.getElementById("modal-firstName").value =
         fullProfileData.profile.firstName || "";
       document.getElementById("modal-lastName").value =
@@ -123,6 +125,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   editProfileForm.addEventListener("submit", async (e) => {
     e.preventDefault();
     const profileData = {
+      username: document.getElementById("modal-username").value,
       profile: {
         firstName: document.getElementById("modal-firstName").value,
         lastName: document.getElementById("modal-lastName").value,
