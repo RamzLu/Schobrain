@@ -1,12 +1,17 @@
 // public/js/pregunta.js
 import { verifyAuth } from "./services/auth.service.js";
-import { fetchArticleById, voteOnArticle } from "./services/article.service.js";
+import {
+  fetchArticleById,
+  voteOnArticle,
+  toggleFavoriteArticle,
+  deleteArticle,
+} from "./services/article.service.js"; // Asegurar toggleFavoriteArticle importado
 import {
   postComment,
   deleteComment,
   voteOnComment,
 } from "./services/comment.service.js";
-import { toggleFavoriteComment } from "./services/profile.service.js"; // <-- NUEVO IMPORT
+import { toggleFavoriteComment } from "./services/profile.service.js";
 import {
   renderArticleCard,
   initializeSymbolsPanel,
@@ -42,7 +47,11 @@ const formatRelativeTime = (dateString) => {
 const renderMainQuestion = (article, currentUser) => {
   const container = document.getElementById("main-question-container");
   if (container) {
-    let cardHtml = renderArticleCard(article, currentUser);
+    // Es fundamental pasar la lista de favoritos para que el botón de estrella se renderice correctamente
+    const userFavorites = currentUser.favorites || [];
+    let cardHtml = renderArticleCard(article, currentUser, userFavorites);
+
+    // Eliminamos el enlace de "Ver discusión" para la pregunta principal
     cardHtml = cardHtml.replace(
       /<a href="\/pregunta\.html\?id=.*">Ver discusión y responder<\/a>/,
       ""
@@ -69,7 +78,7 @@ const renderComments = (comments, currentUser) => {
       const canDelete =
         currentUser.role === "admin" || currentUser.id === comment.author._id;
 
-      // NUEVO: Lógica de favorito para el comentario
+      // Lógica de favorito para el comentario
       const isFavorite = userFavoriteComments.includes(comment._id);
       const favoriteIconClass = isFavorite ? "fas fa-star" : "far fa-star";
       const favoriteTitle = isFavorite
@@ -170,10 +179,10 @@ document.addEventListener("DOMContentLoaded", async () => {
   let currentUser;
   try {
     const authData = await verifyAuth();
-    // Reestructuramos currentUser para incluir favoriteComments (viene en authData.data)
+    // Reestructuramos currentUser para incluir favoritos
     currentUser = {
       ...authData.data,
-      favorites: authData.data.favorites || [],
+      favorites: authData.data.favorites || [], // Aseguramos que favorites esté presente
       favoriteComments: authData.data.favoriteComments || [],
     };
     document.getElementById("logged-in-username").textContent =
@@ -185,6 +194,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   const params = new URLSearchParams(window.location.search);
   const articleId = params.get("id");
+  let currentArticle = null; // Guardar el artículo para usar en editar/eliminar
 
   if (!articleId) {
     document.body.innerHTML = "<h1>Error: No se especificó una pregunta.</h1>";
@@ -193,8 +203,9 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   try {
     const article = await fetchArticleById(articleId);
+    currentArticle = article;
     renderMainQuestion(article, currentUser);
-    renderComments(article.comments, currentUser); // Pasa el objeto con favoriteComments
+    renderComments(article.comments, currentUser);
 
     initializeLightbox("main-question-container");
     initializeSymbolsPanel({
@@ -230,16 +241,29 @@ document.addEventListener("DOMContentLoaded", async () => {
     const cancelDeleteBtn = document.getElementById("cancel-delete");
     let commentIdToDelete = null;
 
-    commentsList.addEventListener("click", async (event) => {
-      // --- Lógica para el menú de opciones ---
+    // --- Funciones de utilidad para menús ---
+    const closeAllDropdowns = () => {
+      document
+        .querySelectorAll(".options-dropdown.visible")
+        .forEach((d) => d.classList.remove("visible"));
+    };
+
+    const handleToggleMenu = (event) => {
       const toggleBtn = event.target.closest(".options-toggle-btn");
       if (toggleBtn) {
         const dropdown = toggleBtn.nextElementSibling;
-        document.querySelectorAll(".options-dropdown.visible").forEach((d) => {
-          if (d !== dropdown) d.classList.remove("visible");
-        });
+        closeAllDropdowns(); // Cerrar todos antes de abrir uno
         dropdown.classList.toggle("visible");
+        return true;
       }
+      return false;
+    };
+    // --- Fin Funciones de utilidad para menús ---
+
+    // Listener para los comentarios (y su menú de opciones)
+    commentsList.addEventListener("click", async (event) => {
+      // --- Lógica para el menú de opciones (Comentarios) ---
+      if (handleToggleMenu(event)) return;
 
       // --- Lógica para el botón de eliminar ---
       const deleteBtn = event.target.closest(".delete-comment-btn");
@@ -249,11 +273,10 @@ document.addEventListener("DOMContentLoaded", async () => {
         deleteBtn.closest(".options-dropdown").classList.remove("visible");
       }
 
-      // --- NUEVA LÓGICA para el botón de favorito de comentarios ---
+      // --- LÓGICA para el botón de favorito de comentarios ---
       const favoriteBtn = event.target.closest(".favorite-comment-btn");
       if (favoriteBtn && favoriteBtn.dataset.commentId) {
         const commentId = favoriteBtn.dataset.commentId;
-        favoriteBtn.closest(".options-dropdown").classList.remove("visible");
 
         try {
           const result = await toggleFavoriteComment(commentId);
@@ -270,9 +293,6 @@ document.addEventListener("DOMContentLoaded", async () => {
           favoriteBtn.innerHTML = `<i class="${
             isFavorite ? "fas fa-star" : "far fa-star"
           }"></i> ${favoriteBtn.title}`;
-
-          // Cierra el menú después de la acción
-          favoriteBtn.closest(".options-dropdown")?.classList.remove("visible");
         } catch (error) {
           showErrorToast(error.message);
         }
@@ -314,44 +334,40 @@ document.addEventListener("DOMContentLoaded", async () => {
       }
     });
 
-    document.addEventListener("click", (event) => {
-      if (!event.target.closest(".comment-options-menu")) {
-        document.querySelectorAll(".options-dropdown.visible").forEach((d) => {
-          d.classList.remove("visible");
-        });
-      }
-    });
-
-    confirmDeleteBtn.addEventListener("click", async () => {
-      if (commentIdToDelete) {
-        try {
-          await deleteComment(commentIdToDelete);
-          showSuccessToast("Respuesta eliminada correctamente.");
-          setTimeout(() => window.location.reload(), 1500);
-        } catch (error) {
-          showErrorToast(error.message);
-        } finally {
-          deleteConfirmModal.classList.remove("visible");
-          commentIdToDelete = null;
-        }
-      }
-    });
-
-    cancelDeleteBtn.addEventListener("click", () => {
-      deleteConfirmModal.classList.remove("visible");
-      commentIdToDelete = null;
-    });
-
-    deleteConfirmModal.addEventListener("click", (event) => {
-      if (event.target === deleteConfirmModal) {
-        deleteConfirmModal.classList.remove("visible");
-      }
-    });
-
     const mainQuestionContainer = document.getElementById(
       "main-question-container"
     );
+
+    // Listener para la pregunta principal (incluye menú de opciones y voto de artículo)
     mainQuestionContainer.addEventListener("click", async (event) => {
+      // --- Lógica para el menú de opciones (Pregunta Principal) ---
+      if (handleToggleMenu(event)) return; // <-- CORREGIDO: Mantiene el manejo del menú
+
+      // --- Lógica para el botón de favorito de artículos (Pregunta Principal) ---
+      const favoriteBtn = event.target.closest(".favorite-btn");
+      if (favoriteBtn && favoriteBtn.dataset.id) {
+        const articleId = favoriteBtn.dataset.id;
+
+        try {
+          const result = await toggleFavoriteArticle(articleId);
+          showSuccessToast(result.message);
+
+          // Actualizar UI del botón de favorito
+          const isFavorite = result.favorites.includes(articleId);
+          favoriteBtn.dataset.isFavorite = isFavorite;
+          favoriteBtn.innerHTML = `
+                    <i class="${
+                      isFavorite ? "fas fa-star" : "far fa-star"
+                    }"></i> 
+                    ${isFavorite ? "Quitar de favoritos" : "Añadir a favoritos"}
+                `;
+        } catch (error) {
+          showErrorToast(error.message);
+        }
+        return;
+      }
+
+      // --- Lógica para los botones de voto de artículos ---
       const voteBtn = event.target.closest(".vote-btn");
       if (voteBtn && voteBtn.dataset.articleId) {
         // Aseguramos que sea un voto de artículo
@@ -385,6 +401,70 @@ document.addEventListener("DOMContentLoaded", async () => {
         } catch (error) {
           showErrorToast(error.message);
         }
+      }
+
+      // --- Lógica para el botón EDITAR (simulada) ---
+      const editBtn = event.target.closest(".edit-btn");
+      if (editBtn) {
+        // Aquí iría la lógica para abrir el modal de edición
+        showErrorToast(
+          "Funcionalidad de edición no implementada en esta vista."
+        );
+      }
+
+      // --- Lógica para el botón ELIMINAR (simulada) ---
+      const deleteArticleBtn = event.target.closest(".delete-btn");
+      if (deleteArticleBtn) {
+        const confirmDelete = window.confirm(
+          "¿Estás seguro de eliminar esta pregunta?"
+        );
+        if (confirmDelete) {
+          try {
+            await deleteArticle(articleId);
+            showSuccessToast("Pregunta eliminada. Redirigiendo...");
+            setTimeout(() => {
+              window.location.href = "/"; // Volver al feed
+            }, 1000);
+          } catch (error) {
+            showErrorToast(`Error al eliminar: ${error.message}`);
+          }
+        }
+      }
+    });
+
+    // Cierre de dropdowns al hacer clic fuera del menú de comentarios y preguntas
+    document.addEventListener("click", (event) => {
+      if (
+        !event.target.closest(".comment-options-menu") &&
+        !event.target.closest(".article-options-menu")
+      ) {
+        closeAllDropdowns();
+      }
+    });
+
+    confirmDeleteBtn.addEventListener("click", async () => {
+      if (commentIdToDelete) {
+        try {
+          await deleteComment(commentIdToDelete);
+          showSuccessToast("Respuesta eliminada correctamente.");
+          setTimeout(() => window.location.reload(), 1500);
+        } catch (error) {
+          showErrorToast(error.message);
+        } finally {
+          deleteConfirmModal.classList.remove("visible");
+          commentIdToDelete = null;
+        }
+      }
+    });
+
+    cancelDeleteBtn.addEventListener("click", () => {
+      deleteConfirmModal.classList.remove("visible");
+      commentIdToDelete = null;
+    });
+
+    deleteConfirmModal.addEventListener("click", (event) => {
+      if (event.target === deleteConfirmModal) {
+        deleteConfirmModal.classList.remove("visible");
       }
     });
   } catch (error) {
