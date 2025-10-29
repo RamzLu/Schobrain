@@ -1,3 +1,4 @@
+// src/models/user.model.js
 import { model, Schema, Types } from "mongoose"; // Asegúrate de importar Types
 
 const userSchema = new Schema(
@@ -56,11 +57,18 @@ const userSchema = new Schema(
         type: String, // Cambiado a String para consistencia con el frontend
       },
     },
-    // NUEVO CAMPO PARA FAVORITOS
+    // CAMPO PARA FAVORITOS (PREGUNTAS)
     favorites: [
       {
         type: Types.ObjectId,
         ref: "Article",
+      },
+    ],
+    // NUEVO CAMPO PARA FAVORITOS (RESPUESTAS/COMMENTS)
+    favoriteComments: [
+      {
+        type: Types.ObjectId,
+        ref: "Comment",
       },
     ],
     deleteAt: {

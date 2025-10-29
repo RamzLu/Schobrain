@@ -187,7 +187,23 @@
         </section>
 
         <section id="favorites-section" class="profile-content">
-          <h2>Mis Preguntas Favoritas</h2>
+          <h2>Mis Favoritos</h2>
+          <div class="favorites-toolbar">
+            <button
+              class="modal-button secondary favorites-filter-btn active"
+              data-filter-type="articles"
+              id="filter-articles-btn"
+            >
+              <i class="fas fa-question-circle"></i> Preguntas Favoritas
+            </button>
+            <button
+              class="modal-button secondary favorites-filter-btn"
+              data-filter-type="comments"
+              id="filter-comments-btn"
+            >
+              <i class="fas fa-comment-dots"></i> Respuestas Favoritas
+            </button>
+          </div>
           <div id="favorites-list" class="favorites-list-container">
             <p>Cargando favoritos...</p>
           </div>

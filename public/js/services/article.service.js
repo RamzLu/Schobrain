@@ -146,11 +146,13 @@ export const updateArticle = async (articleId, formData) => {
 
 // NUEVA FUNCIÓN para añadir/quitar favorito
 export const toggleFavoriteArticle = async (articleId) => {
-  const response = await fetch(`${PROFILE_API_URL}/favorites/${articleId}`, {
-    method: "POST",
-    // No necesita body, el ID va en la URL
-    headers: { "Content-Type": "application/json" }, // Aunque no hay body, es buena práctica
-  });
+  const response = await fetch(
+    `${PROFILE_API_URL}/favorites/article/${articleId}`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+    }
+  );
 
   const data = await response.json();
   if (!response.ok) {
@@ -158,6 +160,5 @@ export const toggleFavoriteArticle = async (articleId) => {
       data.message || data.msg || "Error al actualizar favoritos."
     );
   }
-  // Devuelve el objeto { message, favorites: [...] } del backend
   return data;
 };

@@ -1,62 +1,71 @@
+// public/js/services/comment.service.js
+
 const API_URL = "/api/comments";
 
-/**
- * Publica un nuevo comentario para un artículo.
- * @param {Object} commentData - { content, author, article }
- * @returns {Promise<Object>} El comentario creado.
- */
+// Endpoint para postear un comentario (Respuesta)
 export const postComment = async (commentData) => {
-  const response = await fetch(API_URL, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(commentData),
-  });
+  try {
+    const response = await fetch(API_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(commentData),
+      credentials: "include", // <-- CORRECCIÓN CLAVE: Incluye la cookie con el token
+    });
 
-  const data = await response.json();
-  if (!response.ok) {
-    const errorMsg = data.errors
-      ? Object.values(data.errors)
-          .map((e) => e.msg)
-          .join("\n")
-      : data.msg || "Error al publicar la respuesta.";
-    throw new Error(errorMsg);
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || "Error al publicar la respuesta.");
+    }
+    return data;
+  } catch (error) {
+    console.error("Error en postComment service:", error);
+    throw error;
   }
-  return data.data;
 };
 
-/**
- * Elimina un comentario por su ID.
- * @param {string} commentId - El ID del comentario a eliminar.
- * @returns {Promise<Object>} La respuesta del servidor.
- */
+// Endpoint para eliminar un comentario
 export const deleteComment = async (commentId) => {
-  const response = await fetch(`${API_URL}/${commentId}`, {
-    method: "DELETE",
-  });
+  try {
+    const response = await fetch(`${API_URL}/${commentId}`, {
+      method: "DELETE",
+      credentials: "include", // <-- CORRECCIÓN CLAVE: Incluye la cookie con el token
+    });
 
-  const data = await response.json();
-  if (!response.ok) {
-    throw new Error(data.msg || "Error al eliminar la respuesta.");
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || "Error al eliminar la respuesta.");
+    }
+    return data;
+  } catch (error) {
+    console.error("Error en deleteComment service:", error);
+    throw error;
   }
-  return data;
 };
 
-/**
- * Envía un voto para un comentario.
- * @param {string} commentId - El ID del comentario.
- * @param {'like' | 'dislike'} voteType - El tipo de voto.
- * @returns {Promise<Object>} Los contadores de votos actualizados.
- */
+// Endpoint para votar un comentario
 export const voteOnComment = async (commentId, voteType) => {
-  const response = await fetch(`${API_URL}/${commentId}/vote`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ voteType }),
-  });
+  try {
+    const response = await fetch(`${API_URL}/${commentId}/vote`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ voteType }),
+      credentials: "include", // <-- CORRECCIÓN CLAVE: Incluye la cookie con el token
+    });
 
-  const data = await response.json();
-  if (!response.ok) {
-    throw new Error(data.msg || "Error al registrar el voto.");
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || "Error al votar la respuesta.");
+    }
+    return data;
+  } catch (error) {
+    console.error("Error en voteOnComment service:", error);
+    throw error;
   }
-  return data.data;
 };

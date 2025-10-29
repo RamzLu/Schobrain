@@ -4,16 +4,18 @@ import {
   updateProfile,
   updateAvatar,
   updateAccount,
-  deleteAccount,
-  toggleFavoriteArticle, // Importa el nuevo controlador
-  getFavoriteArticles, // Importa el nuevo controlador
+  deleteAccount, // <-- RESTAURADA LA IMPORTACIÓN
+  toggleFavoriteArticle,
+  getFavoriteArticles,
+  toggleFavoriteComment, // <-- NUEVA IMPORTACIÓN
+  getFavoriteComments, // <-- NUEVA IMPORTACIÓN
 } from "../controllers/profile.controller.js";
 import { validateToken } from "../middlewares/authMiddleware.js";
-import multer from "multer";
+import multer from "multer"; // <-- IMPORTACIÓN NECESARIA
 import { validator } from "../middlewares/validator.js";
-import { param } from "express-validator"; // Importa param para validación
+import { param } from "express-validator"; // <-- IMPORTACIÓN NECESARIA
 
-// Configuración básica de Multer (puedes ajustarla según necesites)
+// Configuración básica de Multer
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, "public/uploads/");
@@ -50,7 +52,7 @@ profileRouter.put("/account", validateToken, validator, updateAccount);
 profileRouter.delete(
   "/account",
   validateToken,
-  deleteAccount // Usa el nuevo controlador
+  deleteAccount // Usa el controlador
 );
 
 // Ruta para actualizar avatar
@@ -61,9 +63,9 @@ profileRouter.put(
   updateAvatar
 );
 
-// NUEVA RUTA para añadir/quitar un artículo de favoritos
+// RUTA ACTUALIZADA para añadir/quitar un artículo de favoritos (PREGUNTAS)
 profileRouter.post(
-  "/favorites/:articleId",
+  "/favorites/article/:articleId",
   validateToken,
   // Validación básica del ID del artículo
   param("articleId")
@@ -73,7 +75,22 @@ profileRouter.post(
   toggleFavoriteArticle
 );
 
-// NUEVA RUTA para obtener los artículos favoritos
-profileRouter.get("/favorites", validateToken, getFavoriteArticles);
+// RUTA ACTUALIZADA para obtener los artículos favoritos (PREGUNTAS)
+profileRouter.get("/favorites/articles", validateToken, getFavoriteArticles);
+
+// NUEVA RUTA para añadir/quitar un comentario de favoritos (RESPUESTAS)
+profileRouter.post(
+  "/favorites/comment/:commentId",
+  validateToken,
+  // Validación básica del ID del comentario
+  param("commentId")
+    .isMongoId()
+    .withMessage("El ID del comentario no es válido."),
+  validator, // Ejecuta la validación
+  toggleFavoriteComment
+);
+
+// NUEVA RUTA para obtener los comentarios favoritos (RESPUESTAS)
+profileRouter.get("/favorites/comments", validateToken, getFavoriteComments);
 
 export default profileRouter;

@@ -1,3 +1,4 @@
+// public/js/pregunta.js
 import { verifyAuth } from "./services/auth.service.js";
 import { fetchArticleById, voteOnArticle } from "./services/article.service.js";
 import {
@@ -5,6 +6,7 @@ import {
   deleteComment,
   voteOnComment,
 } from "./services/comment.service.js";
+import { toggleFavoriteComment } from "./services/profile.service.js"; // <-- NUEVO IMPORT
 import {
   renderArticleCard,
   initializeSymbolsPanel,
@@ -53,6 +55,9 @@ const renderComments = (comments, currentUser) => {
   const container = document.getElementById("comments-list");
   if (!container) return;
 
+  // Acceder a la lista de comentarios favoritos del usuario
+  const userFavoriteComments = currentUser.favoriteComments || [];
+
   if (comments.length === 0) {
     container.innerHTML =
       "<p>Aún no hay respuestas. ¡Sé el primero en responder!</p>";
@@ -64,6 +69,13 @@ const renderComments = (comments, currentUser) => {
       const canDelete =
         currentUser.role === "admin" || currentUser.id === comment.author._id;
 
+      // NUEVO: Lógica de favorito para el comentario
+      const isFavorite = userFavoriteComments.includes(comment._id);
+      const favoriteIconClass = isFavorite ? "fas fa-star" : "far fa-star";
+      const favoriteTitle = isFavorite
+        ? "Quitar de favoritos"
+        : "Añadir a favoritos";
+
       let statusBadges = "";
       if (comment.author.role === "admin") {
         statusBadges += `<span class="admin-badge">Administrador</span>`;
@@ -72,18 +84,33 @@ const renderComments = (comments, currentUser) => {
         statusBadges += `<span class="author-badge">Tú</span>`;
       }
 
-      const optionsMenuHtml = canDelete
-        ? `<div class="comment-options-menu">
+      // Botón de favorito para el menú de opciones
+      const favoriteButtonHtml = `
+            <button 
+                class="dropdown-item favorite-comment-btn" 
+                data-comment-id="${comment._id}"
+                data-is-favorite="${isFavorite}"
+                title="${favoriteTitle}"
+            >
+                <i class="${favoriteIconClass}"></i> ${favoriteTitle}
+            </button>`;
+
+      const deleteButtonHtml = `
+                <button class="dropdown-item delete-comment-btn" data-comment-id="${comment._id}">
+                  <i class="fas fa-trash-alt"></i> Eliminar
+                </button>
+            `;
+
+      const optionsMenuHtml = `
+        <div class="comment-options-menu">
              <button class="options-toggle-btn">
                <i class="fas fa-ellipsis-v"></i>
              </button>
              <div class="options-dropdown">
-               <button class="dropdown-item delete-comment-btn" data-comment-id="${comment._id}">
-                 <i class="fas fa-trash-alt"></i> Eliminar
-               </button>
+               ${favoriteButtonHtml} 
+               ${canDelete ? deleteButtonHtml : ""}
              </div>
-           </div>`
-        : "";
+        </div>`;
 
       const userHasLiked = comment.votedUp.includes(currentUser.id);
       const userHasDisliked = comment.votedDown.includes(currentUser.id);
@@ -143,7 +170,12 @@ document.addEventListener("DOMContentLoaded", async () => {
   let currentUser;
   try {
     const authData = await verifyAuth();
-    currentUser = authData.data;
+    // Reestructuramos currentUser para incluir favoriteComments (viene en authData.data)
+    currentUser = {
+      ...authData.data,
+      favorites: authData.data.favorites || [],
+      favoriteComments: authData.data.favoriteComments || [],
+    };
     document.getElementById("logged-in-username").textContent =
       currentUser.firstName;
   } catch (error) {
@@ -162,7 +194,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   try {
     const article = await fetchArticleById(articleId);
     renderMainQuestion(article, currentUser);
-    renderComments(article.comments, currentUser);
+    renderComments(article.comments, currentUser); // Pasa el objeto con favoriteComments
 
     initializeLightbox("main-question-container");
     initializeSymbolsPanel({
@@ -215,6 +247,36 @@ document.addEventListener("DOMContentLoaded", async () => {
         commentIdToDelete = deleteBtn.dataset.commentId;
         deleteConfirmModal.classList.add("visible");
         deleteBtn.closest(".options-dropdown").classList.remove("visible");
+      }
+
+      // --- NUEVA LÓGICA para el botón de favorito de comentarios ---
+      const favoriteBtn = event.target.closest(".favorite-comment-btn");
+      if (favoriteBtn && favoriteBtn.dataset.commentId) {
+        const commentId = favoriteBtn.dataset.commentId;
+        favoriteBtn.closest(".options-dropdown").classList.remove("visible");
+
+        try {
+          const result = await toggleFavoriteComment(commentId);
+          showSuccessToast(result.message);
+
+          // Actualizar estado local y UI
+          currentUser.favoriteComments = result.favoriteComments;
+          const isFavorite = currentUser.favoriteComments.includes(commentId);
+
+          favoriteBtn.dataset.isFavorite = isFavorite;
+          favoriteBtn.title = isFavorite
+            ? "Quitar de favoritos"
+            : "Añadir a favoritos";
+          favoriteBtn.innerHTML = `<i class="${
+            isFavorite ? "fas fa-star" : "far fa-star"
+          }"></i> ${favoriteBtn.title}`;
+
+          // Cierra el menú después de la acción
+          favoriteBtn.closest(".options-dropdown")?.classList.remove("visible");
+        } catch (error) {
+          showErrorToast(error.message);
+        }
+        return;
       }
 
       // --- Lógica para los botones de voto de comentarios ---

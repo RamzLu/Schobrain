@@ -1,14 +1,16 @@
+// src/controllers/profile.controller.js
 import { UserModel } from "../models/user.model.js";
-import { ArticleModel } from "../models/article.model.js"; // Importa ArticleModel
+import { ArticleModel } from "../models/article.model.js";
+import { CommentModel } from "../models/comment.model.js"; // Importa CommentModel
 import path from "path";
 import { comparePassword, hashPassword } from "../helpers/bcrypt.helper.js";
 
-// Obtener perfil (sin cambios)
+// Obtener perfil (actualizado para incluir favoriteComments)
 export const getProfile = async (req, res) => {
   try {
-    // Añadimos 'favorites' al select para obtener los IDs de favoritos
+    // Incluimos 'favorites' y 'favoriteComments' en el select
     const user = await UserModel.findById(req.userLog.id).select(
-      "profile email username role favorites"
+      "profile email username role favorites favoriteComments"
     );
     if (!user)
       return res.status(404).json({ message: "Usuario no encontrado" });
@@ -19,7 +21,7 @@ export const getProfile = async (req, res) => {
   }
 };
 
-// Actualizar datos del perfil (nombre, apellido, bio, fecha nac, username) (sin cambios)
+// Actualizar datos del perfil (nombre, apellido, bio, fecha nac, username)
 export const updateProfile = async (req, res) => {
   try {
     const { profile, username } = req.body; // Email se maneja en updateAccount
@@ -55,10 +57,11 @@ export const updateProfile = async (req, res) => {
     // Devuelve los datos actualizados relevantes para la vista de perfil
     res.json({
       profile: user.profile,
-      email: user.email, // Mantenemos el email aquí por si acaso, aunque se edite en otra ruta
+      email: user.email,
       username: user.username,
       role: user.role,
-      favorites: user.favorites, // Devolver también los favoritos actualizados
+      favorites: user.favorites, // Devolver también los favoritos de preguntas
+      favoriteComments: user.favoriteComments, // Devolver también los favoritos de respuestas
     });
   } catch (error) {
     console.error("Error al actualizar perfil:", error);
@@ -72,7 +75,7 @@ export const updateProfile = async (req, res) => {
   }
 };
 
-// NUEVA FUNCIÓN para actualizar Email y Contraseña (sin cambios)
+// Función para actualizar Email y Contraseña
 export const updateAccount = async (req, res) => {
   const { email, currentPassword, newPassword } = req.body;
   const userId = req.userLog.id;
@@ -165,7 +168,7 @@ export const updateAccount = async (req, res) => {
   }
 };
 
-// FUNCIÓN para eliminar la cuenta (Modificada para verificar contraseña) (sin cambios)
+// FUNCIÓN para eliminar la cuenta (EXPORTACIÓN RESTAURADA)
 export const deleteAccount = async (req, res) => {
   const userId = req.userLog.id;
   const { password } = req.body; // Recibe la contraseña del body
@@ -196,9 +199,6 @@ export const deleteAccount = async (req, res) => {
     user.deleteAt = new Date();
     await user.save();
 
-    // --- Hard Delete (Alternativa) ---
-    // await UserModel.findByIdAndDelete(userId);
-
     res.clearCookie("token");
     return res.status(200).json({ message: "Cuenta eliminada correctamente." });
   } catch (error) {
@@ -207,7 +207,7 @@ export const deleteAccount = async (req, res) => {
   }
 };
 
-// Subir/cambiar foto de perfil (sin cambios)
+// Subir/cambiar foto de perfil
 export const updateAvatar = async (req, res) => {
   try {
     if (!req.file)
@@ -227,7 +227,7 @@ export const updateAvatar = async (req, res) => {
   }
 };
 
-// NUEVA FUNCIÓN para añadir/quitar artículo de favoritos
+// FUNCIÓN para añadir/quitar artículo de favoritos (Preguntas)
 export const toggleFavoriteArticle = async (req, res) => {
   const userId = req.userLog.id;
   const { articleId } = req.params;
@@ -276,7 +276,7 @@ export const toggleFavoriteArticle = async (req, res) => {
   }
 };
 
-// NUEVA FUNCIÓN para obtener los artículos favoritos del usuario
+// FUNCIÓN para obtener los artículos favoritos del usuario
 export const getFavoriteArticles = async (req, res) => {
   const userId = req.userLog.id;
 
@@ -305,5 +305,88 @@ export const getFavoriteArticles = async (req, res) => {
     res
       .status(500)
       .json({ message: "Error interno al obtener artículos favoritos." });
+  }
+};
+
+// NUEVA FUNCIÓN: Añadir/quitar comentario de favoritos (Respuestas)
+export const toggleFavoriteComment = async (req, res) => {
+  const userId = req.userLog.id;
+  const { commentId } = req.params;
+
+  try {
+    const user = await UserModel.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "Usuario no encontrado." });
+    }
+
+    // Verificar si el comentario existe
+    const commentExists = await CommentModel.findById(commentId);
+    if (!commentExists) {
+      return res.status(404).json({ message: "Comentario no encontrado." });
+    }
+
+    const isFavorite = user.favoriteComments.includes(commentId);
+    let updatedUser;
+
+    if (isFavorite) {
+      // Eliminar de favoritos
+      updatedUser = await UserModel.findByIdAndUpdate(
+        userId,
+        { $pull: { favoriteComments: commentId } },
+        { new: true }
+      ).select("favoriteComments");
+      return res.json({
+        message: "Respuesta eliminada de favoritos.",
+        favoriteComments: updatedUser.favoriteComments,
+      });
+    } else {
+      // Añadir a favoritos
+      updatedUser = await UserModel.findByIdAndUpdate(
+        userId,
+        { $addToSet: { favoriteComments: commentId } },
+        { new: true }
+      ).select("favoriteComments");
+      return res.json({
+        message: "Respuesta añadida a favoritos.",
+        favoriteComments: updatedUser.favoriteComments,
+      });
+    }
+  } catch (error) {
+    console.error("Error al gestionar comentarios favoritos:", error);
+    res
+      .status(500)
+      .json({ message: "Error interno al gestionar comentarios favoritos." });
+  }
+};
+
+// NUEVA FUNCIÓN para obtener los comentarios favoritos del usuario
+export const getFavoriteComments = async (req, res) => {
+  const userId = req.userLog.id;
+
+  try {
+    const user = await UserModel.findById(userId)
+      .populate({
+        path: "favoriteComments",
+        model: "Comment",
+        populate: [
+          // Populamos autor del comentario
+          { path: "author", select: "username profile" },
+          // Populamos el artículo al que pertenece. Aseguramos el _id.
+          { path: "article", select: "_id content author" }, // <-- VERIFICACIÓN DE SELECCIÓN
+        ],
+        options: { sort: { createdAt: -1 } },
+      })
+      .select("favoriteComments");
+
+    if (!user) {
+      return res.status(404).json({ message: "Usuario no encontrado." });
+    }
+
+    res.json(user.favoriteComments); // Devolvemos el array de comentarios populados
+  } catch (error) {
+    console.error("Error al obtener comentarios favoritos:", error);
+    res
+      .status(500)
+      .json({ message: "Error interno al obtener comentarios favoritos." });
   }
 };

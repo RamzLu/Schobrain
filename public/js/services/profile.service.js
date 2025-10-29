@@ -4,7 +4,9 @@ import { logoutUser as authLogout } from "./auth.service.js"; // Importa si nece
 const API_URL = "/api/profile";
 const ACCOUNT_API_URL = "/api/profile/account";
 const AVATAR_API_URL = "/api/profile/avatar";
-const FAVORITES_API_URL = "/api/profile/favorites"; // Nueva URL base para favoritos
+// Definición de las constantes de URL para favoritos (PREGUNTAS y RESPUESTAS)
+const FAVORITES_ARTICLES_API_URL = "/api/profile/favorites/articles";
+const FAVORITES_COMMENTS_API_URL = "/api/profile/favorites/comments";
 
 // Obtener datos del perfil del usuario logueado
 export const getProfile = async () => {
@@ -37,7 +39,7 @@ export const updateProfileData = async (profileData) => {
         result.message || result.msg || "Error al guardar el perfil."
       );
     }
-    return result; // Devuelve la respuesta completa { profile, email, username, role, favorites }
+    return result;
   } catch (error) {
     console.error("Error en updateProfileData service:", error);
     throw error;
@@ -58,7 +60,7 @@ export const updateAccountData = async (accountData) => {
         result.message || result.msg || "Error al actualizar la cuenta."
       );
     }
-    return result; // Devuelve { message: "..." }
+    return result;
   } catch (error) {
     console.error("Error en updateAccountData service:", error);
     throw error;
@@ -83,22 +85,55 @@ export const updateAvatarImage = async (formData) => {
   }
 };
 
-// NUEVA FUNCIÓN: Obtener artículos favoritos
+// OBTENER artículos favoritos (Preguntas)
 export const getFavoriteArticles = async () => {
   try {
-    const response = await fetch(FAVORITES_API_URL); // GET a /api/profile/favorites
+    const response = await fetch(FAVORITES_ARTICLES_API_URL); // Usa la constante definida
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
       throw new Error(
         errorData.message || errorData.msg || "Error al cargar favoritos."
       );
     }
-    return await response.json(); // Devuelve el array de artículos populados
+    return await response.json();
   } catch (error) {
     console.error("Error en getFavoriteArticles service:", error);
     throw error;
   }
 };
 
-// Puedes mantener o mover la función de logout aquí si prefieres
-// export const logoutUser = authLogout;
+// NUEVA FUNCIÓN: Obtener comentarios favoritos (Respuestas)
+export const getFavoriteComments = async () => {
+  try {
+    const response = await fetch(FAVORITES_COMMENTS_API_URL); // Usa la constante definida
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(
+        errorData.message ||
+          errorData.msg ||
+          "Error al cargar respuestas favoritas."
+      );
+    }
+    return await response.json();
+  } catch (error) {
+    console.error("Error en getFavoriteComments service:", error);
+    throw error;
+  }
+};
+
+// NUEVA FUNCIÓN: Añadir/quitar comentario de favoritos (Respuestas)
+export const toggleFavoriteComment = async (commentId) => {
+  // Nota: La ruta para el toggle usa el ID en la URL y la base API_URL
+  const response = await fetch(`${API_URL}/favorites/comment/${commentId}`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+  });
+
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(
+      data.message || data.msg || "Error al actualizar la respuesta favorita."
+    );
+  }
+  return data;
+};

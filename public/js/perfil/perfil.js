@@ -1,3 +1,4 @@
+// public/js/perfil/perfil.js
 import {
   verifyAuth,
   logoutUser,
@@ -8,18 +9,83 @@ import {
   updateProfileData,
   updateAccountData,
   updateAvatarImage,
-  getFavoriteArticles, // Importa la nueva función
-} from "../services/profile.service.js"; // Asume que creaste este archivo
+  getFavoriteArticles,
+  getFavoriteComments, // <-- IMPORTADO
+  toggleFavoriteComment, // <-- IMPORTADO
+} from "../services/profile.service.js";
 import { showSuccessToast, showErrorToast } from "../utils/notifications.js";
-import { renderArticleCard } from "../article/article.ui.js"; // Importa para reutilizar
-import { initializeLightbox } from "../utils/lightbox.js"; // Importa lightbox
+import { renderArticleCard } from "../article/article.ui.js";
+import { initializeLightbox } from "../utils/lightbox.js";
+
+// Helper para el formato de tiempo (necesario para el renderizado del comentario)
+const formatRelativeTime = (dateString) => {
+  const now = new Date();
+  const past = new Date(dateString);
+  const secondsElapsed = Math.floor((now - past) / 1000);
+
+  if (secondsElapsed < 60) return "hace un momento";
+  const minutesElapsed = Math.floor(secondsElapsed / 60);
+  if (minutesElapsed < 60)
+    return `hace ${minutesElapsed} minuto${minutesElapsed > 1 ? "s" : ""}`;
+  const hoursElapsed = Math.floor(minutesElapsed / 60);
+  if (hoursElapsed < 24)
+    return `hace ${hoursElapsed} hora${hoursElapsed > 1 ? "s" : ""}`;
+  const daysElapsed = Math.floor(hoursElapsed / 24);
+  if (daysElapsed < 7)
+    return `hace ${daysElapsed} día${daysElapsed > 1 ? "s" : ""}`;
+  const weeksElapsed = Math.floor(daysElapsed / 7);
+  if (weeksElapsed < 4)
+    return `hace ${weeksElapsed} semana${weeksElapsed > 1 ? "s" : ""}`;
+  const monthsElapsed = Math.floor(daysElapsed / 30);
+  if (monthsElapsed < 12)
+    return `hace ${monthsElapsed} mes${monthsElapsed > 1 ? "es" : ""}`;
+  const yearsElapsed = Math.floor(daysElapsed / 365);
+  return `hace ${yearsElapsed} año${yearsElapsed > 1 ? "s" : ""}`;
+};
+
+// FUNCIÓN para renderizar una tarjeta de comentario favorito (Nueva)
+const renderFavoriteCommentCard = (comment) => {
+  const authorName = `${comment.author.profile.firstName} ${comment.author.profile.lastName}`;
+  const articleContentSnippet =
+    comment.article.content.substring(0, 80) + "...";
+  const relativeTime = formatRelativeTime(comment.createdAt);
+
+  return `
+    <div class="comment-favorite-card" data-id="${comment._id}">
+      <div class="comment-header">
+        <div class="comment-author-info">
+          <span class="comment-author">${authorName}</span>
+          <span class="comment-date">Respuesta publicada ${relativeTime}</span>
+        </div>
+        <button 
+            class="favorite-remove-btn" 
+            data-comment-id="${comment._id}" 
+            title="Quitar de favoritos"
+        >
+            <i class="fas fa-star"></i>
+        </button>
+      </div>
+      <div class="comment-content">
+        <p>${comment.content}</p>
+      </div>
+      <div class="comment-metadata">
+        <span>Respuesta a la pregunta: </span>
+        <a href="/pregunta.html?id=${comment.article._id}" class="metadata-link" title="${comment.article.content}">
+            ${articleContentSnippet}
+        </a>
+      </div>
+    </div>
+  `;
+};
 
 document.addEventListener("DOMContentLoaded", async () => {
   let currentUser;
-  let fullProfileData = null; // Para almacenar todos los datos del perfil, incluidos favoritos
+  let fullProfileData = null; // Almacenará favorites y favoriteComments
+  let currentFilterType = "articles"; // Estado inicial del filtro: preguntas
 
   try {
     const authData = await verifyAuth();
+    // Aseguramos que currentUser contenga la info necesaria para renderArticleCard
     currentUser = authData.data;
     document.getElementById("logged-in-username").textContent =
       currentUser.firstName;
@@ -82,12 +148,11 @@ document.addEventListener("DOMContentLoaded", async () => {
   );
 
   // --- NUEVOS ELEMENTOS PARA FAVORITOS ---
-  const favoritesSection = document.getElementById("favorites-section");
   const favoritesListContainer = document.getElementById("favorites-list");
+  const filterButtons = document.querySelectorAll(".favorites-filter-btn");
 
   // --- Funciones ---
   const setProfileFields = (data) => {
-    // ... (sin cambios) ...
     const { profile, email, username, role } = data;
     // Perfil
     document.getElementById("firstName").textContent =
@@ -122,41 +187,66 @@ document.addEventListener("DOMContentLoaded", async () => {
       const data = await getProfile(); // Usa la función del servicio
       fullProfileData = data;
       setProfileFields(data);
-      // Podrías precargar favoritos aquí si quieres, o hacerlo al cambiar de sección
     } catch (err) {
       showErrorToast(`Error al cargar datos: ${err.message}`);
     }
   };
 
-  // NUEVA FUNCIÓN para cargar y mostrar favoritos
-  const loadFavorites = async () => {
+  // FUNCIÓN PRINCIPAL para cargar y mostrar favoritos (adaptada)
+  const loadFavorites = async (filterType = currentFilterType) => {
     if (!favoritesListContainer) return;
-    favoritesListContainer.innerHTML = "<p>Cargando favoritos...</p>"; // Mensaje de carga
+    favoritesListContainer.innerHTML = "<p>Cargando favoritos...</p>";
+
+    // Actualizar el estado visual del filtro
+    filterButtons.forEach((btn) => {
+      btn.classList.remove("active");
+      if (btn.dataset.filterType === filterType) {
+        btn.classList.add("active");
+      }
+    });
+
+    currentFilterType = filterType; // Actualiza el estado
 
     try {
-      const favoriteArticles = await getFavoriteArticles(); // Llama al servicio
+      let items = [];
+      let emptyMessage = "";
 
-      if (favoriteArticles.length === 0) {
-        favoritesListContainer.innerHTML =
-          "<p>Aún no has añadido ninguna pregunta a favoritos.</p>";
+      if (filterType === "articles") {
+        items = await getFavoriteArticles();
+        emptyMessage = "Aún no has añadido ninguna pregunta a favoritos.";
+      } else if (filterType === "comments") {
+        items = await getFavoriteComments();
+        emptyMessage = "Aún no has añadido ninguna respuesta a favoritos.";
+      }
+
+      if (items.length === 0) {
+        favoritesListContainer.innerHTML = `<p>${emptyMessage}</p>`;
         return;
       }
 
-      // Reutiliza renderArticleCard para mostrar cada favorito
-      favoritesListContainer.innerHTML = favoriteArticles
-        .map((article) =>
-          renderArticleCard(
-            article,
-            currentUser,
-            fullProfileData?.favorites || [] // Pasa la lista de IDs favoritos
-          )
-        )
-        .join("");
+      let contentHtml = "";
 
-      // Inicializa lightbox para las imágenes en la lista de favoritos
-      initializeLightbox("favorites-list");
+      // Usamos la lista de IDs de favoritos del perfil completo
+      const articleFavorites = fullProfileData?.favorites || [];
+
+      if (filterType === "articles") {
+        // Asegúrate de que currentUser tiene al menos el id para el renderizado interno
+        contentHtml = items
+          .map((article) =>
+            renderArticleCard(article, currentUser, articleFavorites)
+          )
+          .join("");
+        favoritesListContainer.innerHTML = contentHtml;
+        // Inicializa lightbox solo para artículos
+        initializeLightbox("favorites-list");
+      } else if (filterType === "comments") {
+        contentHtml = items
+          .map((comment) => renderFavoriteCommentCard(comment))
+          .join("");
+        favoritesListContainer.innerHTML = contentHtml;
+      }
     } catch (error) {
-      console.error("Error al cargar favoritos:", error);
+      console.error(`Error al cargar ${filterType} favoritos:`, error);
       showErrorToast(`Error al cargar favoritos: ${error.message}`);
       favoritesListContainer.innerHTML =
         "<p>Ocurrió un error al cargar tus favoritos.</p>";
@@ -176,9 +266,16 @@ document.addEventListener("DOMContentLoaded", async () => {
       link.classList.toggle("active", link.dataset.section === sectionId);
     });
 
-    // Si la sección es 'favorites', carga los artículos
+    // Si la sección es 'favorites', carga con el filtro actual
     if (sectionId === "favorites") {
-      loadFavorites();
+      // Asegura que los botones de filtro se muestren en el estado correcto al entrar en la sección
+      document
+        .getElementById("filter-articles-btn")
+        ?.classList.toggle("active", currentFilterType === "articles");
+      document
+        .getElementById("filter-comments-btn")
+        ?.classList.toggle("active", currentFilterType === "comments");
+      loadFavorites(currentFilterType);
     }
   };
 
@@ -191,6 +288,75 @@ document.addEventListener("DOMContentLoaded", async () => {
       const section = e.target.closest("a").dataset.section;
       switchSection(section);
     });
+  });
+
+  // Listener para los nuevos botones de filtro
+  filterButtons.forEach((btn) => {
+    btn.addEventListener("click", (e) => {
+      e.preventDefault();
+      const filterType = btn.dataset.filterType;
+      loadFavorites(filterType);
+    });
+  });
+
+  // Listener para quitar comentarios de favoritos desde la vista
+  favoritesListContainer.addEventListener("click", async (event) => {
+    const removeBtn = event.target.closest(".favorite-remove-btn");
+    // Solo manejamos este evento si estamos en la pestaña de comentarios
+    if (removeBtn && currentFilterType === "comments") {
+      const commentId = removeBtn.dataset.commentId;
+
+      try {
+        const result = await toggleFavoriteComment(commentId);
+        showSuccessToast(result.message);
+        // Actualizar la lista de favoritos en el perfil local
+        if (fullProfileData) {
+          fullProfileData.favoriteComments = result.favoriteComments;
+        }
+        // Recargar solo la lista de comentarios favoritos
+        await loadFavorites("comments");
+      } catch (error) {
+        showErrorToast(error.message);
+      }
+    }
+    // Lógica para quitar artículo de favoritos desde la vista (ya existente en index.js, pero replicada para la vista de perfil)
+    const favoriteArticleBtn = event.target.closest(".favorite-btn");
+    if (
+      favoriteArticleBtn &&
+      currentFilterType === "articles" &&
+      favoriteArticleBtn.dataset.isFavorite === "true"
+    ) {
+      const articleId = favoriteArticleBtn.dataset.id;
+      // Usamos el servicio de artículo para el toggle (que internamente llama al servicio de perfil)
+      const { toggleFavoriteArticle } = await import(
+        "../services/article.service.js"
+      );
+      try {
+        const result = await toggleFavoriteArticle(articleId);
+        showSuccessToast(result.message);
+        // Actualizar la lista de favoritos en el perfil local
+        if (fullProfileData) {
+          fullProfileData.favorites = result.favorites;
+        }
+        // Recargar solo la lista de artículos favoritos
+        await loadFavorites("articles");
+      } catch (error) {
+        showErrorToast(error.message);
+      }
+    }
+
+    // Lógica para el lightbox (debe reiniciarse si se carga una nueva tarjeta con imágenes)
+    const link = event.target.closest(".article-image-link");
+    if (link && currentFilterType === "articles") {
+      // Simula el clic para el lightbox
+      const modal = document.getElementById("image-preview-modal");
+      const previewImage = document.getElementById("preview-image-src");
+      if (modal && previewImage) {
+        event.preventDefault();
+        previewImage.src = link.href;
+        modal.classList.add("visible");
+      }
+    }
   });
 
   // --- Menús Opciones (Perfil y Cuenta) ---
