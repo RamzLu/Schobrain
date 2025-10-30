@@ -1150,11 +1150,19 @@ body {
 .question-modal-content.custom-modal {
   width: 650px;
   max-width: 90%;
-  padding: 0; /* Anula el padding del .modal-content general */
+  padding: 0;
   border-radius: 15px;
-  overflow: hidden; /* Necesario para que el border-radius del header funcione */
+  overflow: hidden;
+
+  /* ✅ NUEVOS ESTILOS PARA EL SCROLL */
+  max-height: 90vh; /* Limita la altura máxima al 90% del viewport */
+  /* NO USAR overflow-y: auto AQUÍ, USARLO EN EL CONTENIDO DEL FORMULARIO */
+  /* Si aplicas overflow al .custom-modal, el header y footer se desplazarán. */
+
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-  text-align: left; /* Anula el text-align: center del .modal-content general */
+  text-align: left;
+  display: flex; /* Asegura que el header/body/footer se organicen correctamente */
+  flex-direction: column; /* Apila los elementos */
 }
 
 .custom-modal .modal-header {
@@ -1187,10 +1195,16 @@ body {
 }
 
 .custom-modal form {
+  /* ... (estilos existentes) ... */
   padding: 2rem;
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
+
+  /* ✅ NUEVOS ESTILOS PARA EL SCROLL DEL CONTENIDO */
+  overflow-y: auto; /* Permite el scroll vertical en el contenido del formulario */
+  flex-grow: 1; /* Permite que el formulario ocupe el espacio restante */
+  padding-bottom: 0; /* Lo movemos al footer */
 }
 
 /* Anulamos el margin-bottom del .input-group general dentro de nuestro form */
@@ -1313,6 +1327,10 @@ body {
   justify-content: flex-end;
   gap: 1rem;
   margin-top: 1rem;
+  padding: 1rem 2rem 2rem; /* Agrega padding inferior y lateral para separar de la scrollbar */
+  background-color: #ffffff; /* Fondo blanco para el footer */
+  border-top: 1px solid #e0e0e0; /* Separador */
+  flex-shrink: 0; /* Evita que el footer se encoja cuando aparece el scroll */
 }
 
 .custom-cancel-button {
@@ -1360,9 +1378,11 @@ body {
 
 /* Reduce el espaciado general dentro del formulario */
 .custom-modal form {
-  padding-top: 1.5rem; /* Antes era 2rem */
-  padding-bottom: 1.5rem; /* Antes era 2rem */
-  gap: 1.2rem; /* Antes era 1.5rem */
+  padding-top: 1.5rem;
+  padding-left: 2rem;
+  padding-right: 2rem;
+  padding-bottom: 0; /* Importante: quitamos el padding inferior del form */
+  gap: 1.2rem;
 }
 
 /* Reduce un poco el padding del header del modal */
