@@ -121,8 +121,14 @@ const renderComments = (comments, currentUser) => {
              </div>
         </div>`;
 
-      const userHasLiked = comment.votedUp.includes(currentUser.id);
-      const userHasDisliked = comment.votedDown.includes(currentUser.id);
+      // ************* INICIO DEL CÓDIGO MEJORADO (renderComments) *************
+      // Garantizar que votedUp/votedDown son arrays (aunque el modelo tiene defaults, es más seguro en el cliente)
+      const commentVotedUp = comment.votedUp || [];
+      const commentVotedDown = comment.votedDown || [];
+
+      const userHasLiked = commentVotedUp.includes(currentUser.id);
+      const userHasDisliked = commentVotedDown.includes(currentUser.id);
+
       const voteControlsHtml = `
         <div class="vote-controls">
             <div class="vote-group">
@@ -133,7 +139,7 @@ const renderComments = (comments, currentUser) => {
       }" data-vote-type="like" title="Me gusta">
                     <i class="fas fa-thumbs-up"></i>
                 </button>
-                <span class="vote-count like-count">${comment.likes}</span>
+                <span class="vote-count like-count">${comment.likes || 0}</span>
             </div>
             <div class="vote-group">
                 <button class="vote-btn dislike ${
@@ -144,11 +150,12 @@ const renderComments = (comments, currentUser) => {
                     <i class="fas fa-thumbs-down"></i>
                 </button>
                 <span class="vote-count dislike-count">${
-                  comment.dislikes
+                  comment.dislikes || 0
                 }</span>
             </div>
         </div>
     `;
+      // ************* FIN DEL CÓDIGO MEJORADO (renderComments) *************
 
       return `
         <div class="comment-card" data-id="${comment._id}">
@@ -306,26 +313,31 @@ document.addEventListener("DOMContentLoaded", async () => {
         const voteType = voteBtn.dataset.voteType;
 
         try {
-          const updatedVotes = await voteOnComment(commentId, voteType);
+          const updatedResponse = await voteOnComment(commentId, voteType);
+          // ************* CORRECCIÓN CLAVE *************
+          // La data del voto está anidada en la propiedad 'data' de la respuesta del servicio
+          const updatedCommentData = updatedResponse.data;
+
           const commentCard = document.querySelector(
             `.comment-card[data-id="${commentId}"]`
           );
           if (commentCard) {
             commentCard.querySelector(".like-count").textContent =
-              updatedVotes.likes;
+              updatedCommentData.likes;
             commentCard.querySelector(".dislike-count").textContent =
-              updatedVotes.dislikes;
+              updatedCommentData.dislikes;
 
             const likeBtn = commentCard.querySelector(".vote-btn.like");
             const dislikeBtn = commentCard.querySelector(".vote-btn.dislike");
 
+            // No es necesario un chequeo extra aquí porque el backend garantiza que son arrays
             likeBtn.classList.toggle(
               "active",
-              updatedVotes.votedUp.includes(currentUser.id)
+              updatedCommentData.votedUp.includes(currentUser.id)
             );
             dislikeBtn.classList.toggle(
               "active",
-              updatedVotes.votedDown.includes(currentUser.id)
+              updatedCommentData.votedDown.includes(currentUser.id)
             );
           }
         } catch (error) {
@@ -375,7 +387,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         const voteType = voteBtn.dataset.voteType;
 
         try {
-          const updatedVotes = await voteOnArticle(articleId, voteType);
+          const updatedResponse = await voteOnArticle(articleId, voteType);
+          const updatedVotes = updatedResponse.data; // La data viene anidada
 
           const articleCard = mainQuestionContainer.querySelector(
             `.article-card[data-id="${articleId}"]`
