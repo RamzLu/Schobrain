@@ -5,7 +5,8 @@ import {
   voteOnArticle,
   toggleFavoriteArticle,
   deleteArticle,
-} from "./services/article.service.js"; // Asegurar toggleFavoriteArticle importado
+  updateArticle, // ✅ IMPORTADO
+} from "./services/article.service.js";
 import {
   postComment,
   deleteComment,
@@ -18,6 +19,15 @@ import {
 } from "./article/article.ui.js";
 import { showSuccessToast, showErrorToast } from "./utils/notifications.js";
 import { initializeLightbox } from "./utils/lightbox.js";
+import { fetchAllTags } from "./services/tag.service.js"; // ✅ IMPORTADO
+
+// --- Elementos del Modal de Edición ---
+const editQuestionModal = document.getElementById("edit-question-modal");
+const editQuestionForm = document.getElementById("editQuestionForm");
+const cancelEditBtn = document.getElementById("cancel-edit-question");
+const closeEditModalBtn = document.getElementById("close-edit-modal");
+const editFileInput = document.getElementById("edit-image-files");
+const editFileNameDisplay = document.getElementById("edit-file-name-display");
 
 const formatRelativeTime = (dateString) => {
   const now = new Date();
@@ -121,8 +131,6 @@ const renderComments = (comments, currentUser) => {
              </div>
         </div>`;
 
-      // ************* INICIO DEL CÓDIGO MEJORADO (renderComments) *************
-      // Garantizar que votedUp/votedDown son arrays (aunque el modelo tiene defaults, es más seguro en el cliente)
       const commentVotedUp = comment.votedUp || [];
       const commentVotedDown = comment.votedDown || [];
 
@@ -155,7 +163,6 @@ const renderComments = (comments, currentUser) => {
             </div>
         </div>
     `;
-      // ************* FIN DEL CÓDIGO MEJORADO (renderComments) *************
 
       return `
         <div class="comment-card" data-id="${comment._id}">
@@ -181,6 +188,185 @@ const renderComments = (comments, currentUser) => {
     })
     .join("");
 };
+
+// **********************************************
+// ✅ LÓGICA DE EDICIÓN DE PREGUNTA (Adaptada de index.js)
+// **********************************************
+
+const openEditModal = async (articleId) => {
+  if (!editQuestionModal) return;
+
+  try {
+    const article = await fetchArticleById(articleId);
+    document.getElementById("edit-article-id").value = article._id;
+    document.getElementById("edit-question-content").value = article.content;
+
+    // 1. Cargar y seleccionar Tags
+    const tagSelect = document.getElementById("edit-tag-select");
+    const tags = await fetchAllTags();
+    tagSelect.innerHTML = ""; // Limpiar opciones anteriores
+    tags.forEach((tag) => {
+      const option = document.createElement("option");
+      option.value = tag._id;
+      option.textContent = tag.name;
+      // Seleccionar el tag actual del artículo
+      if (article.tags && article.tags[0] && tag._id === article.tags[0]._id) {
+        option.selected = true;
+      }
+      tagSelect.appendChild(option);
+    });
+
+    // 2. Lógica para mostrar imágenes actuales y permitir eliminar
+    const currentImagesPreview = document.getElementById(
+      "current-images-preview"
+    );
+    if (currentImagesPreview) {
+      currentImagesPreview.innerHTML = ""; // Limpiar
+      if (article.imageUrls && article.imageUrls.length > 0) {
+        article.imageUrls.forEach((url) => {
+          const imgContainer = document.createElement("div");
+          // Estilo básico para el contenedor de imagen y botón (usando estilo en línea como fallback)
+          imgContainer.style.position = "relative";
+          imgContainer.style.display = "inline-block";
+          imgContainer.style.margin = "5px";
+          imgContainer.classList.add("image-preview-item"); // Clase para identificarlo
+
+          imgContainer.innerHTML = `
+            <img src="${url}" alt="Imagen actual" style="max-width: 100px; height: auto; display: block;">
+            <button type="button" class="remove-image-btn" data-url="${url}" style="position: absolute; top: 2px; right: 2px; background: rgba(255,0,0,0.7); color: white; border: none; border-radius: 50%; width: 20px; height: 20px; font-size: 12px; cursor: pointer; line-height: 18px;">&times;</button>
+          `;
+          currentImagesPreview.appendChild(imgContainer);
+        });
+      } else {
+        currentImagesPreview.innerHTML = "<p>No hay imágenes adjuntas.</p>";
+      }
+    }
+
+    // 3. Limpiar input de nuevos archivos
+    if (editFileInput) editFileInput.value = "";
+    if (editFileNameDisplay)
+      editFileNameDisplay.textContent = "Ningún archivo seleccionado";
+
+    editQuestionModal.classList.add("visible");
+
+    // Inicializar panel de símbolos para el modal de edición
+    initializeSymbolsPanel({
+      textareaId: "edit-question-content",
+      toggleBtnId: "edit-toggle-symbols-btn",
+      panelId: "edit-math-symbols-panel",
+      includeFunctions: true,
+      fractionBtnId: "edit-fraction-btn", // Asumiendo que estos IDs existen
+      exponentBtnId: "edit-exponent-btn",
+    });
+  } catch (error) {
+    showErrorToast("Error al cargar los datos de la pregunta para editar.");
+    console.error("Error en openEditModal:", error);
+  }
+};
+
+const handleEditFormSubmit = async (event) => {
+  event.preventDefault();
+  const articleId = document.getElementById("edit-article-id").value;
+  const formData = new FormData(event.target);
+
+  // Recolectar URLs de imágenes marcadas para eliminar
+  const imagesToDelete = [];
+  document
+    .querySelectorAll(
+      '#current-images-preview input[type="hidden"][name="imagesToDelete[]"]'
+    )
+    .forEach((input) => {
+      imagesToDelete.push(input.value);
+    });
+
+  // Añadir las URLs al FormData si hay alguna
+  if (imagesToDelete.length > 0) {
+    imagesToDelete.forEach((url) => formData.append("imagesToDelete", url));
+  }
+
+  // Limpiar el campo de archivos nuevos si no se seleccionó nada nuevo
+  if (editFileInput && editFileInput.files.length === 0) {
+    formData.delete("imageFiles");
+  }
+
+  try {
+    await updateArticle(articleId, formData);
+    showSuccessToast("Pregunta actualizada con éxito. Recargando...");
+    editQuestionModal?.classList.remove("visible");
+
+    // Recargar la página para ver los cambios y el estado del menú
+    setTimeout(() => {
+      window.location.reload();
+    }, 1000);
+  } catch (error) {
+    showErrorToast(`Error al actualizar: ${error.message}`);
+    console.error("Error en submit edit:", error);
+  }
+};
+
+const setupEditModalListeners = () => {
+  // Manejo de archivos en modal de edición
+  if (editFileInput && editFileNameDisplay) {
+    editFileInput.addEventListener("change", (event) => {
+      const { files } = event.target;
+      if (!files || files.length === 0) {
+        editFileNameDisplay.textContent = "Ningún archivo seleccionado";
+      } else if (files.length === 1) {
+        editFileNameDisplay.textContent = files[0].name;
+      } else {
+        editFileNameDisplay.textContent = `${files.length} archivos seleccionados`;
+      }
+    });
+  }
+
+  // Listener para botones de eliminar imagen en modal de edición (delegación)
+  document
+    .getElementById("current-images-preview")
+    ?.addEventListener("click", (event) => {
+      if (event.target.classList.contains("remove-image-btn")) {
+        const urlToRemove = event.target.dataset.url;
+        const previewItem = event.target.closest(".image-preview-item");
+        if (previewItem) {
+          let hiddenInput = previewItem.querySelector(
+            `input[value="${urlToRemove}"]`
+          );
+          if (!hiddenInput) {
+            hiddenInput = document.createElement("input");
+            hiddenInput.type = "hidden";
+            hiddenInput.name = "imagesToDelete[]";
+            hiddenInput.value = urlToRemove;
+            previewItem.appendChild(hiddenInput);
+            previewItem.style.opacity = "0.5";
+            event.target.textContent = "+";
+            event.target.style.background = "rgba(0,128,0,0.7)";
+          } else {
+            hiddenInput.remove();
+            previewItem.style.opacity = "1";
+            event.target.textContent = "×";
+            event.target.style.background = "rgba(255,0,0,0.7)";
+          }
+        }
+      }
+    });
+
+  // Cierre del modal
+  cancelEditBtn?.addEventListener("click", () => {
+    editQuestionModal?.classList.remove("visible");
+  });
+  closeEditModalBtn?.addEventListener("click", () => {
+    editQuestionModal?.classList.remove("visible");
+  });
+  editQuestionModal?.addEventListener("click", (event) => {
+    if (event.target === editQuestionModal) {
+      editQuestionModal.classList.remove("visible");
+    }
+  });
+
+  // Manejo del formulario
+  editQuestionForm?.addEventListener("submit", handleEditFormSubmit);
+};
+
+// **********************************************
 
 document.addEventListener("DOMContentLoaded", async () => {
   let currentUser;
@@ -215,6 +401,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     renderComments(article.comments, currentUser);
 
     initializeLightbox("main-question-container");
+
+    // ✅ Inicializar listeners del modal de edición
+    setupEditModalListeners();
+
     initializeSymbolsPanel({
       textareaId: "comment-content",
       toggleBtnId: "toggle-comment-symbols-btn",
@@ -314,8 +504,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         try {
           const updatedResponse = await voteOnComment(commentId, voteType);
-          // ************* CORRECCIÓN CLAVE *************
-          // La data del voto está anidada en la propiedad 'data' de la respuesta del servicio
           const updatedCommentData = updatedResponse.data;
 
           const commentCard = document.querySelector(
@@ -330,7 +518,6 @@ document.addEventListener("DOMContentLoaded", async () => {
             const likeBtn = commentCard.querySelector(".vote-btn.like");
             const dislikeBtn = commentCard.querySelector(".vote-btn.dislike");
 
-            // No es necesario un chequeo extra aquí porque el backend garantiza que son arrays
             likeBtn.classList.toggle(
               "active",
               updatedCommentData.votedUp.includes(currentUser.id)
@@ -353,7 +540,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     // Listener para la pregunta principal (incluye menú de opciones y voto de artículo)
     mainQuestionContainer.addEventListener("click", async (event) => {
       // --- Lógica para el menú de opciones (Pregunta Principal) ---
-      if (handleToggleMenu(event)) return; // <-- CORREGIDO: Mantiene el manejo del menú
+      if (handleToggleMenu(event)) return;
 
       // --- Lógica para el botón de favorito de artículos (Pregunta Principal) ---
       const favoriteBtn = event.target.closest(".favorite-btn");
@@ -388,7 +575,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         try {
           const updatedResponse = await voteOnArticle(articleId, voteType);
-          const updatedVotes = updatedResponse.data; // La data viene anidada
+          const updatedVotes = updatedResponse.data;
 
           const articleCard = mainQuestionContainer.querySelector(
             `.article-card[data-id="${articleId}"]`
@@ -416,13 +603,13 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
       }
 
-      // --- Lógica para el botón EDITAR (simulada) ---
+      // ✅ Lógica para el botón EDITAR (Activada)
       const editBtn = event.target.closest(".edit-btn");
       if (editBtn) {
-        // Aquí iría la lógica para abrir el modal de edición
-        showErrorToast(
-          "Funcionalidad de edición no implementada en esta vista."
-        );
+        const articleIdToEdit = editBtn.dataset.id;
+        openEditModal(articleIdToEdit);
+        editBtn.closest(".options-dropdown")?.classList.remove("visible");
+        return;
       }
 
       // --- Lógica para el botón ELIMINAR (simulada) ---
@@ -449,7 +636,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     document.addEventListener("click", (event) => {
       if (
         !event.target.closest(".comment-options-menu") &&
-        !event.target.closest(".article-options-menu")
+        !event.target.closest(".article-options-menu") &&
+        !event.target.closest("#edit-question-modal") // Ignorar clics dentro del modal
       ) {
         closeAllDropdowns();
       }

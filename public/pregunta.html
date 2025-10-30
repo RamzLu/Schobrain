@@ -231,6 +231,90 @@
       </div>
     </div>
 
+    <div id="edit-question-modal" class="modal-overlay">
+      <div class="modal-content question-modal-content custom-modal">
+        <div class="modal-header">
+          <h2>Editar Pregunta</h2>
+          <button
+            type="button"
+            class="close-modal-button"
+            id="close-edit-modal"
+          >
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <form id="editQuestionForm" novalidate enctype="multipart/form-data">
+          <input type="hidden" id="edit-article-id" name="articleId" />
+          <div class="input-group">
+            <label for="edit-question-content">Describe tu pregunta</label>
+            <textarea
+              id="edit-question-content"
+              name="content"
+              rows="5"
+              minlength="10"
+              required
+            ></textarea>
+            <div class="textarea-toolbar">
+              <button
+                type="button"
+                id="edit-toggle-symbols-btn"
+                class="toolbar-btn"
+                title="Símbolos"
+              >
+                <i class="fas fa-square-root-alt"></i>
+              </button>
+            </div>
+            <div id="edit-math-symbols-panel" class="symbols-panel"></div>
+          </div>
+
+          <div class="input-group">
+            <label for="edit-tag-select">Tema</label>
+            <select
+              id="edit-tag-select"
+              name="tags"
+              class="custom-select"
+              required
+            ></select>
+          </div>
+
+          <div class="input-group">
+            <label>Imágenes Actuales</label>
+            <div id="current-images-preview" class="images-preview-grid"></div>
+          </div>
+
+          <div class="input-group file-input-group">
+            <label for="edit-image-files" class="file-input-label"
+              >Añadir nuevas imágenes</label
+            >
+            <span id="edit-file-name-display" class="file-name-display"
+              >Ningún archivo seleccionado</span
+            >
+            <input
+              type="file"
+              id="edit-image-files"
+              name="imageFiles"
+              accept="image/jpeg, image/png, image/gif"
+              class="hidden-file-input"
+              multiple
+            />
+          </div>
+          <p class="file-size-info">Hasta 5 imágenes, tamaño máximo 5MB c/u</p>
+
+          <div class="modal-actions">
+            <button
+              type="button"
+              id="cancel-edit-question"
+              class="modal-button secondary custom-cancel-button"
+            >
+              Cancelar
+            </button>
+            <button type="submit" class="modal-button custom-submit-button">
+              Guardar Cambios
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
     <script type="module" src="/js/pregunta.js"></script>
   </body>
 </html>
