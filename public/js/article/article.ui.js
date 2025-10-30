@@ -164,13 +164,21 @@ export const renderArticleCard = (article, currentUser, userFavorites = []) => {
     headerControls = optionsMenu;
   }
 
-  // El resto de la lógica de renderizado (autor, fecha, tags, imágenes, votos) permanece igual
+  let avatarHtml = "";
   if (author && typeof author === "object") {
-    const profile = author.profile;
-    authorName =
-      profile && profile.firstName && profile.lastName
-        ? `${profile.firstName} ${profile.lastName}`
-        : author.username || "Usuario"; // Fallback a username
+    // FIX 1: Usar username en lugar de nombre y apellido
+    authorName = author.username || "Usuario Desconocido";
+
+    // FIX 2: Construir HTML del avatar
+    const defaultAvatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(
+      author.username || "NN"
+    )}&background=random`;
+    const avatarUrl = author.profile?.avatarUrl || defaultAvatarUrl;
+
+    avatarHtml = `
+      <img src="${avatarUrl}" alt="Avatar" class="author-avatar" loading="lazy"/>
+    `;
+    // FIN FIX 2
 
     if (author.role === "admin")
       statusBadges += `<span class="admin-badge">Administrador</span>`;
@@ -234,7 +242,13 @@ export const renderArticleCard = (article, currentUser, userFavorites = []) => {
   return `
     <article class="article-card" data-id="${article._id}">
       <div class="article-card-header">
-        <div class="author-info"><span class="article-author">${authorName}</span>${statusBadges}</div>
+        <div class="author-info">
+            ${avatarHtml}
+            <div class="author-text-group">
+                <span class="article-author">${authorName}</span>
+                ${statusBadges}
+            </div>
+        </div>
         <div class="header-right-controls"><span class="article-date">Publicado ${relativeTime}</span>${headerControls}</div>
       </div>
       <div class="article-content"><p>${article.content}</p></div>

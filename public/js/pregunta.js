@@ -41,7 +41,7 @@ const formatRelativeTime = (dateString) => {
   const hoursElapsed = Math.floor(minutesElapsed / 60);
   if (hoursElapsed < 24)
     return `hace ${hoursElapsed} hora${hoursElapsed > 1 ? "s" : ""}`;
-  const daysElapsed = Math.floor(hoursElapsed / 24);
+  const daysElapsed = Math.floor(minutesElapsed / 60);
   if (daysElapsed < 7)
     return `hace ${daysElapsed} día${daysElapsed > 1 ? "s" : ""}`;
   const weeksElapsed = Math.floor(daysElapsed / 7);
@@ -94,6 +94,20 @@ const renderComments = (comments, currentUser) => {
       const favoriteTitle = isFavorite
         ? "Quitar de favoritos"
         : "Añadir a favoritos";
+
+      // FIX 1: Obtener el username del autor del comentario
+      const commentAuthorUsername =
+        comment.author.username || "Usuario Desconocido";
+
+      // FIX 2: Construir HTML del avatar
+      const defaultAvatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(
+        comment.author.profile.firstName || "NN"
+      )}+${encodeURIComponent(
+        comment.author.profile.lastName || ""
+      )}&background=random`;
+      const avatarUrl = comment.author.profile?.avatarUrl || defaultAvatarUrl;
+      const avatarHtml = `<img src="${avatarUrl}" alt="Avatar" class="author-avatar comment-avatar" loading="lazy"/>`;
+      // FIN FIX 2
 
       let statusBadges = "";
       if (comment.author.role === "admin") {
@@ -168,10 +182,11 @@ const renderComments = (comments, currentUser) => {
         <div class="comment-card" data-id="${comment._id}">
             <div class="comment-header">
                 <div class="comment-author-date">
-                    <span class="comment-author">${
-                      comment.author.profile.firstName
-                    } ${comment.author.profile.lastName}</span>
-                    ${statusBadges}
+                    ${avatarHtml}
+                    <div class="author-text-group">
+                        <span class="comment-author">${commentAuthorUsername}</span>
+                        ${statusBadges}
+                    </div>
                     <span class="comment-date">${formatRelativeTime(
                       comment.createdAt
                     )}</span>

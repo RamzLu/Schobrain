@@ -45,7 +45,17 @@ const formatRelativeTime = (dateString) => {
 
 // FUNCIÓN para renderizar una tarjeta de comentario favorito (Nueva)
 const renderFavoriteCommentCard = (comment) => {
-  const authorName = `${comment.author.profile.firstName} ${comment.author.profile.lastName}`;
+  // FIX 1: Usar username en lugar de nombre y apellido
+  const authorName = comment.author.username || "Usuario Desconocido";
+
+  // FIX 2: Construir HTML del avatar
+  const defaultAvatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(
+    comment.author.username || "NN"
+  )}&background=random`;
+  const avatarUrl = comment.author.profile?.avatarUrl || defaultAvatarUrl;
+  const avatarHtml = `<img src="${avatarUrl}" alt="Avatar" class="author-avatar comment-avatar" loading="lazy"/>`;
+  // FIN FIX 2
+
   const articleContentSnippet =
     comment.article.content.substring(0, 80) + "...";
   const relativeTime = formatRelativeTime(comment.createdAt);
@@ -54,8 +64,11 @@ const renderFavoriteCommentCard = (comment) => {
     <div class="comment-favorite-card" data-id="${comment._id}">
       <div class="comment-header">
         <div class="comment-author-info">
-          <span class="comment-author">${authorName}</span>
-          <span class="comment-date">Respuesta publicada ${relativeTime}</span>
+          ${avatarHtml}
+          <div class="author-text-group">
+              <span class="comment-author">${authorName}</span>
+              <span class="comment-date">Respuesta publicada ${relativeTime}</span>
+          </div>
         </div>
         <button 
             class="favorite-remove-btn" 

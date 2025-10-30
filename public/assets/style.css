@@ -1706,3 +1706,94 @@ body {
   font-weight: 700;
   color: #555;
 }
+/* ==========================================================================
+   NUEVOS ESTILOS PARA AVATAR DE AUTOR Y AJUSTE DE LAYOUTS
+   ========================================================================== */
+
+/* Contenedor del autor de la pregunta (article.ui.js) */
+.article-card .author-info {
+  display: flex;
+  align-items: center;
+  gap: 10px; /* Espacio entre el avatar y el texto */
+}
+
+/* Avatar base para preguntas y respuestas */
+.author-avatar {
+  width: 36px; /* Tamaño pequeño/mediano para el avatar */
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0; /* Asegura que no se encoja */
+  border: 1px solid #e0e0e0;
+}
+
+/* Grupo de texto que contiene el username y las badges (para usar flexbox) */
+.author-text-group {
+  display: flex;
+  flex-direction: row; /* Coloca el username y las badges en la misma línea */
+  align-items: center;
+  flex-wrap: wrap; /* Permite que las badges bajen si no hay espacio */
+  gap: 0.5rem; /* Espacio entre username y badges */
+  line-height: 1.2;
+}
+
+.article-author {
+  font-weight: 700;
+  color: #6a11cb;
+  margin-right: 0; /* Anula cualquier margen anterior */
+}
+
+/* Ajuste específico para las badges en el artículo */
+.author-info .author-badge,
+.author-info .admin-badge {
+  font-size: 0.7rem;
+  line-height: 1; /* Alinea el texto de la badge */
+}
+
+/* --- ESTILOS PARA COMENTARIOS (pregunta.html) --- */
+
+.comment-author-date {
+  /* Estilos existentes + flexbox para el avatar */
+  display: flex;
+  align-items: center;
+  gap: 10px; /* Espacio entre avatar, username y badges */
+}
+
+.comment-author-date .author-text-group {
+  /* En comentarios, queremos el username y las badges juntos, y la fecha separada */
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* Ajuste específico para el avatar en el comentario (puede ser ligeramente más pequeño) */
+.comment-avatar {
+  width: 32px;
+  height: 32px;
+}
+
+/* Para que la fecha del comentario (que no está dentro de author-text-group en pregunta.js) 
+   se posicione correctamente, usamos el espacio generado por el gap y flexbox.
+   La estructura HTML de pregunta.js ya separa la fecha, así que con el `gap` en el contenedor principal es suficiente.
+*/
+
+/* Nuevo contenedor para el username y los badges */
+.comment-author-details {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem; /* Espacio entre username y badges */
+}
+
+.comment-author {
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: #2575fc;
+}
+
+/* Para que las badges se vean bien junto al username en comentarios */
+.comment-author-date .admin-badge,
+.comment-author-date .author-badge {
+  font-size: 0.75rem;
+  line-height: 1;
+}

@@ -751,4 +751,46 @@ body {
   color: #e63946;
   background-color: #fcebeb;
 }
-/* FIN NUEVOS ESTILOS PARA TARJETAS DE COMENTARIOS FAVORITOS */
+/* NUEVOS ESTILOS PARA TARJETAS DE COMENTARIOS FAVORITOS */
+.favorites-list-container .comment-favorite-card {
+  background-color: #ffffff;
+  padding: 1.5rem;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  border-left: 4px solid #6a11cb; /* Borde izquierdo morado para destacar respuestas */
+  color: #333;
+  position: relative;
+}
+
+.comment-favorite-card .comment-header {
+  margin-bottom: 0.8rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.comment-favorite-card .comment-author-info {
+  /* FIX: Alinea el avatar con el texto del autor */
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* FIX: Estilo para el grupo de texto del autor en favoritos */
+.comment-favorite-card .author-text-group {
+  display: flex;
+  flex-direction: column; /* Apila el username y la fecha */
+  line-height: 1.2;
+}
+
+.comment-favorite-card .comment-author {
+  font-weight: 700;
+  color: #2575fc;
+  font-size: 1.1rem;
+}
+
+.comment-favorite-card .comment-content p {
+  line-height: 1.6;
+  margin-bottom: 1rem;
+  color: #212529;
+}
