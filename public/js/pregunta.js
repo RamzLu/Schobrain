@@ -255,8 +255,6 @@ const openEditModal = async (articleId) => {
       toggleBtnId: "edit-toggle-symbols-btn",
       panelId: "edit-math-symbols-panel",
       includeFunctions: true,
-      fractionBtnId: "edit-fraction-btn", // Asumiendo que estos IDs existen
-      exponentBtnId: "edit-exponent-btn",
     });
   } catch (error) {
     showErrorToast("Error al cargar los datos de la pregunta para editar.");

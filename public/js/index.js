@@ -129,8 +129,6 @@ const initializeIndexPage = async () => {
     toggleBtnId: "toggle-symbols-btn",
     panelId: "math-symbols-panel",
     includeFunctions: true,
-    fractionBtnId: "fraction-btn", // Asegúrate que estos IDs existan
-    exponentBtnId: "exponent-btn",
   });
 
   const searchBar = document.querySelector(".search-bar");
@@ -197,6 +195,7 @@ const initializeIndexPage = async () => {
   const editQuestionModal = document.getElementById("edit-question-modal");
   const editQuestionForm = document.getElementById("editQuestionForm");
   const cancelEditBtn = document.getElementById("cancel-edit-question");
+  const closeEditModalBtn = document.getElementById("close-edit-modal");
 
   const openEditModal = async (articleId) => {
     try {
@@ -258,6 +257,15 @@ const initializeIndexPage = async () => {
         editFileNameDisplay.textContent = "Ningún archivo seleccionado";
 
       editQuestionModal.classList.add("visible");
+
+      // Inicializar el panel de símbolos después de mostrar el modal.
+      initializeSymbolsPanel({
+        textareaId: "edit-question-content",
+        toggleBtnId: "edit-toggle-symbols-btn",
+        panelId: "edit-math-symbols-panel",
+        includeFunctions: true,
+      });
+      // FIN FIX
     } catch (error) {
       showErrorToast("Error al cargar los datos de la pregunta para editar.");
       console.error("Error en openEditModal:", error);
@@ -435,6 +443,11 @@ const initializeIndexPage = async () => {
   });
 
   cancelEditBtn?.addEventListener("click", () => {
+    editQuestionModal?.classList.remove("visible");
+  });
+
+  // Listener para el botón 'X'
+  closeEditModalBtn?.addEventListener("click", () => {
     editQuestionModal?.classList.remove("visible");
   });
 

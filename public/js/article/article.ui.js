@@ -1,4 +1,4 @@
-// ... (imports y otras funciones sin cambios) ...
+// public/js/article/article.ui.js
 import { verifyAuth } from "../services/auth.service.js"; // Necesario para obtener favoritos del usuario
 
 const askQuestionModal = document.getElementById("ask-question-modal");
@@ -34,7 +34,6 @@ export const hideAskQuestionModal = () => {
 };
 
 const formatRelativeTime = (dateString) => {
-  // ... (sin cambios) ...
   const now = new Date();
   const past = new Date(dateString);
   const secondsElapsed = Math.floor((now - past) / 1000);
@@ -59,7 +58,6 @@ const formatRelativeTime = (dateString) => {
   return `hace ${yearsElapsed} año${yearsElapsed > 1 ? "s" : ""}`;
 };
 const getTagColor = (tagName) => {
-  // ... (sin cambios) ...
   const colors = {
     matemáticas: "tag-blue",
     lengua: "tag-green",
@@ -95,7 +93,6 @@ const getTagColor = (tagName) => {
 };
 
 export const populateTagSelector = (tags) => {
-  // ... (sin cambios) ...
   const tagSelect = document.getElementById("tag-select");
   if (tagSelect) {
     const defaultOption = tagSelect
@@ -285,8 +282,7 @@ export function initializeSymbolsPanel({
   toggleBtnId,
   panelId,
   includeFunctions = false,
-  fractionBtnId,
-  exponentBtnId,
+  // Se eliminan los parámetros de ID no utilizados.
 }) {
   const textarea = document.getElementById(textareaId);
   const toggleSymbolsBtn = document.getElementById(toggleBtnId);
@@ -305,30 +301,7 @@ export function initializeSymbolsPanel({
     textarea.focus();
   };
 
-  if (includeFunctions) {
-    const fractionBtn = document.getElementById(fractionBtnId);
-    const exponentBtn = document.getElementById(exponentBtnId);
-
-    if (fractionBtn) {
-      fractionBtn.addEventListener("click", () => {
-        const numerator = prompt("Ingresa el numerador:");
-        const denominator = prompt("Ingresa el denominador:");
-        if (numerator !== null && denominator !== null) {
-          insertText(`(${numerator}/${denominator})`);
-        }
-      });
-    }
-
-    if (exponentBtn) {
-      exponentBtn.addEventListener("click", () => {
-        const base = prompt("Ingresa la base:");
-        const exponent = prompt("Ingresa el exponente:");
-        if (base !== null && exponent !== null) {
-          insertText(`${base}^${exponent}`);
-        }
-      });
-    }
-  }
+  // Se elimina completamente la lógica de creación de botones de Fracción y Exponente.
 
   const symbols = [
     "π",
