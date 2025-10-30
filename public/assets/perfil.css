@@ -704,9 +704,13 @@ body {
 .comment-favorite-card .comment-author-info {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: 10px;
 }
-
+.comment-favorite-card .author-avatar {
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+}
 .comment-favorite-card .comment-author {
   font-weight: 700;
   color: #2575fc;
@@ -779,8 +783,12 @@ body {
 /* FIX: Estilo para el grupo de texto del autor en favoritos */
 .comment-favorite-card .author-text-group {
   display: flex;
-  flex-direction: column; /* Apila el username y la fecha */
+  flex-direction: row; /* <-- FIX: Cambiado a row para alinear horizontalmente */
+  align-items: center; /* Centrado vertical dentro del grupo */
+  gap: 0.5rem; /* Espacio entre el nombre y la fecha */
   line-height: 1.2;
+  /* Asegura que el texto no se extienda innecesariamente */
+  white-space: nowrap;
 }
 
 .comment-favorite-card .comment-author {
@@ -789,8 +797,8 @@ body {
   font-size: 1.1rem;
 }
 
-.comment-favorite-card .comment-content p {
-  line-height: 1.6;
-  margin-bottom: 1rem;
-  color: #212529;
+.comment-favorite-card .comment-date {
+  font-size: 0.85rem;
+  color: #6c757d;
+  margin-left: 0; /* Asegura que no haya margen extra que desplace */
 }

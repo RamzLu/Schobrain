@@ -1437,7 +1437,6 @@ body {
 /* ==========================================================================
    14. ESTILOS PARA MENÚ DE OPCIONES DE LA PREGUNTA
    ========================================================================== */
-
 .article-card-header {
   position: relative;
   display: flex;
@@ -1472,51 +1471,90 @@ body {
 }
 
 .options-dropdown {
+  /* Cambios clave: box-shadow, border-radius y animación */
   display: none;
   position: absolute;
   top: 100%;
   right: 0;
   background-color: #ffffff;
-  border-radius: 8px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+  border-radius: 12px; /* Más redondeado para un look suave */
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(0, 0, 0, 0.05); /* Sombra suave y borde sutil */
   z-index: 5;
   overflow: hidden;
-  width: 150px;
+  width: 170px; /* Ligeramente más ancho */
+  padding: 0.5rem 0;
+  transform-origin: top right;
+  animation: fadeInScale 0.2s ease-out; /* Aplicar animación */
+}
+
+@keyframes fadeInScale {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
 .options-dropdown.visible {
   display: block;
 }
 
+/* Estilos de los ítems del menú */
 .options-dropdown .dropdown-item {
   display: flex;
   align-items: center;
-  gap: 0.7rem;
+  gap: 0.8rem;
   background: none;
   border: none;
   width: 100%;
   text-align: left;
-  padding: 0.8rem 1rem;
-  font-size: 0.9rem;
+  padding: 0.7rem 1.2rem; /* Mayor padding para espacio */
+  font-size: 0.95rem;
+  color: #333;
   cursor: pointer;
-  transition: background-color 0.2s;
+  transition: background-color 0.2s, color 0.2s;
 }
 
 .options-dropdown .dropdown-item:hover {
-  background-color: #f0f2f5;
+  background-color: #f0f4ff; /* Fondo muy claro y suave al pasar el ratón */
+  color: #4338ca; /* Color morado/azul para el texto al pasar el ratón */
 }
 
-.options-dropdown .dropdown-item.delete-btn {
-  color: #dc3545;
+/* Íconos */
+.options-dropdown .dropdown-item i {
+  width: 18px;
+  text-align: center;
+  color: #6c757d; /* Color gris suave por defecto */
+  transition: color 0.2s;
 }
+
+/* Ícono de Eliminar (color rojo) */
+.options-dropdown .dropdown-item.delete-btn {
+  color: #dc3545; /* Rojo para el texto de eliminar */
+}
+.options-dropdown .dropdown-item.delete-btn i {
+  color: #dc3545; /* Rojo para el ícono de eliminar */
+}
+
+/* Ícono de Favoritos (color dorado si está activo) */
+.options-dropdown .dropdown-item[data-is-favorite="true"] i.fas.fa-star {
+  color: #fdc500; /* Dorado para el ícono de quitar favorito */
+}
+
+/* Restaurar color del ícono al pasar el ratón (si no es delete/favorite) */
+.options-dropdown .dropdown-item:hover i {
+  color: inherit;
+}
+
 .warning-text-deleteQuestion {
   color: #dc3545;
   font-size: 0.9rem;
   margin-top: 0.4rem;
   margin-bottom: 0.5rem;
 }
-/* ... (todo tu CSS existente va aquí arriba) ... */
-
 /* ==========================================================================
    16. ESTILOS PARA LA GALERÍA DE IMÁGENES (EN CUADRÍCULA)
    ========================================================================== */
