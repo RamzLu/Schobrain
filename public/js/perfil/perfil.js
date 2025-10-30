@@ -230,8 +230,15 @@ document.addEventListener("DOMContentLoaded", async () => {
       const articleFavorites = fullProfileData?.favorites || [];
 
       if (filterType === "articles") {
+        // FIX: Se modifica el array de artículos para añadir la propiedad
+        // que fuerza el renderizado del botón de estrella de eliminación.
+        const articlesToRender = items.map((article) => ({
+          ...article,
+          isFavoriteCard: true, // Indica a renderArticleCard que es una tarjeta de favorito para el perfil
+        }));
+
         // Asegúrate de que currentUser tiene al menos el id para el renderizado interno
-        contentHtml = items
+        contentHtml = articlesToRender
           .map((article) =>
             renderArticleCard(article, currentUser, articleFavorites)
           )
@@ -299,12 +306,18 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
   });
 
-  // Listener para quitar comentarios de favoritos desde la vista
+  // Listener para quitar favoritos (artículos y comentarios) desde la vista de favoritos
   favoritesListContainer.addEventListener("click", async (event) => {
-    const removeBtn = event.target.closest(".favorite-remove-btn");
-    // Solo manejamos este evento si estamos en la pestaña de comentarios
-    if (removeBtn && currentFilterType === "comments") {
-      const commentId = removeBtn.dataset.commentId;
+    // FIX: Ahora soporta tanto el botón de comentario (.favorite-remove-btn) como
+    // el nuevo span de artículo (.favorite-remove-star).
+    const removeCommentBtn = event.target.closest(".favorite-remove-btn");
+    const removeArticleStar = event.target.closest(".favorite-remove-star");
+
+    if (!removeCommentBtn && !removeArticleStar) return; // Salir si no es un botón de remoción
+
+    // Lógica para quitar COMENTARIO de favoritos
+    if (removeCommentBtn && currentFilterType === "comments") {
+      const commentId = removeCommentBtn.dataset.commentId;
 
       try {
         const result = await toggleFavoriteComment(commentId);
@@ -319,15 +332,11 @@ document.addEventListener("DOMContentLoaded", async () => {
         showErrorToast(error.message);
       }
     }
-    // Lógica para quitar artículo de favoritos desde la vista (ya existente en index.js, pero replicada para la vista de perfil)
-    const favoriteArticleBtn = event.target.closest(".favorite-btn");
-    if (
-      favoriteArticleBtn &&
-      currentFilterType === "articles" &&
-      favoriteArticleBtn.dataset.isFavorite === "true"
-    ) {
-      const articleId = favoriteArticleBtn.dataset.id;
-      // Usamos el servicio de artículo para el toggle (que internamente llama al servicio de perfil)
+    // Lógica para quitar ARTÍCULO de favoritos
+    else if (removeArticleStar && currentFilterType === "articles") {
+      // El ID del artículo está ahora en data-article-id en el span de estrella
+      const articleId = removeArticleStar.dataset.articleId;
+
       const { toggleFavoriteArticle } = await import(
         "../services/article.service.js"
       );

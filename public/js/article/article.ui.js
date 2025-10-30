@@ -147,6 +147,23 @@ export const renderArticleCard = (article, currentUser, userFavorites = []) => {
         </div>
       </div>`;
 
+  const isFavoriteCard = article.isFavoriteCard === true; // Atributo opcional
+  let headerControls;
+
+  if (isFavoriteCard) {
+    // FIX: Usamos un span simple con la estrella gris para que se vea como en la imagen
+    headerControls = `
+        <div class="article-options-menu">
+            <span class="favorite-remove-star" data-article-id="${article._id}" title="Quitar de favoritos">
+                <i class="fas fa-star"></i>
+            </span>
+        </div>
+    `;
+  } else {
+    // Si no es una tarjeta de favorito forzada (i.e., es el feed), usamos el menú de 3 puntos
+    headerControls = optionsMenu;
+  }
+
   // El resto de la lógica de renderizado (autor, fecha, tags, imágenes, votos) permanece igual
   if (author && typeof author === "object") {
     const profile = author.profile;
@@ -218,7 +235,7 @@ export const renderArticleCard = (article, currentUser, userFavorites = []) => {
     <article class="article-card" data-id="${article._id}">
       <div class="article-card-header">
         <div class="author-info"><span class="article-author">${authorName}</span>${statusBadges}</div>
-        <div class="header-right-controls"><span class="article-date">Publicado ${relativeTime}</span>${optionsMenu}</div>
+        <div class="header-right-controls"><span class="article-date">Publicado ${relativeTime}</span>${headerControls}</div>
       </div>
       <div class="article-content"><p>${article.content}</p></div>
       ${imagesHtml}
@@ -282,7 +299,6 @@ export function initializeSymbolsPanel({
   toggleBtnId,
   panelId,
   includeFunctions = false,
-  // Se eliminan los parámetros de ID no utilizados.
 }) {
   const textarea = document.getElementById(textareaId);
   const toggleSymbolsBtn = document.getElementById(toggleBtnId);
@@ -300,8 +316,6 @@ export function initializeSymbolsPanel({
     textarea.selectionStart = textarea.selectionEnd = start + text.length;
     textarea.focus();
   };
-
-  // Se elimina completamente la lógica de creación de botones de Fracción y Exponente.
 
   const symbols = [
     "π",

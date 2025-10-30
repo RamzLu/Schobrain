@@ -594,9 +594,26 @@ body {
 
 /* Ajustes para las tarjetas de artículo dentro de favoritos */
 .favorites-list-container .article-card {
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05); /* Sombra más sutil */
-  border-left: 4px solid #fdc500; /* Borde izquierdo dorado para destacar favoritos */
-  margin-bottom: 0; /* Quitamos el margen inferior si usamos gap en el contenedor */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  border-left: 4px solid #4338ca; /* Usar un color consistente, como el morado principal */
+  position: relative; /* Necesario para posicionar la estrella */
+}
+.favorite-remove-star {
+  /* Ocupa el lugar del botón de 3 puntos */
+  display: block;
+  font-size: 1.4rem; /* Tamaño de la estrella */
+  color: #808080; /* Color gris para el ícono (como en tu imagen) */
+  cursor: pointer;
+  padding: 0.3rem 0.5rem;
+  transition: color 0.2s, transform 0.2s;
+  border-radius: 50%;
+}
+.favorite-remove-star:hover {
+  color: #12121c; /* Un poco más oscuro al pasar el ratón */
+  transform: scale(1.1);
+}
+.comment-favorite-card .favorite-remove-btn i {
+  color: #808080; /* Aplicar también el gris si no lo tenía */
 }
 
 .favorites-list-container .article-card .article-actions a {
