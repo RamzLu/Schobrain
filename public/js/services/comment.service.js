@@ -69,3 +69,26 @@ export const voteOnComment = async (commentId, voteType) => {
     throw error;
   }
 };
+
+// NUEVA FUNCIÓN: Obtener comentarios del usuario logueado (Respuestas)
+export const getMyComments = async () => {
+  try {
+    const response = await fetch(`${API_URL}/my`, {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+    });
+
+    if (!response.ok) {
+      const data = await response.json().catch(() => ({}));
+      throw new Error(
+        data.msg || data.message || "Error al obtener tus respuestas."
+      );
+    }
+    // El backend devuelve { msg: "...", data: comment[] }
+    const result = await response.json();
+    return result.data;
+  } catch (error) {
+    console.error("Error en getMyComments service:", error);
+    throw error;
+  }
+};

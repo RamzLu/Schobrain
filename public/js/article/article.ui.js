@@ -167,11 +167,15 @@ export const renderArticleCard = (article, currentUser, userFavorites = []) => {
   let avatarHtml = "";
   if (author && typeof author === "object") {
     // FIX 1: Usar username en lugar de nombre y apellido
+    // **APLICACIÓN DEL FIX**: Si article.author existe, usa su username, sino el fallback general.
     authorName = author.username || "Usuario Desconocido";
 
     // FIX 2: Construir HTML del avatar
+    // Se usa el username para el avatar de UI Avatars si no hay avatarUrl
+    const defaultAvatarName =
+      author.username || author.profile?.firstName || "NN";
     const defaultAvatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(
-      author.username || "NN"
+      defaultAvatarName
     )}&background=random`;
     const avatarUrl = author.profile?.avatarUrl || defaultAvatarUrl;
 

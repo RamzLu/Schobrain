@@ -24,7 +24,7 @@ export const createArticle = async (req, res) => {
     });
 
     const populatedArticle = await ArticleModel.findById(article._id)
-      .populate("author", "-password")
+      .populate("author", "username profile role")
       .populate("tags", "name");
 
     return res.status(201).json({
@@ -42,7 +42,7 @@ export const createArticle = async (req, res) => {
 export const getAllArticles = async (req, res) => {
   try {
     const articles = await ArticleModel.find()
-      .populate("author", "-password")
+      .populate("author", "username profile role")
       .populate("tags", "name")
       .select(
         "content author createdAt tags imageUrls likes dislikes votedUp votedDown"
@@ -61,7 +61,7 @@ export const getArticleById = async (req, res) => {
   const { id } = req.params;
   try {
     const article = await ArticleModel.findById(id)
-      .populate("author", "-password")
+      .populate("author", "username profile role")
       .populate({
         path: "comments",
         // Ordenamos por likes (desc) y luego por fecha (desc)
@@ -69,7 +69,7 @@ export const getArticleById = async (req, res) => {
         populate: {
           path: "author",
           model: "User",
-          select: "-password",
+          select: "username profile role",
         },
       });
 
@@ -102,7 +102,7 @@ export const searchArticles = async (req, res) => {
       // 'i' hace que la búsqueda no distinga mayúsculas/minúsculas
       content: { $regex: query, $options: "i" },
     })
-      .populate("author", "-password")
+      .populate("author", "username profile role")
       .populate("tags", "name")
       .select(
         "content author createdAt tags imageUrls likes dislikes votedUp votedDown"
@@ -169,7 +169,7 @@ export const updateArticle = async (req, res) => {
       },
       { new: true }
     )
-      .populate("author", "-password")
+      .populate("author", "username profile role")
       .populate("tags", "name");
 
     return res.status(200).json({
@@ -187,7 +187,13 @@ export const updateArticle = async (req, res) => {
 export const getUserLogArticles = async (req, res) => {
   const user = req.userLog;
   try {
-    const article = await ArticleModel.find({ author: user.id });
+    const article = await ArticleModel.find({ author: user.id })
+      .populate("author", "username profile role") // ¡AÑADIDA POPULACIÓN!
+      .select(
+        "content author createdAt tags imageUrls likes dislikes votedUp votedDown"
+      )
+      .sort({ createdAt: -1 });
+
     return res.status(200).json({
       msg: "Tus articulos:",
       data: article,
@@ -209,7 +215,7 @@ export const getArticlesByTag = async (req, res) => {
     }
 
     const articles = await ArticleModel.find({ tags: tag._id })
-      .populate("author", "-password")
+      .populate("author", "username profile role")
       .populate("tags", "name")
       .select(
         "content author createdAt tags imageUrls likes dislikes votedUp votedDown"

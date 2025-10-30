@@ -22,14 +22,14 @@ export const getAllComments = async (req, res) => {
     const comment = await CommentModel.find().populate([
       {
         path: "author",
-        select: "-password",
+        select: "username profile role",
       },
       {
         path: "article",
         populate: {
           path: "author",
           model: "User",
-          select: "-password",
+          select: "username profile role",
         },
       },
     ]);
@@ -86,12 +86,12 @@ export const getCommentsByArticle = async (req, res) => {
   const { articleId } = req.params;
   try {
     const article = await ArticleModel.findById(articleId)
-      .populate("author", "username profile.firstName profile.lastName")
+      .populate("author", "username profile role")
       .populate({
         path: "comments",
         populate: {
           path: "author",
-          select: "username profile.firstName profile.lastName",
+          select: "username profile role",
         },
       });
     return res.status(200).json({

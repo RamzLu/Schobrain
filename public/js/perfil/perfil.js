@@ -10,9 +10,17 @@ import {
   updateAccountData,
   updateAvatarImage,
   getFavoriteArticles,
-  getFavoriteComments, // <-- IMPORTADO
-  toggleFavoriteComment, // <-- IMPORTADO
+  getFavoriteComments,
+  toggleFavoriteComment,
 } from "../services/profile.service.js";
+import {
+  getMyArticles, // <<-- NUEVA IMPORTACIÓN
+  deleteArticle, // <<-- IMPORTADO PARA ELIMINACIÓN
+} from "../services/article.service.js";
+import {
+  getMyComments, // <<-- NUEVA IMPORTACIÓN
+  deleteComment, // <<-- IMPORTADO PARA ELIMINACIÓN
+} from "../services/comment.service.js";
 import { showSuccessToast, showErrorToast } from "../utils/notifications.js";
 import { renderArticleCard } from "../article/article.ui.js";
 import { initializeLightbox } from "../utils/lightbox.js";
@@ -43,7 +51,7 @@ const formatRelativeTime = (dateString) => {
   return `hace ${yearsElapsed} año${yearsElapsed > 1 ? "s" : ""}`;
 };
 
-// FUNCIÓN para renderizar una tarjeta de comentario favorito (Nueva)
+// FUNCIÓN para renderizar una tarjeta de comentario favorito
 const renderFavoriteCommentCard = (comment) => {
   // FIX 1: Usar username en lugar de nombre y apellido
   const authorName = comment.author.username || "Usuario Desconocido";
@@ -56,6 +64,7 @@ const renderFavoriteCommentCard = (comment) => {
   const avatarHtml = `<img src="${avatarUrl}" alt="Avatar" class="author-avatar comment-avatar" loading="lazy"/>`;
   // FIN FIX 2
 
+  // El backend de favoritos popula article.content
   const articleContentSnippet =
     comment.article.content.substring(0, 80) + "...";
   const relativeTime = formatRelativeTime(comment.createdAt);
@@ -91,6 +100,118 @@ const renderFavoriteCommentCard = (comment) => {
   `;
 };
 
+// NUEVA FUNCIÓN para renderizar una tarjeta de comentario propio (TAREA 1)
+const renderMyCommentCard = (comment) => {
+  // Aquí no tenemos los datos del autor (nosotros mismos) ni del artículo populados
+  const relativeTime = formatRelativeTime(comment.createdAt);
+  const articleLink = `/pregunta.html?id=${comment.article}`;
+
+  return `
+    <div class="comment-favorite-card my-comment-card" data-id="${comment._id}" style="border-left: 4px solid #2575fc;">
+      <div class="comment-header">
+        <div class="comment-author-info">
+          <div class="author-text-group">
+              <span class="comment-author">Tu Respuesta</span>
+              <span class="comment-date">Publicada ${relativeTime}</span>
+          </div>
+        </div>
+        <button 
+            class="delete-my-comment-btn favorite-remove-btn danger-zone-button" 
+            data-comment-id="${comment._id}" 
+            title="Eliminar respuesta"
+        >
+            <i class="fas fa-trash-alt"></i> Eliminar
+        </button>
+      </div>
+      <div class="comment-content">
+        <p>${comment.content}</p>
+      </div>
+      <div class="comment-metadata">
+        <i class="fas fa-link"></i>
+        <a href="${articleLink}" class="metadata-link">
+            Ver pregunta original
+        </a>
+      </div>
+    </div>
+  `;
+};
+
+// Variable para almacenar el estado del filtro de contenido
+let currentMyContentType = "my-articles";
+
+// FUNCIÓN PRINCIPAL para cargar y mostrar el contenido propio (TAREA 1)
+const loadMyContent = async (
+  filterType = currentMyContentType,
+  currentUser
+) => {
+  const contentListContainer = document.getElementById("my-content-list");
+  if (!contentListContainer) return;
+
+  contentListContainer.innerHTML = "<p>Cargando tu contenido...</p>";
+
+  // Actualizar el estado visual del filtro
+  const filterButtons = document.querySelectorAll(
+    "#my-content-section .favorites-filter-btn"
+  );
+  filterButtons.forEach((btn) => {
+    btn.classList.remove("active");
+    if (btn.dataset.filterType === filterType) {
+      btn.classList.add("active");
+    }
+  });
+
+  currentMyContentType = filterType; // Actualiza el estado
+
+  try {
+    let items = [];
+    let emptyMessage = "";
+    const userFavorites = currentUser.favorites || []; // Necesario para renderArticleCard
+
+    if (filterType === "my-articles") {
+      // Usar servicio para obtener mis artículos
+      const response = await getMyArticles();
+      items = response;
+      emptyMessage = "Aún no has publicado ninguna pregunta.";
+
+      // Renderizar artículos.
+      // renderArticleCard necesita el autor poblado, y getMyArticles lo devuelve (revisado en el backend).
+      const articlesToRender = items.map((article) => ({
+        ...article,
+        // Al ser mis artículos, se asegura que el menú de 3 puntos contenga Editar/Eliminar.
+      }));
+
+      const contentHtml = articlesToRender
+        .map((article) =>
+          renderArticleCard(article, currentUser, userFavorites)
+        )
+        .join("");
+
+      contentListContainer.innerHTML = contentHtml;
+      // Inicializa lightbox solo para artículos
+      initializeLightbox("my-content-list");
+    } else if (filterType === "my-comments") {
+      // Usar servicio para obtener mis comentarios
+      const response = await getMyComments();
+      items = response;
+      emptyMessage = "Aún no has publicado ninguna respuesta.";
+
+      // Renderizar comentarios propios
+      const contentHtml = items.map(renderMyCommentCard).join("");
+
+      contentListContainer.innerHTML = contentHtml;
+    }
+
+    if (items.length === 0) {
+      contentListContainer.innerHTML = `<p>${emptyMessage}</p>`;
+    }
+  } catch (error) {
+    console.error(`Error al cargar ${filterType}:`, error);
+    showErrorToast(`Error al cargar tu contenido: ${error.message}`);
+    contentListContainer.innerHTML =
+      "<p>Ocurrió un error al cargar tu contenido.</p>";
+  }
+};
+
 document.addEventListener("DOMContentLoaded", async () => {
   let currentUser;
   let fullProfileData = null; // Almacenará favorites y favoriteComments
@@ -103,6 +224,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     document.getElementById("logged-in-username").textContent =
       currentUser.firstName;
   } catch (error) {
+    // TAREA 3: Asegurar flujo de autenticación robusto
     window.location.href = "/login.html";
     return;
   }
@@ -162,7 +284,15 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   // --- NUEVOS ELEMENTOS PARA FAVORITOS ---
   const favoritesListContainer = document.getElementById("favorites-list");
-  const filterButtons = document.querySelectorAll(".favorites-filter-btn");
+  const filterButtons = document.querySelectorAll(
+    "#favorites-section .favorites-filter-btn"
+  );
+
+  // --- NUEVOS ELEMENTOS PARA MI CONTENIDO ---
+  const myContentListContainer = document.getElementById("my-content-list");
+  const myContentFilterButtons = document.querySelectorAll(
+    "#my-content-section .favorites-filter-btn"
+  );
 
   // --- Funciones ---
   const setProfileFields = (data) => {
@@ -200,6 +330,9 @@ document.addEventListener("DOMContentLoaded", async () => {
       const data = await getProfile(); // Usa la función del servicio
       fullProfileData = data;
       setProfileFields(data);
+      // TAREA 3: Asegura que currentUser tiene los favoritos actualizados
+      currentUser.favorites = data.favorites || [];
+      currentUser.favoriteComments = data.favoriteComments || [];
     } catch (err) {
       showErrorToast(`Error al cargar datos: ${err.message}`);
     }
@@ -286,7 +419,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       link.classList.toggle("active", link.dataset.section === sectionId);
     });
 
-    // Si la sección es 'favorites', carga con el filtro actual
+    // Lógica para cargar contenido basado en la sección
     if (sectionId === "favorites") {
       // Asegura que los botones de filtro se muestren en el estado correcto al entrar en la sección
       document
@@ -296,6 +429,15 @@ document.addEventListener("DOMContentLoaded", async () => {
         .getElementById("filter-comments-btn")
         ?.classList.toggle("active", currentFilterType === "comments");
       loadFavorites(currentFilterType);
+    } else if (sectionId === "my-content") {
+      // Lógica para la nueva sección
+      document
+        .getElementById("filter-my-articles-btn")
+        ?.classList.toggle("active", currentMyContentType === "my-articles");
+      document
+        .getElementById("filter-my-comments-btn")
+        ?.classList.toggle("active", currentMyContentType === "my-comments");
+      loadMyContent(currentMyContentType, currentUser);
     }
   };
 
@@ -310,7 +452,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
   });
 
-  // Listener para los nuevos botones de filtro
+  // Listener para los nuevos botones de filtro de FAVORITOS
   filterButtons.forEach((btn) => {
     btn.addEventListener("click", (e) => {
       e.preventDefault();
@@ -319,10 +461,17 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
   });
 
+  // Listener para los nuevos botones de filtro de MI CONTENIDO
+  myContentFilterButtons.forEach((btn) => {
+    btn.addEventListener("click", (e) => {
+      e.preventDefault();
+      const filterType = btn.dataset.filterType;
+      loadMyContent(filterType, currentUser);
+    });
+  });
+
   // Listener para quitar favoritos (artículos y comentarios) desde la vista de favoritos
   favoritesListContainer.addEventListener("click", async (event) => {
-    // FIX: Ahora soporta tanto el botón de comentario (.favorite-remove-btn) como
-    // el nuevo span de artículo (.favorite-remove-star).
     const removeCommentBtn = event.target.closest(".favorite-remove-btn");
     const removeArticleStar = event.target.closest(".favorite-remove-star");
 
@@ -370,6 +519,62 @@ document.addEventListener("DOMContentLoaded", async () => {
     // Lógica para el lightbox (debe reiniciarse si se carga una nueva tarjeta con imágenes)
     const link = event.target.closest(".article-image-link");
     if (link && currentFilterType === "articles") {
+      // Simula el clic para el lightbox
+      const modal = document.getElementById("image-preview-modal");
+      const previewImage = document.getElementById("preview-image-src");
+      if (modal && previewImage) {
+        event.preventDefault();
+        previewImage.src = link.href;
+        modal.classList.add("visible");
+      }
+    }
+  });
+
+  // TAREA 2: Listener para el botón de eliminar contenido propio
+  myContentListContainer.addEventListener("click", async (event) => {
+    // 1. Eliminar Artículo Propio
+    const deleteArticleBtn = event.target.closest(".delete-btn"); // Los artículos usan .delete-btn
+    if (deleteArticleBtn && currentMyContentType === "my-articles") {
+      const articleId = deleteArticleBtn.dataset.id;
+      const confirmDelete = window.confirm(
+        "¿Estás seguro de eliminar esta pregunta? Esta acción es permanente."
+      );
+      if (confirmDelete) {
+        try {
+          await deleteArticle(articleId); // Servicio de article.service.js
+          showSuccessToast("Pregunta eliminada correctamente.");
+          // Recargar lista
+          await loadMyContent("my-articles", currentUser);
+        } catch (error) {
+          showErrorToast(`Error al eliminar la pregunta: ${error.message}`);
+        }
+      }
+      return;
+    }
+
+    // 2. Eliminar Comentario Propio
+    const deleteCommentBtn = event.target.closest(".delete-my-comment-btn");
+    if (deleteCommentBtn && currentMyContentType === "my-comments") {
+      const commentId = deleteCommentBtn.dataset.commentId;
+      const confirmDelete = window.confirm(
+        "¿Estás seguro de eliminar esta respuesta? Esta acción es permanente."
+      );
+      if (confirmDelete) {
+        try {
+          await deleteComment(commentId); // Servicio de comment.service.js
+          showSuccessToast("Respuesta eliminada correctamente.");
+          // Recargar lista
+          await loadMyContent("my-comments", currentUser);
+        } catch (error) {
+          showErrorToast(`Error al eliminar la respuesta: ${error.message}`);
+        }
+      }
+      return;
+    }
+
+    // 3. Lógica para el lightbox (solo para artículos, ya que los comentarios no tienen imágenes)
+    const link = event.target.closest(".article-image-link");
+    if (link && currentMyContentType === "my-articles") {
       // Simula el clic para el lightbox
       const modal = document.getElementById("image-preview-modal");
       const previewImage = document.getElementById("preview-image-src");

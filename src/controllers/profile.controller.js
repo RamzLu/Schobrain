@@ -287,7 +287,7 @@ export const getFavoriteArticles = async (req, res) => {
         model: "Article",
         populate: [
           // Populamos autor y tags de los artículos favoritos
-          { path: "author", select: "-password" },
+          { path: "author", select: "username profile role" },
           { path: "tags", select: "name" },
         ],
         // Ordenamos los favoritos por fecha de creación (los más recientes primero)
@@ -370,7 +370,7 @@ export const getFavoriteComments = async (req, res) => {
         model: "Comment",
         populate: [
           // Populamos autor del comentario
-          { path: "author", select: "username profile" },
+          { path: "author", select: "username profile role" },
           // Populamos el artículo al que pertenece. Aseguramos el _id.
           { path: "article", select: "_id content author" }, // <-- VERIFICACIÓN DE SELECCIÓN
         ],

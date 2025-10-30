@@ -43,20 +43,22 @@ export const getUserById = async (req, res) => {
     const user = await UserModel.findById(id)
       .populate({
         path: "articles",
-        populate: {
-          path: "author",
-          model: "User",
-          select: "username email profile",
-        },
-        populate: {
-          path: "comments",
-          model: "Comment",
-          populate: {
+        populate: [
+          {
             path: "author",
             model: "User",
-            select: "username email profile",
+            select: "username email profile role",
           },
-        },
+          {
+            path: "comments",
+            model: "Comment",
+            populate: {
+              path: "author",
+              model: "User",
+              select: "username email profile role",
+            },
+          },
+        ],
       })
       .select("-password");
     return res.status(200).json(user);

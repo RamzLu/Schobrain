@@ -162,3 +162,21 @@ export const toggleFavoriteArticle = async (articleId) => {
   }
   return data;
 };
+
+// NUEVA FUNCIÓN: Obtener artículos del usuario logueado (Preguntas)
+export const getMyArticles = async () => {
+  const response = await fetch(`${API_URL}/my`, {
+    method: "GET",
+    headers: { "Content-Type": "application/json" },
+  });
+
+  if (!response.ok) {
+    const data = await response.json().catch(() => ({}));
+    throw new Error(
+      data.msg || data.message || "Error al obtener tus preguntas."
+    );
+  }
+  // El backend devuelve { msg: "...", data: article[] }
+  const result = await response.json();
+  return result.data;
+};
