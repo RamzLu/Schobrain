@@ -20,6 +20,7 @@ import {
 import { showSuccessToast, showErrorToast } from "./utils/notifications.js";
 import { initializeLightbox } from "./utils/lightbox.js";
 import { fetchAllTags } from "./services/tag.service.js"; // ✅ IMPORTADO
+import { getProfile } from "./services/profile.service.js"; // <-- IMPORTACIÓN NECESARIA
 
 // --- Elementos del Modal de Edición ---
 const editQuestionModal = document.getElementById("edit-question-modal");
@@ -385,12 +386,18 @@ document.addEventListener("DOMContentLoaded", async () => {
   let currentUser;
   try {
     const authData = await verifyAuth();
-    // Reestructuramos currentUser para incluir favoritos
+
+    // FIX: Obtener el perfil completo para tener la lista de favoritos actualizada
+    const profileData = await getProfile();
+
+    // Reestructuramos currentUser usando la data del perfil completo, no solo la del token
     currentUser = {
-      ...authData.data,
-      favorites: authData.data.favorites || [], // Aseguramos que favorites esté presente
-      favoriteComments: authData.data.favoriteComments || [],
+      ...authData.data, // Datos básicos del token (id, role, etc.)
+      favorites: profileData.favorites || [], // Lista de favoritos de preguntas
+      favoriteComments: profileData.favoriteComments || [], // Lista de favoritos de respuestas
     };
+    // FIN FIX
+
     document.getElementById("logged-in-username").textContent =
       currentUser.firstName;
   } catch (error) {

@@ -9,10 +9,13 @@ import { fetchAllTags } from "../services/tag.service.js";
 import { loadArticles, populateTagSelector } from "./article.ui.js";
 import { showSuccessToast, showErrorToast } from "../utils/notifications.js";
 
-export const initializeArticleFeed = async (currentUser) => {
+export const initializeArticleFeed = async (
+  currentUser,
+  userFavorites = []
+) => {
   try {
     const articles = await fetchAllArticles();
-    loadArticles(articles, currentUser);
+    loadArticles(articles, currentUser, userFavorites);
     const tags = await fetchAllTags();
     populateTagSelector(tags);
   } catch (error) {
