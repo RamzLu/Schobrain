@@ -190,7 +190,7 @@ const renderComments = (comments, currentUser) => {
 };
 
 // **********************************************
-// ✅ LÓGICA DE EDICIÓN DE PREGUNTA (Adaptada de index.js)
+// LÓGICA DE EDICIÓN DE PREGUNTA (Adaptada de index.js)
 // **********************************************
 
 const openEditModal = async (articleId) => {
@@ -503,6 +503,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         const voteType = voteBtn.dataset.voteType;
 
         try {
+          // El servicio voteOnComment devuelve {msg: ..., data: updatedCommentData}
           const updatedResponse = await voteOnComment(commentId, voteType);
           const updatedCommentData = updatedResponse.data;
 
@@ -574,8 +575,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         const voteType = voteBtn.dataset.voteType;
 
         try {
-          const updatedResponse = await voteOnArticle(articleId, voteType);
-          const updatedVotes = updatedResponse.data;
+          // CORRECCIÓN: voteOnArticle devuelve el objeto de votos directamente, sin la propiedad .data
+          const updatedVotes = await voteOnArticle(articleId, voteType);
 
           const articleCard = mainQuestionContainer.querySelector(
             `.article-card[data-id="${articleId}"]`
