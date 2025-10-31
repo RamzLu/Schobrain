@@ -324,6 +324,28 @@ const setupEditModalListeners = (currentUser) => {
 // Variable para almacenar el estado del filtro de contenido
 let currentMyContentType = "my-articles";
 
+// NUEVA FUNCIÓN: Establecer los contadores en el DOM
+const setProfileStats = (articleCount, commentCount) => {
+  const articleDisplay = document.getElementById("article-count-display");
+  const commentDisplay = document.getElementById("comment-count-display");
+  if (articleDisplay) articleDisplay.textContent = articleCount;
+  if (commentDisplay) commentDisplay.textContent = commentCount;
+};
+
+// NUEVA FUNCIÓN: Cargar y calcular los contadores del perfil
+const loadProfileStats = async () => {
+  try {
+    // Usamos los mismos servicios que obtienen el contenido propio
+    const articles = await getMyArticles();
+    const comments = await getMyComments();
+
+    setProfileStats(articles.length, comments.length);
+  } catch (error) {
+    console.error("Error al cargar los contadores de actividad:", error);
+    setProfileStats(0, 0); // Muestra 0 en caso de error
+  }
+};
+
 // FUNCIÓN PRINCIPAL para cargar y mostrar el contenido propio
 const loadMyContent = async (
   filterType = currentMyContentType,
@@ -841,6 +863,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         showSuccessToast("Respuesta eliminada correctamente.");
         // Recargar lista
         await loadMyContent("my-comments", currentUser);
+        // Actualizar contadores
+        await loadProfileStats();
       } catch (error) {
         showErrorToast(`Error al eliminar la respuesta: ${error.message}`);
       } finally {
@@ -1130,6 +1154,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   // --- Inicialización ---
   await fetchProfile(); // Carga inicial del perfil
+  await loadProfileStats(); // CARGA INICIAL DE CONTADORES
   setupEditModalListeners(currentUser); // Configura listeners para el modal de edición
   switchSection("profile"); // Muestra la sección de perfil por defecto
 });
