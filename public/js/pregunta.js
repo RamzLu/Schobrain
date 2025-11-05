@@ -5,7 +5,7 @@ import {
   voteOnArticle,
   toggleFavoriteArticle,
   deleteArticle,
-  updateArticle, // ✅ IMPORTADO
+  updateArticle,
 } from "./services/article.service.js";
 import {
   postComment,
@@ -19,8 +19,8 @@ import {
 } from "./article/article.ui.js";
 import { showSuccessToast, showErrorToast } from "./utils/notifications.js";
 import { initializeLightbox } from "./utils/lightbox.js";
-import { fetchAllTags } from "./services/tag.service.js"; // ✅ IMPORTADO
-import { getProfile } from "./services/profile.service.js"; // <-- IMPORTACIÓN NECESARIA
+import { fetchAllTags } from "./services/tag.service.js";
+import { getProfile } from "./services/profile.service.js";
 
 // --- Elementos del Modal de Edición ---
 const editQuestionModal = document.getElementById("edit-question-modal");
@@ -58,11 +58,9 @@ const formatRelativeTime = (dateString) => {
 const renderMainQuestion = (article, currentUser) => {
   const container = document.getElementById("main-question-container");
   if (container) {
-    // Es fundamental pasar la lista de favoritos para que el botón de estrella se renderice correctamente
     const userFavorites = currentUser.favorites || [];
     let cardHtml = renderArticleCard(article, currentUser, userFavorites);
 
-    // Eliminamos el enlace de "Ver discusión" para la pregunta principal
     cardHtml = cardHtml.replace(
       /<a href="\/pregunta\.html\?id=.*">Ver discusión y responder<\/a>/,
       ""
@@ -75,7 +73,6 @@ const renderComments = (comments, currentUser) => {
   const container = document.getElementById("comments-list");
   if (!container) return;
 
-  // Acceder a la lista de comentarios favoritos del usuario
   const userFavoriteComments = currentUser.favoriteComments || [];
 
   if (comments.length === 0) {
@@ -86,21 +83,18 @@ const renderComments = (comments, currentUser) => {
 
   container.innerHTML = comments
     .map((comment) => {
-      const canDelete =
-        currentUser.role === "admin" || currentUser.id === comment.author._id;
+      const isCommentAuthor = currentUser.id === comment.author._id;
+      const canDelete = currentUser.role === "admin" || isCommentAuthor;
 
-      // Lógica de favorito para el comentario
       const isFavorite = userFavoriteComments.includes(comment._id);
       const favoriteIconClass = isFavorite ? "fas fa-star" : "far fa-star";
       const favoriteTitle = isFavorite
         ? "Quitar de favoritos"
         : "Añadir a favoritos";
 
-      // FIX 1: Obtener el username del autor del comentario
       const commentAuthorUsername =
         comment.author.username || "Usuario Desconocido";
 
-      // FIX 2: Construir HTML del avatar
       const defaultAvatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(
         comment.author.profile.firstName || "NN"
       )}+${encodeURIComponent(
@@ -108,9 +102,7 @@ const renderComments = (comments, currentUser) => {
       )}&background=random`;
       const avatarUrl = comment.author.profile?.avatarUrl || defaultAvatarUrl;
       const avatarHtml = `<img src="${avatarUrl}" alt="Avatar" class="author-avatar comment-avatar" loading="lazy"/>`;
-      // FIN FIX 2
 
-      // === INICIO DE LA MODIFICACIÓN (Añadir Galería de Imágenes) ===
       let imagesHtml = "";
       if (comment.imageUrls && comment.imageUrls.length > 0) {
         const imageElements = comment.imageUrls
@@ -121,21 +113,33 @@ const renderComments = (comments, currentUser) => {
           </a>`
           )
           .join("");
-
-        // Reutilizamos las clases CSS de la galería de artículos
         imagesHtml = `<div class="article-images-gallery">${imageElements}</div>`;
       }
-      // === FIN DE LA MODIFICACIÓN ===
 
       let statusBadges = "";
       if (comment.author.role === "admin") {
         statusBadges += `<span class="admin-badge">Administrador</span>`;
       }
-      if (currentUser.id === comment.author._id) {
+      if (isCommentAuthor) {
         statusBadges += `<span class="author-badge">Tú</span>`;
       }
 
-      // Botón de favorito para el menú de opciones
+      // --- INICIO DE LA MODIFICACIÓN (Enlaces de autor en Comentarios) ---
+      const authorLinkHref = isCommentAuthor
+        ? "/perfil.html"
+        : `/usuario.html?id=${comment.author._id}`;
+
+      const authorInfoHtml = `
+        <a href="${authorLinkHref}" class="author-link">
+          ${avatarHtml}
+          <div class="author-text-group">
+              <span class="comment-author">${commentAuthorUsername}</span>
+              ${statusBadges}
+          </div>
+        </a>
+      `;
+      // --- FIN DE LA MODIFICACIÓN ---
+
       const favoriteButtonHtml = `
             <button 
                 class="dropdown-item favorite-comment-btn" 
@@ -200,27 +204,26 @@ const renderComments = (comments, currentUser) => {
         <div class="comment-card" data-id="${comment._id}">
             <div class="comment-header">
                 <div class="comment-author-date">
-                    ${avatarHtml}
-                    <div class="author-text-group">
-                        <span class="comment-author">${commentAuthorUsername}</span>
-                        ${statusBadges}
-                    </div>
-                    <span class="comment-date">${formatRelativeTime(
-                      comment.createdAt
-                    )}</span>
+                    ${authorInfoHtml} <span class="comment-date">${formatRelativeTime(
+        comment.createdAt
+      )}</span>
                 </div>
                 ${optionsMenuHtml}
             </div>
             <div class="comment-content">
                 <p>${comment.content}</p>
             </div>
-            ${imagesHtml} <div class="comment-footer">
+            ${imagesHtml}
+            <div class="comment-footer">
                 ${voteControlsHtml}
             </div>
         </div>`;
     })
     .join("");
 };
+
+// ... (El resto del archivo 'openEditModal', 'handleEditFormSubmit', 'setupEditModalListeners' no cambia) ...
+// (Los he omitido aquí para ser breve, pero deben estar en tu archivo)
 
 // **********************************************
 // LÓGICA DE EDICIÓN DE PREGUNTA (Sin cambios)
@@ -403,18 +406,12 @@ document.addEventListener("DOMContentLoaded", async () => {
   let currentUser;
   try {
     const authData = await verifyAuth();
-
-    // FIX: Obtener el perfil completo para tener la lista de favoritos actualizada
     const profileData = await getProfile();
-
-    // Reestructuramos currentUser usando la data del perfil completo, no solo la del token
     currentUser = {
-      ...authData.data, // Datos básicos del token (id, role, etc.)
-      favorites: profileData.favorites || [], // Lista de favoritos de preguntas
-      favoriteComments: profileData.favoriteComments || [], // Lista de favoritos de respuestas
+      ...authData.data,
+      favorites: profileData.favorites || [],
+      favoriteComments: profileData.favoriteComments || [],
     };
-    // FIN FIX
-
     document.getElementById("logged-in-username").textContent =
       currentUser.firstName;
   } catch (error) {
@@ -424,14 +421,13 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   const params = new URLSearchParams(window.location.search);
   const articleId = params.get("id");
-  let currentArticle = null; // Guardar el artículo para usar en editar/eliminar
+  let currentArticle = null;
 
   if (!articleId) {
     document.body.innerHTML = "<h1>Error: No se especificó una pregunta.</h1>";
     return;
   }
 
-  // === INICIO DE LA MODIFICACIÓN (Listeners para input de archivo de comentario) ===
   const commentFileInput = document.getElementById("comment-image-files");
   const commentFileNameDisplay = document.getElementById(
     "comment-file-name-display"
@@ -449,7 +445,6 @@ document.addEventListener("DOMContentLoaded", async () => {
       }
     });
   }
-  // === FIN DE LA MODIFICACIÓN ===
 
   try {
     const article = await fetchArticleById(articleId);
@@ -458,9 +453,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     renderComments(article.comments, currentUser);
 
     initializeLightbox("main-question-container");
-    initializeLightbox("comments-list"); // <-- Añadido para el lightbox en comentarios
+    initializeLightbox("comments-list");
 
-    // ✅ Inicializar listeners del modal de edición
     setupEditModalListeners();
 
     initializeSymbolsPanel({
@@ -474,7 +468,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     commentForm.addEventListener("submit", async (e) => {
       e.preventDefault();
 
-      // === INICIO DE LA MODIFICACIÓN (Envío con FormData) ===
       const content = document.getElementById("comment-content").value.trim();
       const files = commentFileInput.files;
 
@@ -498,12 +491,11 @@ document.addEventListener("DOMContentLoaded", async () => {
       }
 
       try {
-        await postComment(formData); // Enviamos el formData
+        await postComment(formData);
         window.location.reload();
       } catch (error) {
         showErrorToast(`Error al publicar tu respuesta: ${error.message}`);
       }
-      // === FIN DE LA MODIFICACIÓN ===
     });
 
     const commentsList = document.getElementById("comments-list");
@@ -523,7 +515,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       const toggleBtn = event.target.closest(".options-toggle-btn");
       if (toggleBtn) {
         const dropdown = toggleBtn.nextElementSibling;
-        closeAllDropdowns(); // Cerrar todos antes de abrir uno
+        closeAllDropdowns();
         dropdown.classList.toggle("visible");
         return true;
       }
@@ -533,10 +525,8 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     // Listener para los comentarios (y su menú de opciones)
     commentsList.addEventListener("click", async (event) => {
-      // --- Lógica para el menú de opciones (Comentarios) ---
       if (handleToggleMenu(event)) return;
 
-      // --- Lógica para el botón de eliminar ---
       const deleteBtn = event.target.closest(".delete-comment-btn");
       if (deleteBtn) {
         commentIdToDelete = deleteBtn.dataset.commentId;
@@ -544,7 +534,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         deleteBtn.closest(".options-dropdown").classList.remove("visible");
       }
 
-      // --- LÓGICA para el botón de favorito de comentarios ---
       const favoriteBtn = event.target.closest(".favorite-comment-btn");
       if (favoriteBtn && favoriteBtn.dataset.commentId) {
         const commentId = favoriteBtn.dataset.commentId;
@@ -553,7 +542,6 @@ document.addEventListener("DOMContentLoaded", async () => {
           const result = await toggleFavoriteComment(commentId);
           showSuccessToast(result.message);
 
-          // Actualizar estado local y UI
           currentUser.favoriteComments = result.favoriteComments;
           const isFavorite = currentUser.favoriteComments.includes(commentId);
 
@@ -570,14 +558,12 @@ document.addEventListener("DOMContentLoaded", async () => {
         return;
       }
 
-      // --- Lógica para los botones de voto de comentarios ---
       const voteBtn = event.target.closest(".vote-btn");
       if (voteBtn && voteBtn.dataset.commentId) {
         const commentId = voteBtn.dataset.commentId;
         const voteType = voteBtn.dataset.voteType;
 
         try {
-          // El servicio voteOnComment devuelve {msg: ..., data: updatedCommentData}
           const updatedResponse = await voteOnComment(commentId, voteType);
           const updatedCommentData = updatedResponse.data;
 
@@ -614,10 +600,8 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     // Listener para la pregunta principal (incluye menú de opciones y voto de artículo)
     mainQuestionContainer.addEventListener("click", async (event) => {
-      // --- Lógica para el menú de opciones (Pregunta Principal) ---
       if (handleToggleMenu(event)) return;
 
-      // --- Lógica para el botón de favorito de artículos (Pregunta Principal) ---
       const favoriteBtn = event.target.closest(".favorite-btn");
       if (favoriteBtn && favoriteBtn.dataset.id) {
         const articleId = favoriteBtn.dataset.id;
@@ -626,7 +610,6 @@ document.addEventListener("DOMContentLoaded", async () => {
           const result = await toggleFavoriteArticle(articleId);
           showSuccessToast(result.message);
 
-          // Actualizar UI del botón de favorito
           const isFavorite = result.favorites.includes(articleId);
           favoriteBtn.dataset.isFavorite = isFavorite;
           favoriteBtn.innerHTML = `
@@ -641,15 +624,12 @@ document.addEventListener("DOMContentLoaded", async () => {
         return;
       }
 
-      // --- Lógica para los botones de voto de artículos ---
       const voteBtn = event.target.closest(".vote-btn");
       if (voteBtn && voteBtn.dataset.articleId) {
-        // Aseguramos que sea un voto de artículo
         const articleId = voteBtn.dataset.articleId;
         const voteType = voteBtn.dataset.voteType;
 
         try {
-          // CORRECCIÓN: voteOnArticle devuelve el objeto de votos directamente, sin la propiedad .data
           const updatedVotes = await voteOnArticle(articleId, voteType);
 
           const articleCard = mainQuestionContainer.querySelector(
@@ -678,7 +658,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
       }
 
-      // ✅ Lógica para el botón EDITAR (Activada)
       const editBtn = event.target.closest(".edit-btn");
       if (editBtn) {
         const articleIdToEdit = editBtn.dataset.id;
@@ -687,7 +666,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         return;
       }
 
-      // --- Lógica para el botón ELIMINAR (simulada) ---
       const deleteArticleBtn = event.target.closest(".delete-btn");
       if (deleteArticleBtn) {
         const confirmDelete = window.confirm(

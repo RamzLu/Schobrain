@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Perfil de Usuario | Schobrain</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+    <link rel="icon" type="image/png" href="assets/img/logoSchobrain.png" />
+    <link rel="stylesheet" href="assets/style.css" />
+    <link rel="stylesheet" href="assets/perfil.css" />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css"
+    />
+    <script
+      type="text/javascript"
+      src="https://cdn.jsdelivr.net/npm/toastify-js"
+    ></script>
+  </head>
+  <body>
+    <div class="main-container">
+      <header
+        class="main-header"
+        style="background-color: #ffffff; color: #333"
+      >
+        <div
+          class="header-left"
+          style="display: flex; align-items: center; gap: 1rem"
+        >
+          <a href="/"
+            ><img
+              src="assets/img/logoSchobrain.png"
+              alt="Logo Schobrain"
+              class="header-logo"
+          /></a>
+        </div>
+        <div class="header-center"></div>
+        <div class="header-right">
+          <span class="welcome-user" style="color: #333"
+            >Bienvenido, <span id="logged-in-username">Usuario</span></span
+          >
+          <a
+            href="/"
+            class="modal-button secondary"
+            style="
+              text-decoration: none;
+              padding: 0.6rem 1.2rem;
+              background-color: #e9ecef;
+              color: #495057;
+            "
+          >
+            Volver al Feed
+          </a>
+        </div>
+      </header>
+
+      <main class="profile-main-area" style="max-width: 900px; margin: 0 auto">
+        <section
+          id="public-profile-section"
+          style="
+            flex-grow: 1;
+            max-height: 85vh;
+            overflow-y: auto;
+            padding-right: 1rem;
+          "
+        >
+          <div class="profile-card">
+            <div class="profile-card-header">
+              <div class="avatar-container">
+                <img
+                  id="avatarUrl"
+                  src="https://ui-avatars.com/api/?name=S&background=random"
+                  alt="Avatar del usuario"
+                  class="profile-avatar"
+                />
+              </div>
+              <div class="user-details">
+                <h1 id="username" class="username-display">@username</h1>
+                <p class="full-name">
+                  <span id="firstName">Nombre</span>
+                  <span id="lastName">Apellido</span>
+                </p>
+                <div class="user-meta">
+                  <span id="role" class="role-badge">Usuario</span>
+                </div>
+              </div>
+            </div>
+            <div class="profile-card-body">
+              <div class="info-group">
+                <label>Biografía</label>
+                <p id="biography-display" class="profile-text">
+                  Cargando biografía...
+                </p>
+              </div>
+
+              <div class="info-group">
+                <label>Fecha de Nacimiento</label>
+                <p id="birthdate-display" class="profile-text"></p>
+              </div>
+            </div>
+          </div>
+
+          <div class="profile-stats-card">
+            <div class="stat-item">
+              <i class="fas fa-question-circle"></i>
+              <span class="stat-label">Preguntas Creadas</span>
+              <span id="article-count-display" class="stat-value">0</span>
+            </div>
+            <div class="stat-item">
+              <i class="fas fa-comment-dots"></i>
+              <span class="stat-label">Respuestas Publicadas</span>
+              <span id="comment-count-display" class="stat-value">0</span>
+            </div>
+          </div>
+
+          <section id="user-content-section" style="margin-top: 2rem">
+            <h2 class="h2CONTENT">Contenido del Usuario</h2>
+            <div class="favorites-toolbar">
+              <button
+                class="modal-button secondary favorites-filter-btn active"
+                data-filter-type="articles"
+                id="filter-articles-btn"
+              >
+                <i class="fas fa-question-circle"></i> Preguntas
+              </button>
+              <button
+                class="modal-button secondary favorites-filter-btn"
+                data-filter-type="comments"
+                id="filter-comments-btn"
+              >
+                <i class="fas fa-comment-dots"></i> Respuestas
+              </button>
+            </div>
+            <div id="user-content-list" class="favorites-list-container">
+              <p>Cargando contenido...</p>
+            </div>
+          </section>
+        </section>
+      </main>
+    </div>
+
+    <div id="image-preview-modal" class="modal-overlay">
+      <span class="close-preview-btn">&times;</span>
+      <img
+        class="preview-image"
+        id="preview-image-src"
+        src=""
+        alt="Previsualización de imagen"
+      />
+    </div>
+
+    <script type="module" src="/js/services/auth.service.js"></script>
+    <script type="module" src="/js/article/article.ui.js"></script>
+    <script type="module" src="/js/utils/lightbox.js"></script>
+    <script type="module" src="/js/utils/notifications.js"></script>
+    <script type="module" src="/js/services/user.service.js"></script>
+    <script type="module" src="/js/usuario.js"></script>
+  </body>
+</html>

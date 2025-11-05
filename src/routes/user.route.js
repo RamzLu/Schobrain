@@ -2,6 +2,7 @@ import { Router } from "express";
 import {
   deleteUser,
   getAllUsers,
+  getPublicUserProfileById, // <-- 1. Importar la nueva función
   getUserById,
   updateUser,
 } from "../controllers/user.controller.js";
@@ -15,6 +16,11 @@ import {
 import { validator } from "../middlewares/validator.js";
 
 export const routeUser = Router();
+
+// --- INICIO DE LA MODIFICACIÓN ---
+// 2. Añadir la nueva ruta pública (sin middlewares de autenticación)
+routeUser.get("/users/:id/public", getPublicUserProfileById);
+// --- FIN DE LA MODIFICACIÓN ---
 
 routeUser.delete(
   "/users/:id",

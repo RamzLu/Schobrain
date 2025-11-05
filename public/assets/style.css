@@ -1835,3 +1835,25 @@ body {
   font-size: 0.75rem;
   line-height: 1;
 }
+.author-link {
+  text-decoration: none;
+  color: inherit; /* Hereda el color del texto (evita el azul de enlace) */
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-radius: 8px; /* Redondeo para el hover */
+  padding: 4px; /* Pequeño padding para el hover */
+  transition: background-color 0.2s ease;
+}
+
+.author-link:hover {
+  background-color: #f0f2f5; /* Un fondo sutil al pasar el ratón */
+}
+
+/* El nombre del autor dentro del enlace SÍ debe tener color */
+.author-link .article-author {
+  color: #6a11cb;
+}
+.author-link .comment-author {
+  color: #2575fc;
+}

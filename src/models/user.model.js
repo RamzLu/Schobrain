@@ -88,6 +88,15 @@ userSchema.virtual("articles", {
   foreignField: "author",
 });
 
+// === INICIO DE LA MODIFICACIÓN ===
+// Añadir el virtual populate para los comentarios
+userSchema.virtual("comments", {
+  ref: "Comment",
+  localField: "_id",
+  foreignField: "author",
+});
+// === FIN DE LA MODIFICACIÓN ===
+
 userSchema.pre(/^find/, function (next) {
   this.where({ deleteAt: null });
   next();

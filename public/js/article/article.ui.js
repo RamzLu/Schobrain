@@ -109,23 +109,20 @@ export const populateTagSelector = (tags) => {
   }
 };
 
-// === INICIO DE LA MODIFICACIÓN ===
-// 1. Cambiamos la firma para aceptar un objeto 'options'
+// Modificamos la firma para aceptar un objeto 'options'
 export const renderArticleCard = (
   article,
   currentUser,
   userFavorites = [],
   options = {} // Objeto de opciones, por defecto vacío
 ) => {
-  // === FIN DE LA MODIFICACIÓN ===
-
   const author = article.author;
   let authorId = null;
   let authorName = "Usuario Desconocido";
   let statusBadges = "";
   let avatarHtml = "";
 
-  // Lógica de autor (corregida en la respuesta anterior)
+  // Lógica de autor (corregida)
   if (author && typeof author === "object") {
     authorId = author._id;
     authorName = author.username || "Usuario Desconocido";
@@ -165,16 +162,33 @@ export const renderArticleCard = (
     statusBadges += `<span class="author-badge">Tú</span>`;
   }
 
-  // === INICIO DE LA MODIFICACIÓN ===
-  // 2. Lógica para mostrar/ocultar el menú de 3 puntos
-  let headerControls = ""; // Por defecto, no hay menú (para "Mi Contenido")
+  // --- INICIO DE LA MODIFICACIÓN (Enlaces de autor) ---
+
+  // 1. Crear el enlace del autor
+  // Si es el autor, el enlace va a perfil.html. Si es otro usuario, va a usuario.html.
+  const authorLinkHref = isAuthor
+    ? "/perfil.html"
+    : `/usuario.html?id=${authorId}`;
+
+  // 2. Envolvemos el avatar y el nombre en el enlace
+  const authorInfoHtml = `
+    <a href="${authorLinkHref}" class="author-link">
+      ${avatarHtml}
+      <div class="author-text-group">
+          <span class="article-author">${authorName}</span>
+          ${statusBadges}
+      </div>
+    </a>
+  `;
+  // --- FIN DE LA MODIFICACIÓN ---
+
+  // Lógica para mostrar/ocultar el menú de 3 puntos
+  let headerControls = "";
   const isFavoriteCard = article.isFavoriteCard === true;
 
   if (options.isMyContent) {
-    // VISTA: "Mi Contenido" -> No mostrar nada.
     headerControls = "";
   } else if (isFavoriteCard) {
-    // VISTA: "Mis Favoritos" -> Mostrar estrella fija para quitar
     headerControls = `
         <div class="article-options-menu">
             <span class="favorite-remove-star" data-article-id="${article._id}" title="Quitar de favoritos">
@@ -212,7 +226,6 @@ export const renderArticleCard = (
         </div>
       </div>`;
   }
-  // === FIN DE LA MODIFICACIÓN ===
 
   const relativeTime = formatRelativeTime(article.createdAt);
   const tag = article.tags && article.tags.length > 0 ? article.tags[0] : null;
@@ -267,8 +280,6 @@ export const renderArticleCard = (
     </div>
   `;
 
-  // === INICIO DE LA MODIFICACIÓN ===
-  // 3. Lógica para el texto del enlace
   const articleActionsHtml = `
     <div class="article-actions">
         <a href="/pregunta.html?id=${article._id}">
@@ -280,17 +291,12 @@ export const renderArticleCard = (
         </a>
     </div>
   `;
-  // === FIN DE LA MODIFICACIÓN ===
 
   return `
     <article class="article-card" data-id="${article._id}">
       <div class="article-card-header">
         <div class="author-info">
-            ${avatarHtml}
-            <div class="author-text-group">
-                <span class="article-author">${authorName}</span>
-                ${statusBadges}
-            </div>
+            ${authorInfoHtml}
         </div>
         <div class="header-right-controls"><span class="article-date">Publicado ${relativeTime}</span>${headerControls}</div>
       </div>
@@ -306,7 +312,8 @@ export const renderArticleCard = (
     </article>`;
 };
 
-// Modificado para pasar `userFavorites` a `renderArticleCard`
+// ... (El resto del archivo 'loadArticles', 'setupCancelButton', 'initializeSymbolsPanel' no cambia) ...
+
 export const loadArticles = (articles, currentUser, userFavorites = []) => {
   if (questionsList) {
     if (!Array.isArray(articles) || articles.length === 0) {
