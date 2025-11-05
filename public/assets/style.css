@@ -299,6 +299,9 @@ body {
   border-bottom: 1px solid rgba(0, 0, 0, 0.1);
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
   color: #e0e0e0;
+  position: sticky;
+  top: 0;
+  z-index: 1;
 }
 
 .header-logo {
@@ -316,7 +319,7 @@ body {
 .search-bar {
   display: flex;
   align-items: center;
-  background-color: #e9ecef; /* Un gris más neutro y profesional */
+  background-color: #b6b6b6; /* Un gris más neutro y profesional */
   border-radius: 25px;
   padding: 0.5rem 1rem;
   max-width: 500px;
@@ -334,13 +337,12 @@ body {
 .search-bar input {
   border: none;
   background: transparent;
-  color: #343a40; /* Texto oscuro para mejor legibilidad */
+  color: #000000; /* Texto oscuro para mejor legibilidad */
   font-size: 1rem;
   padding: 0.3rem;
   flex-grow: 1;
   outline: none; /* Quitamos el outline por defecto */
 }
-
 .search-bar input::placeholder {
   color: #6c757d; /* Placeholder un poco más oscuro */
 }
@@ -406,6 +408,18 @@ body {
   padding: 1.5rem;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
   color: #333; /* Texto oscuro para contraste */
+  height: 80vh;
+  overflow-y: scroll;
+  position: sticky;
+  top: 110px;
+
+  /* Estilos de scrollbar para Firefox */
+  scrollbar-width: thin; /* Barra delgada */
+
+  scrollbar-color: #cccccc transparent; /* "Thumb" blanco, "Track" transparente */
+}
+.sidebar::-webkit-scrollbar {
+  display: none;
 }
 
 .sidebar h2 {
@@ -1837,7 +1851,7 @@ body {
 }
 .author-link {
   text-decoration: none;
-  color: inherit; /* Hereda el color del texto (evita el azul de enlace) */
+  color: inherit;
   display: flex;
   align-items: center;
   gap: 10px;
