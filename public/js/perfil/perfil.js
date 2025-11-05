@@ -74,6 +74,23 @@ const renderFavoriteCommentCard = (comment) => {
     comment.article.content.substring(0, 80) + "...";
   const relativeTime = formatRelativeTime(comment.createdAt);
 
+  // === INICIO DE LA MODIFICACIÓN (Añadir Galería de Imágenes) ===
+  let imagesHtml = "";
+  if (comment.imageUrls && comment.imageUrls.length > 0) {
+    const imageElements = comment.imageUrls
+      .map(
+        (url) => `
+      <a href="${url}" class="article-image-link">
+        <img src="${url}" alt="Imagen de la respuesta" class="article-image"/>
+      </a>`
+      )
+      .join("");
+
+    // Reutilizamos las clases CSS de la galería de artículos
+    imagesHtml = `<div class="article-images-gallery">${imageElements}</div>`;
+  }
+  // === FIN DE LA MODIFICACIÓN ===
+
   return `
     <div class="comment-favorite-card" data-id="${comment._id}">
       <div class="comment-header">
@@ -95,7 +112,7 @@ const renderFavoriteCommentCard = (comment) => {
       <div class="comment-content">
         <p>${comment.content}</p>
       </div>
-      <div class="comment-metadata">
+      ${imagesHtml} <div class="comment-metadata">
         <span>Respuesta a la pregunta: </span>
         <a href="/pregunta.html?id=${comment.article._id}" class="metadata-link" title="${comment.article.content}">
             ${articleContentSnippet}
@@ -110,6 +127,22 @@ const renderMyCommentCard = (comment) => {
   // Aquí no tenemos los datos del autor (nosotros mismos) ni del artículo populados
   const relativeTime = formatRelativeTime(comment.createdAt);
   const articleLink = `/pregunta.html?id=${comment.article}`;
+
+  // === INICIO DE LA MODIFICACIÓN (Añadir Galería de Imágenes) ===
+  let imagesHtml = "";
+  if (comment.imageUrls && comment.imageUrls.length > 0) {
+    const imageElements = comment.imageUrls
+      .map(
+        (url) => `
+      <a href="${url}" class="article-image-link">
+        <img src="${url}" alt="Imagen de la respuesta" class="article-image"/>
+      </a>`
+      )
+      .join("");
+    // Reutilizamos las clases CSS de la galería de artículos
+    imagesHtml = `<div class="article-images-gallery">${imageElements}</div>`;
+  }
+  // === FIN DE LA MODIFICACIÓN ===
 
   return `
     <div class="comment-favorite-card my-comment-card" data-id="${comment._id}">
@@ -131,7 +164,7 @@ const renderMyCommentCard = (comment) => {
       <div class="comment-content">
         <p>${comment.content}</p>
       </div>
-      <div class="comment-metadata">
+      ${imagesHtml} <div class="comment-metadata">
         <i class="fas fa-link"></i>
         <a href="${articleLink}" class="metadata-link">
             Ver pregunta original
@@ -402,6 +435,11 @@ const loadMyContent = async (
       const contentHtml = items.map(renderMyCommentCard).join("");
 
       contentListContainer.innerHTML = contentHtml;
+
+      // === INICIO DE LA MODIFICACIÓN ===
+      // Añadimos el lightbox también para las imágenes de "Mis Respuestas"
+      initializeLightbox("my-content-list");
+      // === FIN DE LA MODIFICACIÓN ===
     }
 
     if (items.length === 0) {
@@ -609,6 +647,11 @@ document.addEventListener("DOMContentLoaded", async () => {
           .map((comment) => renderFavoriteCommentCard(comment))
           .join("");
         favoritesListContainer.innerHTML = contentHtml;
+
+        // === INICIO DE LA MODIFICACIÓN ===
+        // Añadimos el lightbox también para las imágenes de "Respuestas Favoritas"
+        initializeLightbox("favorites-list");
+        // === FIN DE LA MODIFICACIÓN ===
       }
     } catch (error) {
       console.error(`Error al cargar ${filterType} favoritos:`, error);
@@ -729,6 +772,19 @@ document.addEventListener("DOMContentLoaded", async () => {
         modal.classList.add("visible");
       }
     }
+
+    // === INICIO DE LA MODIFICACIÓN ===
+    // Añadir listener para el lightbox en las imágenes de comentarios favoritos
+    if (link && currentFilterType === "comments") {
+      const modal = document.getElementById("image-preview-modal");
+      const previewImage = document.getElementById("preview-image-src");
+      if (modal && previewImage) {
+        event.preventDefault();
+        previewImage.src = link.href;
+        modal.classList.add("visible");
+      }
+    }
+    // === FIN DE LA MODIFICACIÓN ===
   });
 
   // TAREA: Listener para la funcionalidad completa de la tarjeta de artículo en MI CONTENIDO
@@ -855,9 +911,13 @@ document.addEventListener("DOMContentLoaded", async () => {
       return;
     }
 
-    // 7. Lógica para el lightbox (solo para artículos)
+    // 7. Lógica para el lightbox (para artículos y comentarios en "Mi Contenido")
     const link = event.target.closest(".article-image-link");
-    if (link && currentMyContentType === "my-articles") {
+    if (
+      link &&
+      (currentMyContentType === "my-articles" ||
+        currentMyContentType === "my-comments")
+    ) {
       const modal = document.getElementById("image-preview-modal");
       const previewImage = document.getElementById("preview-image-src");
       if (modal && previewImage) {
