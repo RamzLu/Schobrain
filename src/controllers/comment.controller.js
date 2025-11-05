@@ -2,9 +2,23 @@ import { ArticleModel } from "../models/article.model.js";
 import { CommentModel } from "../models/comment.model.js";
 
 export const createComment = async (req, res) => {
+  // === INICIO DE LA MODIFICACIÓN ===
   const { content, author, article } = req.body;
+
+  let imageUrls = [];
+  if (req.files && req.files.length > 0) {
+    imageUrls = req.files.map((file) => `/uploads/${file.filename}`);
+  }
+
   try {
-    const comment = await CommentModel.create({ content, author, article });
+    const comment = await CommentModel.create({
+      content,
+      author,
+      article,
+      imageUrls, // Añadimos las URLs
+    });
+    // === FIN DE LA MODIFICACIÓN ===
+
     return res.status(201).json({
       msg: "Comentado publicado correctamente",
       data: comment,

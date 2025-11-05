@@ -55,6 +55,7 @@
       }
       .new-comment-form {
         display: flex;
+        flex-direction: column; /* <-- Cambiado a columna */
         gap: 1rem;
         align-items: flex-start;
         margin-bottom: 2.5rem;
@@ -62,6 +63,7 @@
       .textarea-wrapper {
         flex-grow: 1;
         position: relative;
+        width: 100%; /* <-- Añadido */
       }
       .new-comment-form textarea {
         width: 100%;
@@ -79,7 +81,35 @@
         border-color: #8ab4f8;
         box-shadow: 0 0 0 3px rgba(37, 117, 252, 0.25);
       }
-      .new-comment-form button {
+
+      /* === INICIO DE LA MODIFICACIÓN === */
+      /* Contenedor para los botones */
+      .comment-form-actions {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+      }
+      /* Ajustes para el grupo de input de archivo */
+      .comment-form-actions .input-group {
+        flex-grow: 1;
+        margin-bottom: 0;
+      }
+      .comment-form-actions .file-input-group {
+        max-width: 300px; /* Límite de ancho para el input */
+        padding: 0.3rem 0.5rem; /* Menos padding */
+      }
+      .comment-form-actions .file-input-label {
+        padding: 0.5rem 1rem; /* Botón de input más pequeño */
+        font-size: 0.9rem;
+      }
+      .comment-form-actions .file-name-display {
+        font-size: 0.9rem;
+      }
+      /* === FIN DE LA MODIFICACIÓN === */
+
+      .new-comment-form button[type="submit"] {
+        /* <-- Específico para el botón de submit */
         background-color: #6a11cb;
         color: white;
         border: none;
@@ -90,7 +120,7 @@
         transition: background-color 0.2s;
         margin-top: 1px;
       }
-      .new-comment-form button:hover {
+      .new-comment-form button[type="submit"]:hover {
         background-color: #560bad;
       }
       .comment-card {
@@ -176,6 +206,7 @@
         <div id="main-question-container" class="main-question-container"></div>
         <div id="comments-section" class="comments-section">
           <h2>Respuestas</h2>
+
           <form id="comment-form" class="new-comment-form" novalidate>
             <div class="textarea-wrapper">
               <textarea
@@ -197,7 +228,32 @@
               </div>
               <div id="comment-symbols-panel" class="symbols-panel"></div>
             </div>
-            <button type="submit">Responder</button>
+
+            <div class="comment-form-actions">
+              <div class="input-group file-input-group">
+                <label for="comment-image-files" class="file-input-label"
+                  ><i class="fas fa-paperclip"></i> Adjuntar</label
+                >
+                <span id="comment-file-name-display" class="file-name-display"
+                  >Sin archivos</span
+                >
+                <input
+                  type="file"
+                  id="comment-image-files"
+                  name="imageFiles"
+                  accept="image/jpeg, image/png, image/gif"
+                  class="hidden-file-input"
+                  multiple
+                />
+              </div>
+              <button type="submit">Responder</button>
+            </div>
+            <p
+              class="file-size-info"
+              style="width: 100%; text-align: left; margin-left: 5px"
+            >
+              Máx 5 imágenes (5MB c/u)
+            </p>
           </form>
           <div id="comments-list"></div>
         </div>

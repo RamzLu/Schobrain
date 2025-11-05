@@ -19,16 +19,25 @@ import {
 import { validator } from "../middlewares/validator.js";
 import { CommentModel } from "../models/comment.model.js";
 
+// === INICIO DE LA MODIFICACIÓN ===
+import { uploadImages } from "../middlewares/uploadMiddleware.js";
+// === FIN DE LA MODIFICACIÓN ===
+
 export const routeComment = Router();
 
 routeComment.get("/comments/my", validateToken, getUserLogComments);
+
+// === INICIO DE LA MODIFICACIÓN ===
 routeComment.post(
   "/comments",
   validateToken,
+  uploadImages, // <-- Añadimos el middleware de subida de imágenes
   createCommentValidation,
   validator,
   createComment
 );
+// === FIN DE LA MODIFICACIÓN ===
+
 routeComment.get("/comments", validateToken, getAllComments);
 
 // RUTA PARA VOTAR EN COMENTARIOS

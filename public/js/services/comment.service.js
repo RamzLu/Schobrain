@@ -3,14 +3,15 @@
 const API_URL = "/api/comments";
 
 // Endpoint para postear un comentario (Respuesta)
-export const postComment = async (commentData) => {
+export const postComment = async (formData) => {
+  // <-- Cambiado a formData
   try {
     const response = await fetch(API_URL, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(commentData),
+      // === INICIO DE LA MODIFICACIÓN ===
+      // Ya no se usa JSON.stringify, ni el header Content-Type
+      body: formData,
+      // === FIN DE LA MODIFICACIÓN ===
       credentials: "include", // <-- CORRECCIÓN CLAVE: Incluye la cookie con el token
     });
 

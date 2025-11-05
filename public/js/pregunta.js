@@ -42,7 +42,7 @@ const formatRelativeTime = (dateString) => {
   const hoursElapsed = Math.floor(minutesElapsed / 60);
   if (hoursElapsed < 24)
     return `hace ${hoursElapsed} hora${hoursElapsed > 1 ? "s" : ""}`;
-  const daysElapsed = Math.floor(minutesElapsed / 60);
+  const daysElapsed = Math.floor(hoursElapsed / 24);
   if (daysElapsed < 7)
     return `hace ${daysElapsed} día${daysElapsed > 1 ? "s" : ""}`;
   const weeksElapsed = Math.floor(daysElapsed / 7);
@@ -109,6 +109,23 @@ const renderComments = (comments, currentUser) => {
       const avatarUrl = comment.author.profile?.avatarUrl || defaultAvatarUrl;
       const avatarHtml = `<img src="${avatarUrl}" alt="Avatar" class="author-avatar comment-avatar" loading="lazy"/>`;
       // FIN FIX 2
+
+      // === INICIO DE LA MODIFICACIÓN (Añadir Galería de Imágenes) ===
+      let imagesHtml = "";
+      if (comment.imageUrls && comment.imageUrls.length > 0) {
+        const imageElements = comment.imageUrls
+          .map(
+            (url) => `
+          <a href="${url}" class="article-image-link">
+            <img src="${url}" alt="Imagen de la respuesta" class="article-image"/>
+          </a>`
+          )
+          .join("");
+
+        // Reutilizamos las clases CSS de la galería de artículos
+        imagesHtml = `<div class="article-images-gallery">${imageElements}</div>`;
+      }
+      // === FIN DE LA MODIFICACIÓN ===
 
       let statusBadges = "";
       if (comment.author.role === "admin") {
@@ -197,7 +214,7 @@ const renderComments = (comments, currentUser) => {
             <div class="comment-content">
                 <p>${comment.content}</p>
             </div>
-            <div class="comment-footer">
+            ${imagesHtml} <div class="comment-footer">
                 ${voteControlsHtml}
             </div>
         </div>`;
@@ -206,7 +223,7 @@ const renderComments = (comments, currentUser) => {
 };
 
 // **********************************************
-// LÓGICA DE EDICIÓN DE PREGUNTA (Adaptada de index.js)
+// LÓGICA DE EDICIÓN DE PREGUNTA (Sin cambios)
 // **********************************************
 
 const openEditModal = async (articleId) => {
@@ -414,6 +431,26 @@ document.addEventListener("DOMContentLoaded", async () => {
     return;
   }
 
+  // === INICIO DE LA MODIFICACIÓN (Listeners para input de archivo de comentario) ===
+  const commentFileInput = document.getElementById("comment-image-files");
+  const commentFileNameDisplay = document.getElementById(
+    "comment-file-name-display"
+  );
+
+  if (commentFileInput && commentFileNameDisplay) {
+    commentFileInput.addEventListener("change", (event) => {
+      const { files } = event.target;
+      if (!files || files.length === 0) {
+        commentFileNameDisplay.textContent = "Sin archivos";
+      } else if (files.length === 1) {
+        commentFileNameDisplay.textContent = files[0].name;
+      } else {
+        commentFileNameDisplay.textContent = `${files.length} archivos`;
+      }
+    });
+  }
+  // === FIN DE LA MODIFICACIÓN ===
+
   try {
     const article = await fetchArticleById(articleId);
     currentArticle = article;
@@ -421,6 +458,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     renderComments(article.comments, currentUser);
 
     initializeLightbox("main-question-container");
+    initializeLightbox("comments-list"); // <-- Añadido para el lightbox en comentarios
 
     // ✅ Inicializar listeners del modal de edición
     setupEditModalListeners();
@@ -435,21 +473,37 @@ document.addEventListener("DOMContentLoaded", async () => {
     const commentForm = document.getElementById("comment-form");
     commentForm.addEventListener("submit", async (e) => {
       e.preventDefault();
-      const content = e.target.content.value.trim();
+
+      // === INICIO DE LA MODIFICACIÓN (Envío con FormData) ===
+      const content = document.getElementById("comment-content").value.trim();
+      const files = commentFileInput.files;
+
       if (content.length < 5) {
         showErrorToast("La respuesta debe tener al menos 5 caracteres.");
         return;
       }
+
+      if (files.length > 5) {
+        showErrorToast("Puedes subir un máximo de 5 imágenes.");
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append("content", content);
+      formData.append("author", currentUser.id);
+      formData.append("article", articleId);
+
+      for (const file of files) {
+        formData.append("imageFiles", file);
+      }
+
       try {
-        await postComment({
-          content,
-          author: currentUser.id,
-          article: articleId,
-        });
+        await postComment(formData); // Enviamos el formData
         window.location.reload();
       } catch (error) {
         showErrorToast(`Error al publicar tu respuesta: ${error.message}`);
       }
+      // === FIN DE LA MODIFICACIÓN ===
     });
 
     const commentsList = document.getElementById("comments-list");

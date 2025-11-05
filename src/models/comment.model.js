@@ -38,6 +38,10 @@ const commentSchema = new Schema(
         message: "El articulo referenciado no existe.",
       },
     },
+    imageUrls: {
+      type: [String],
+      required: false,
+    },
     //CAMPOS PARA VOTACIÓN
     likes: {
       type: Number,
