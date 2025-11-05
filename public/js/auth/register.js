@@ -20,7 +20,9 @@ export const handleRegister = async (event) => {
     username: form.username.value,
     email: form.email.value,
     password: password,
-    role: form.role.value,
+    // === INICIO DE LA MODIFICACIÓN ===
+    // role: form.role.value, // <-- LÍNEA ELIMINADA
+    // === FIN DE LA MODIFICACIÓN ===
     profile: {
       firstName: form.firstName.value,
       lastName: form.lastName.value,

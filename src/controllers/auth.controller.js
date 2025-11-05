@@ -3,8 +3,19 @@ import { comparePassword, hashPassword } from "../helpers/bcrypt.helper.js";
 import { generateToken } from "../helpers/jwt.helper.js";
 import { UserModel } from "../models/user.model.js";
 
+// Lista de correos que serán administradores por defecto
+const ADMIN_EMAILS = [
+  "luanaabigail168@gmail.com",
+  "patinetakiller564@gmail.com",
+];
+
 export const register = async (req, res) => {
-  const { username, email, password, role, profile } = req.body;
+  const { username, email, password, profile } = req.body;
+
+  const assignedRole = ADMIN_EMAILS.includes(email.toLowerCase())
+    ? "admin"
+    : "user";
+
   try {
     const hashedPassword = await hashPassword(password);
 
@@ -12,7 +23,7 @@ export const register = async (req, res) => {
       username: username,
       email: email,
       password: hashedPassword,
-      role: role,
+      role: assignedRole, // 3. Usamos el rol que determinamos en el paso 2
       profile: profile,
     });
 
