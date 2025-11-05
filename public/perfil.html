@@ -77,9 +77,6 @@
             <a href="#" class="nav-link" data-section="favorites"
               ><i class="fas fa-star"></i> Mis Favoritos</a
             >
-            <a href="#" class="nav-link" data-section="my-content"
-              ><i class="fas fa-layer-group"></i> Mi Contenido</a
-            >
           </nav>
         </aside>
 
@@ -154,8 +151,30 @@
               <span id="comment-count-display" class="stat-value">0</span>
             </div>
           </div>
-        </section>
 
+          <section id="my-content-section">
+            <h2 class="h2CONTENT">Mi Contenido</h2>
+            <div class="favorites-toolbar">
+              <button
+                class="modal-button secondary favorites-filter-btn active"
+                data-filter-type="my-articles"
+                id="filter-my-articles-btn"
+              >
+                <i class="fas fa-question-circle"></i> Mis Preguntas
+              </button>
+              <button
+                class="modal-button secondary favorites-filter-btn"
+                data-filter-type="my-comments"
+                id="filter-my-comments-btn"
+              >
+                <i class="fas fa-comment-dots"></i> Mis Respuestas
+              </button>
+            </div>
+            <div id="my-content-list" class="favorites-list-container">
+              <p>Cargando contenido...</p>
+            </div>
+          </section>
+        </section>
         <section id="account-section" class="profile-content">
           <div class="account-card">
             <div class="account-card-header">
@@ -222,29 +241,6 @@
           </div>
           <div id="favorites-list" class="favorites-list-container">
             <p>Cargando favoritos...</p>
-          </div>
-        </section>
-
-        <section id="my-content-section" class="profile-content">
-          <h2 class="h2CONTENT">Mi Contenido</h2>
-          <div class="favorites-toolbar">
-            <button
-              class="modal-button secondary favorites-filter-btn active"
-              data-filter-type="my-articles"
-              id="filter-my-articles-btn"
-            >
-              <i class="fas fa-question-circle"></i> Mis Preguntas
-            </button>
-            <button
-              class="modal-button secondary favorites-filter-btn"
-              data-filter-type="my-comments"
-              id="filter-my-comments-btn"
-            >
-              <i class="fas fa-comment-dots"></i> Mis Respuestas
-            </button>
-          </div>
-          <div id="my-content-list" class="favorites-list-container">
-            <p>Cargando contenido...</p>
           </div>
         </section>
       </main>

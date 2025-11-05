@@ -381,8 +381,14 @@ const loadMyContent = async (
 
       // Renderizar artículos.
       const contentHtml = items
-        .map((article) =>
-          renderArticleCard(article, currentUser, userFavorites)
+        .map(
+          (article) =>
+            // === INICIO DE LA MODIFICACIÓN ===
+            // Pasamos un objeto de opciones para indicar que es la vista "Mi Contenido"
+            renderArticleCard(article, currentUser, userFavorites, {
+              isMyContent: true,
+            })
+          // === FIN DE LA MODIFICACIÓN ===
         )
         .join("");
 
@@ -626,15 +632,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
 
     // Lógica para cargar contenido basado en la sección
-    if (sectionId === "favorites") {
-      document
-        .getElementById("filter-articles-btn")
-        ?.classList.toggle("active", currentFilterType === "articles");
-      document
-        .getElementById("filter-comments-btn")
-        ?.classList.toggle("active", currentFilterType === "comments");
-      loadFavorites(currentFilterType);
-    } else if (sectionId === "my-content") {
+
+    // *** INICIO DE LA MODIFICACIÓN ***
+    // Si la sección es "profile", cargamos "Mi Contenido"
+    if (sectionId === "profile") {
       document
         .getElementById("filter-my-articles-btn")
         ?.classList.toggle("active", currentMyContentType === "my-articles");
@@ -642,7 +643,18 @@ document.addEventListener("DOMContentLoaded", async () => {
         .getElementById("filter-my-comments-btn")
         ?.classList.toggle("active", currentMyContentType === "my-comments");
       loadMyContent(currentMyContentType, currentUser);
+    } else if (sectionId === "favorites") {
+      // La lógica de favoritos permanece igual
+      document
+        .getElementById("filter-articles-btn")
+        ?.classList.toggle("active", currentFilterType === "articles");
+      document
+        .getElementById("filter-comments-btn")
+        ?.classList.toggle("active", currentFilterType === "comments");
+      loadFavorites(currentFilterType);
     }
+    // El "else if" para "my-content" se ha eliminado
+    // *** FIN DE LA MODIFICACIÓN ***
   };
 
   // --- Event Listeners ---
@@ -826,6 +838,8 @@ document.addEventListener("DOMContentLoaded", async () => {
           showSuccessToast("Pregunta eliminada correctamente.");
           // Recargar lista
           await loadMyContent("my-articles", currentUser);
+          // Actualizar contadores
+          await loadProfileStats();
         } catch (error) {
           showErrorToast(`Error al eliminar la pregunta: ${error.message}`);
         }

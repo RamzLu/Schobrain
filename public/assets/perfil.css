@@ -49,6 +49,12 @@ body {
 .profile-content {
   display: none; /* Oculto por defecto */
   flex-grow: 1;
+
+  /* === INICIO DE LA MODIFICACIÓN (SCROLLBAR) === */
+  max-height: 85vh; /* Altura máxima del 85% de la ventana */
+  overflow-y: auto; /* Scrollbar vertical si el contenido excede la altura */
+  padding-right: 1rem; /* Espacio para la scrollbar */
+  /* === FIN DE LA MODIFICACIÓN === */
 }
 
 .profile-content.active-section {
@@ -618,7 +624,7 @@ body {
 
 .favorites-list-container .article-card .article-actions a {
   /* Opcional: Cambiar el texto o estilo del enlace "Ver discusión" */
-  color: #555;
+  color: #4739ff;
 }
 
 .favorites-list-container .article-card .favorite-btn i {
@@ -816,6 +822,7 @@ body {
   justify-content: space-around;
   gap: 1rem;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+  margin-bottom: 2rem; /* Añadido para separar del contenido de "Mi Contenido" */
 }
 .stat-item {
   display: flex;

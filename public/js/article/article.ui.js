@@ -109,23 +109,88 @@ export const populateTagSelector = (tags) => {
   }
 };
 
-// Modificado para aceptar `userFavorites`
-export const renderArticleCard = (article, currentUser, userFavorites = []) => {
+// === INICIO DE LA MODIFICACIÓN ===
+// 1. Cambiamos la firma para aceptar un objeto 'options'
+export const renderArticleCard = (
+  article,
+  currentUser,
+  userFavorites = [],
+  options = {} // Objeto de opciones, por defecto vacío
+) => {
+  // === FIN DE LA MODIFICACIÓN ===
+
+  const author = article.author;
+  let authorId = null;
   let authorName = "Usuario Desconocido";
   let statusBadges = "";
-  const author = article.author;
-  const isAuthor = currentUser && currentUser.id === author?._id;
+  let avatarHtml = "";
+
+  // Lógica de autor (corregida en la respuesta anterior)
+  if (author && typeof author === "object") {
+    authorId = author._id;
+    authorName = author.username || "Usuario Desconocido";
+
+    const defaultAvatarName =
+      author.username || author.profile?.firstName || "NN";
+    const defaultAvatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(
+      defaultAvatarName
+    )}&background=random`;
+    const avatarUrl = author.profile?.avatarUrl || defaultAvatarUrl;
+    avatarHtml = `<img src="${avatarUrl}" alt="Avatar" class="author-avatar" loading="lazy"/>`;
+
+    if (author.role === "admin") {
+      statusBadges += `<span class="admin-badge">Administrador</span>`;
+    }
+  } else if (author && typeof author === "string") {
+    authorId = author;
+    authorName = currentUser.username || "Usuario";
+
+    const defaultAvatarName =
+      currentUser.username || currentUser.firstName || "NN";
+    const defaultAvatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(
+      defaultAvatarName
+    )}&background=random`;
+    const avatarUrl =
+      (currentUser.profile && currentUser.profile.avatarUrl) ||
+      currentUser.avatarUrl ||
+      defaultAvatarUrl;
+    avatarHtml = `<img src="${avatarUrl}" alt="Avatar" class="author-avatar" loading="lazy"/>`;
+  }
+
+  const isAuthor = currentUser && currentUser.id === authorId;
   const isAdmin = currentUser && currentUser.role === "admin";
   const canDelete = isAdmin || isAuthor;
 
-  // NUEVO: Verifica si el artículo está en favoritos
-  const isFavorite = userFavorites.includes(article._id);
-  const favoriteButtonText = isFavorite
-    ? "Quitar de favoritos"
-    : "Añadir a favoritos";
-  const favoriteButtonIcon = isFavorite ? "fas fa-star" : "far fa-star"; // Icono lleno vs vacío
+  if (isAuthor && !statusBadges.includes("admin-badge")) {
+    statusBadges += `<span class="author-badge">Tú</span>`;
+  }
 
-  let optionsMenu = `
+  // === INICIO DE LA MODIFICACIÓN ===
+  // 2. Lógica para mostrar/ocultar el menú de 3 puntos
+  let headerControls = ""; // Por defecto, no hay menú (para "Mi Contenido")
+  const isFavoriteCard = article.isFavoriteCard === true;
+
+  if (options.isMyContent) {
+    // VISTA: "Mi Contenido" -> No mostrar nada.
+    headerControls = "";
+  } else if (isFavoriteCard) {
+    // VISTA: "Mis Favoritos" -> Mostrar estrella fija para quitar
+    headerControls = `
+        <div class="article-options-menu">
+            <span class="favorite-remove-star" data-article-id="${article._id}" title="Quitar de favoritos">
+                <i class="fas fa-star"></i>
+            </span>
+        </div>
+    `;
+  } else {
+    // VISTA: Feed (index.html) -> Mostrar menú de 3 puntos
+    const isFavorite = userFavorites.includes(article._id);
+    const favoriteButtonText = isFavorite
+      ? "Quitar de favoritos"
+      : "Añadir a favoritos";
+    const favoriteButtonIcon = isFavorite ? "fas fa-star" : "far fa-star";
+
+    headerControls = `
       <div class="article-options-menu">
         <button class="options-toggle-btn"><i class="fas fa-ellipsis-v"></i></button>
         <div class="options-dropdown">
@@ -146,49 +211,8 @@ export const renderArticleCard = (article, currentUser, userFavorites = []) => {
           </button>
         </div>
       </div>`;
-
-  const isFavoriteCard = article.isFavoriteCard === true; // Atributo opcional
-  let headerControls;
-
-  if (isFavoriteCard) {
-    // FIX: Usamos un span simple con la estrella gris para que se vea como en la imagen
-    headerControls = `
-        <div class="article-options-menu">
-            <span class="favorite-remove-star" data-article-id="${article._id}" title="Quitar de favoritos">
-                <i class="fas fa-star"></i>
-            </span>
-        </div>
-    `;
-  } else {
-    // Si no es una tarjeta de favorito forzada (i.e., es el feed), usamos el menú de 3 puntos
-    headerControls = optionsMenu;
   }
-
-  let avatarHtml = "";
-  if (author && typeof author === "object") {
-    // FIX 1: Usar username en lugar de nombre y apellido
-    // **APLICACIÓN DEL FIX**: Si article.author existe, usa su username, sino el fallback general.
-    authorName = author.username || "Usuario Desconocido";
-
-    // FIX 2: Construir HTML del avatar
-    // Se usa el username para el avatar de UI Avatars si no hay avatarUrl
-    const defaultAvatarName =
-      author.username || author.profile?.firstName || "NN";
-    const defaultAvatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(
-      defaultAvatarName
-    )}&background=random`;
-    const avatarUrl = author.profile?.avatarUrl || defaultAvatarUrl;
-
-    avatarHtml = `
-      <img src="${avatarUrl}" alt="Avatar" class="author-avatar" loading="lazy"/>
-    `;
-    // FIN FIX 2
-
-    if (author.role === "admin")
-      statusBadges += `<span class="admin-badge">Administrador</span>`;
-    if (currentUser && currentUser.id === author._id)
-      statusBadges += `<span class="author-badge">Tú</span>`;
-  }
+  // === FIN DE LA MODIFICACIÓN ===
 
   const relativeTime = formatRelativeTime(article.createdAt);
   const tag = article.tags && article.tags.length > 0 ? article.tags[0] : null;
@@ -243,6 +267,21 @@ export const renderArticleCard = (article, currentUser, userFavorites = []) => {
     </div>
   `;
 
+  // === INICIO DE LA MODIFICACIÓN ===
+  // 3. Lógica para el texto del enlace
+  const articleActionsHtml = `
+    <div class="article-actions">
+        <a href="/pregunta.html?id=${article._id}">
+            ${
+              options.isMyContent
+                ? "Ver mi pregunta"
+                : "Ver discusión y responder"
+            }
+        </a>
+    </div>
+  `;
+  // === FIN DE LA MODIFICACIÓN ===
+
   return `
     <article class="article-card" data-id="${article._id}">
       <div class="article-card-header">
@@ -260,7 +299,7 @@ export const renderArticleCard = (article, currentUser, userFavorites = []) => {
       <div class="article-footer-actions">
         <div class="footer-top-row">
             <div class="article-tags-container">${tagHtml}</div>
-            <div class="article-actions"><a href="/pregunta.html?id=${article._id}">Ver discusión y responder</a></div>
+            ${articleActionsHtml}
         </div>
         ${voteControlsHtml}
       </div>
@@ -285,6 +324,8 @@ export const loadArticles = (articles, currentUser, userFavorites = []) => {
       `;
       return;
     }
+    // No se necesita cambiar nada aquí, porque el 'options' por defecto
+    // (vacío) funcionará bien para el feed (index.html).
     questionsList.innerHTML = articles
       .map((article) => renderArticleCard(article, currentUser, userFavorites))
       .join("");
