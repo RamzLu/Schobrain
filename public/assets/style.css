@@ -1871,3 +1871,42 @@ body {
 .author-link .comment-author {
   color: #2575fc;
 }
+/* ==========================================================================
+   (puedes añadir esto al final de tu archivo)
+   20. ESTILOS PARA VER/OCULTAR CONTRASEÑA
+   ========================================================================== */
+
+/* 1. Hacemos que el .input-group sea relativo para posicionar el ícono */
+.input-group {
+  position: relative;
+}
+
+/* 2. Estilo y posición del ícono */
+.password-toggle-icon {
+  position: absolute;
+  right: 1.2rem; /* Alinear con el padding derecho del input */
+
+  /* Calculamos el centro vertical del input:
+    El input tiene 0.8rem de padding vertical.
+    Lo posicionamos 0.8rem desde abajo y ajustamos 
+  */
+  bottom: 0.9rem; /* Ajuste manual para centrarlo verticalmente DENTRO del input */
+
+  color: #c0c0d0;
+  cursor: pointer;
+  transition: color 0.2s ease;
+  z-index: 2; /* Asegura que esté sobre el input */
+}
+
+.password-toggle-icon:hover {
+  color: #ffffff;
+}
+
+/* 3. Añadir padding-right al input de contraseña para que el texto no se solape con el ícono */
+/* Usamos !important para asegurarnos de que esta regla gane 
+  al selector genérico `.input-group input`
+*/
+.input-group input[name="password"],
+.input-group input[name="confirmPassword"] {
+  padding-right: 3rem !important;
+}
