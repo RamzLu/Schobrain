@@ -2147,3 +2147,200 @@ body {
   color: #aaa;
   background-color: #fdfdfd;
 }
+/* ==========================================================================
+   21. ESTILOS PARA EL NUEVO FORMULARIO DE COMENTARIOS (chat-input)
+   ========================================================================== */
+
+/* Eliminamos los estilos antiguos del formulario de comentarios */
+.new-comment-form {
+  /* Vaciado de estilos antiguos */
+}
+.new-comment-form textarea {
+  /* Vaciado de estilos antiguos */
+}
+.new-comment-form button[type="submit"] {
+  /* Vaciado de estilos antiguos */
+}
+.comment-form-actions {
+  /* Vaciado de estilos antiguos */
+}
+
+/* --- Nuevos Estilos --- */
+
+/* Contenedor principal del formulario */
+form.new-comment-form {
+  position: relative; /* Para el panel de símbolos */
+  border: 2px solid #a5b4fc; /* Borde azul-indigo claro */
+  border-radius: 1rem; /* 16px */
+  padding: 1rem;
+  background-color: #ffffff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  margin-bottom: 2.5rem;
+}
+
+form.new-comment-form:focus-within {
+  border-color: #6366f1; /* Borde índigo más oscuro al enfocar */
+  box-shadow: 0 6px 16px rgba(99, 102, 241, 0.1);
+}
+
+/* Contenido del formulario (previsualizaciones + textarea) */
+.comment-form-content {
+  overflow: hidden; /* Contiene los elementos internos */
+}
+
+/* Contenedor de previsualización de archivos */
+.comment-file-previews {
+  display: none; /* Oculto por defecto */
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid #e0e6f7;
+}
+
+.file-preview-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: #eef2ff; /* Fondo azul-indigo muy claro */
+  border: 1px solid #c7d2fe;
+  border-radius: 6px;
+  padding: 0.25rem 0.6rem;
+  font-size: 0.85rem;
+  color: #4338ca; /* Texto índigo */
+}
+
+.file-preview-name {
+  max-width: 150px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.file-preview-remove {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #818cf8;
+  padding: 0;
+  line-height: 1;
+  transition: color 0.2s;
+}
+.file-preview-remove:hover {
+  color: #4f46e5;
+}
+.file-preview-remove i {
+  font-size: 0.9rem;
+}
+
+/* Textarea auto-ajustable */
+.comment-textarea {
+  width: 100%;
+  background-color: transparent;
+  color: #1e1b4b; /* Color de texto azul oscuro */
+  resize: none;
+  border: none;
+  outline: none;
+  font-family: "Outfit", sans-serif;
+  font-size: 1rem;
+  line-height: 1.6;
+  min-height: 24px;
+  max-height: 128px; /* 32 * 4 */
+  padding: 0.25rem 0;
+  transition: all 0.2s;
+}
+
+.comment-textarea::placeholder {
+  color: #818cf8; /* Placeholder azul-indigo claro */
+}
+
+/* Footer con botones */
+.comment-actions-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 0.75rem;
+}
+
+.comment-tool-buttons {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.comment-tool-btn {
+  background-color: transparent;
+  border: none;
+  height: 32px;
+  width: 32px;
+  padding: 0;
+  color: #6366f1;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: background-color 0.2s, color 0.2s, transform 0.2s;
+}
+
+.comment-tool-btn:hover {
+  background-color: #eef2ff;
+  color: #4f46e5;
+  transform: scale(1.1);
+}
+
+.comment-tool-btn i {
+  font-size: 1.1rem; /* Ajusta el tamaño del ícono */
+}
+
+/* Botón de envío */
+.comment-submit-btn {
+  background-color: #4f46e5; /* Color índigo */
+  color: white;
+  height: 32px;
+  width: 32px;
+  padding: 0;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s, transform 0.2s, opacity 0.2s;
+}
+
+.comment-submit-btn:hover {
+  background-color: #4338ca;
+  transform: scale(1.1);
+}
+
+.comment-submit-btn:disabled {
+  background-color: #c7d2fe;
+  color: #a5b4fc;
+  transform: scale(1);
+  cursor: not-allowed;
+}
+
+.comment-submit-btn i {
+  font-size: 1.1rem;
+}
+
+/* Panel de Símbolos (reutilizado) - Ajuste de posición */
+/* El panel de símbolos existente se posiciona de forma absoluta */
+/* Asegúrate de que .input-group (padre del panel) NO sea 'position: relative' */
+/* ...o ajusta esto según sea necesario */
+#comment-symbols-panel {
+  /* Ajusta el z-index para que aparezca sobre el formulario */
+  z-index: 10;
+  /* Posiciónalo relativo al formulario */
+  position: absolute;
+  bottom: calc(
+    100% + 5px
+  ); /* 5px encima del formulario (ajusta 'bottom' si los botones están arriba) */
+  left: 0.5rem;
+  /* (El resto de tus estilos para .symbols-panel.visible se aplicarán) */
+
+  /* Corrección: El botón de símbolos está ahora en el footer.
+     Vamos a posicionar el panel *encima* del footer.
+  */
+  bottom: 65px; /* Ajuste manual para ponerlo sobre el footer del formulario */
+  left: 1rem;
+  width: auto; /* Deja que el contenido defina el ancho */
+  max-width: 400px;
+  height: fit-content;
+}

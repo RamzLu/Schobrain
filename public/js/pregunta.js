@@ -222,9 +222,6 @@ const renderComments = (comments, currentUser) => {
     .join("");
 };
 
-// ... (El resto del archivo 'openEditModal', 'handleEditFormSubmit', 'setupEditModalListeners' no cambia) ...
-// (Los he omitido aquí para ser breve, pero deben estar en tu archivo)
-
 // **********************************************
 // LÓGICA DE EDICIÓN DE PREGUNTA (Sin cambios)
 // **********************************************
@@ -401,6 +398,105 @@ const setupEditModalListeners = () => {
 };
 
 // **********************************************
+// === INICIO DE MODIFICACIONES: Lógica del Nuevo Formulario de Comentarios ===
+// **********************************************
+let commentFilesStore = []; // Almacén para los archivos seleccionados
+
+// Elementos del DOM para el nuevo formulario
+const commentForm = document.getElementById("comment-form");
+const commentTextArea = document.getElementById("comment-content");
+const commentSubmitBtn = document.getElementById("comment-submit-btn");
+const commentFileUploadBtn = document.getElementById("comment-file-upload-btn");
+const commentFileInput = document.getElementById("comment-image-files-input");
+const commentFilePreviews = document.getElementById("comment-file-previews");
+
+/**
+ * Actualiza el estado (activado/desactivado) del botón de envío.
+ */
+const updateSubmitButtonState = () => {
+  if (!commentTextArea || !commentSubmitBtn) return;
+  const text = commentTextArea.value.trim();
+  const hasFiles = commentFilesStore.length > 0;
+
+  if (text.length > 0 || hasFiles) {
+    commentSubmitBtn.disabled = false;
+  } else {
+    commentSubmitBtn.disabled = true;
+  }
+};
+
+/**
+ * Maneja el input en el textarea para auto-ajustar la altura y actualizar el botón.
+ */
+const handleCommentTextInput = (e) => {
+  const target = e.target;
+  target.style.height = "auto";
+  target.style.height = `${target.scrollHeight}px`;
+  updateSubmitButtonState();
+};
+
+/**
+ * Renderiza las previsualizaciones de los archivos en el `commentFilesStore`.
+ */
+const renderCommentFilePreviews = () => {
+  if (!commentFilePreviews) return;
+  commentFilePreviews.innerHTML = ""; // Limpiar previsualizaciones
+
+  if (commentFilesStore.length === 0) {
+    commentFilePreviews.style.display = "none";
+    return;
+  }
+
+  commentFilePreviews.style.display = "flex";
+  commentFilesStore.forEach((file, index) => {
+    const filePreview = document.createElement("div");
+    filePreview.className = "file-preview-item";
+    filePreview.innerHTML = `
+      <span class="file-preview-name">${file.name}</span>
+      <button type="button" class="file-preview-remove" data-index="${index}" title="Quitar archivo">
+        <i class="fas fa-times"></i>
+      </button>
+    `;
+    commentFilePreviews.appendChild(filePreview);
+  });
+  updateSubmitButtonState();
+};
+
+/**
+ * Maneja la adición de archivos desde el input.
+ */
+const handleFileChange = (e) => {
+  const files = Array.from(e.target.files);
+  if (!files) return;
+
+  // Lógica para añadir (podrías añadir validación de duplicados o límite)
+  commentFilesStore = [...commentFilesStore, ...files];
+
+  // Límite de 5 archivos (como en tu lógica original de submit)
+  if (commentFilesStore.length > 5) {
+    showErrorToast("Puedes subir un máximo de 5 imágenes.");
+    commentFilesStore = commentFilesStore.slice(0, 5); // Truncar al límite
+  }
+
+  renderCommentFilePreviews();
+  e.target.value = null; // Resetea el input para permitir volver a seleccionar
+};
+
+/**
+ * Maneja la eliminación de un archivo desde la previsualización.
+ */
+const handleFileRemove = (e) => {
+  const removeBtn = e.target.closest(".file-preview-remove");
+  if (removeBtn) {
+    const indexToRemove = parseInt(removeBtn.dataset.index, 10);
+    commentFilesStore.splice(indexToRemove, 1);
+    renderCommentFilePreviews();
+  }
+};
+
+// =====================================================================
+// === FIN DE MODIFICACIONES: Lógica del Nuevo Formulario de Comentarios ===
+// =====================================================================
 
 document.addEventListener("DOMContentLoaded", async () => {
   let currentUser;
@@ -428,23 +524,22 @@ document.addEventListener("DOMContentLoaded", async () => {
     return;
   }
 
-  const commentFileInput = document.getElementById("comment-image-files");
-  const commentFileNameDisplay = document.getElementById(
-    "comment-file-name-display"
-  );
-
-  if (commentFileInput && commentFileNameDisplay) {
-    commentFileInput.addEventListener("change", (event) => {
-      const { files } = event.target;
-      if (!files || files.length === 0) {
-        commentFileNameDisplay.textContent = "Sin archivos";
-      } else if (files.length === 1) {
-        commentFileNameDisplay.textContent = files[0].name;
-      } else {
-        commentFileNameDisplay.textContent = `${files.length} archivos`;
-      }
-    });
+  // --- INICIO MODIFICACIÓN: Conectar listeners del nuevo formulario ---
+  if (commentTextArea) {
+    commentTextArea.addEventListener("input", handleCommentTextInput);
   }
+  if (commentFileUploadBtn) {
+    commentFileUploadBtn.addEventListener("click", () =>
+      commentFileInput?.click()
+    );
+  }
+  if (commentFileInput) {
+    commentFileInput.addEventListener("change", handleFileChange);
+  }
+  if (commentFilePreviews) {
+    commentFilePreviews.addEventListener("click", handleFileRemove);
+  }
+  // --- FIN MODIFICACIÓN ---
 
   try {
     const article = await fetchArticleById(articleId);
@@ -457,22 +552,28 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     setupEditModalListeners();
 
+    // Esta función reutiliza tu lógica de símbolos.
+    // Los IDs "toggle-comment-symbols-btn" y "comment-symbols-panel"
+    // se mantuvieron en el HTML, por lo que esto funcionará.
     initializeSymbolsPanel({
       textareaId: "comment-content",
       toggleBtnId: "toggle-comment-symbols-btn",
       panelId: "comment-symbols-panel",
-      includeFunctions: false,
+      includeFunctions: false, // Reutilizando tu config existente
     });
 
-    const commentForm = document.getElementById("comment-form");
+    // --- INICIO MODIFICACIÓN: Actualizar el listener del submit ---
     commentForm.addEventListener("submit", async (e) => {
       e.preventDefault();
 
-      const content = document.getElementById("comment-content").value.trim();
-      const files = commentFileInput.files;
+      const content = commentTextArea.value.trim();
+      const files = commentFilesStore; // Usar el almacén de archivos
 
-      if (content.length < 5) {
-        showErrorToast("La respuesta debe tener al menos 5 caracteres.");
+      // La validación del botón de envío ya previene esto, pero es una buena doble verificación
+      if (content.length < 5 && files.length === 0) {
+        showErrorToast(
+          "La respuesta debe tener al menos 5 caracteres o un archivo adjunto."
+        );
         return;
       }
 
@@ -490,13 +591,20 @@ document.addEventListener("DOMContentLoaded", async () => {
         formData.append("imageFiles", file);
       }
 
+      // Desactivar botón durante el envío
+      commentSubmitBtn.disabled = true;
+
       try {
         await postComment(formData);
+        // No necesitamos recargar, podemos limpiar y recargar comentarios
+        // (Aunque un reload es más simple por ahora)
         window.location.reload();
       } catch (error) {
         showErrorToast(`Error al publicar tu respuesta: ${error.message}`);
+        commentSubmitBtn.disabled = false; // Reactivar en caso de error
       }
     });
+    // --- FIN MODIFICACIÓN ---
 
     const commentsList = document.getElementById("comments-list");
     const deleteConfirmModal = document.getElementById("delete-confirm-modal");
