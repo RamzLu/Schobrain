@@ -1,0 +1,191 @@
+/*
+ * ==========================================================================
+ * NUEVO ARCHIVO: public/assets/fluid-dropdown.css
+ * ==========================================================================
+ */
+
+/* Oculta el <select> original que vamos a reemplazar */
+.fluid-select-target {
+  display: none !important;
+}
+
+/* * Contenedor principal
+ * Usamos 'position: relative' para anclar el panel de opciones.
+ */
+.fluid-dropdown-wrapper {
+  position: relative;
+  width: 100%;
+  font-family: "Outfit", sans-serif;
+}
+
+/* * El botón que se ve y con el que se interactúa.
+ * Reemplaza al <select> visualmente.
+ */
+.fluid-dropdown-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  height: 51px; /* Coincide con la altura de .custom-select en tu style.css */
+  padding: 0.8rem 1.2rem;
+  font-size: 1em;
+  color: #333;
+  background-color: #f8faff;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.fluid-dropdown-trigger:hover {
+  border-color: #c0c0d0;
+}
+
+.fluid-dropdown-trigger:focus,
+.fluid-dropdown-wrapper.open .fluid-dropdown-trigger {
+  outline: none;
+  border-color: #6a11cb;
+  box-shadow: 0 0 0 3px rgba(106, 17, 203, 0.2);
+}
+
+/* Contenedor del ícono y el texto en el botón */
+.fluid-dropdown-trigger-content {
+  display: flex;
+  align-items: center;
+  overflow: hidden; /* Evita que el texto largo se salga */
+}
+
+.fluid-dropdown-label {
+  margin-left: 0.75rem; /* Espacio entre ícono y texto */
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+/* Chevron (flecha hacia abajo) */
+.fluid-dropdown-chevron {
+  flex-shrink: 0;
+  margin-left: 0.5rem;
+  transition: transform 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+
+.fluid-dropdown-wrapper.open .fluid-dropdown-chevron {
+  transform: rotate(180deg);
+}
+
+/* * Panel de opciones que se despliega.
+ * Se anima con opacity y transform.
+ */
+.fluid-dropdown-panel {
+  position: absolute;
+  top: calc(100% + 8px); /* 8px debajo del botón */
+  left: 0;
+  right: 0;
+  background-color: #ffffff;
+  border-radius: 12px;
+  border: 1px solid #e0e0e0;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  z-index: 100;
+  padding: 0.5rem;
+  overflow: hidden;
+
+  /* Animación de entrada/salida */
+  opacity: 0;
+  transform: scaleY(0.95) translateY(-10px);
+  transform-origin: top;
+  pointer-events: none;
+  transition: opacity 0.2s ease, transform 0.2s cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+
+.fluid-dropdown-wrapper.open .fluid-dropdown-panel {
+  opacity: 1;
+  transform: scaleY(1) translateY(0);
+  pointer-events: auto;
+}
+
+/* * Lista de opciones dentro del panel.
+ * 'position: relative' para anclar el resaltado.
+ */
+.fluid-dropdown-list {
+  position: relative;
+  max-height: 250px; /* Altura máxima antes de scroll */
+  overflow-y: auto;
+  padding: 0.25rem;
+}
+
+/* * El resaltado "fluido" (la parte más importante de la animación)
+ */
+.fluid-dropdown-highlight {
+  position: absolute;
+  top: 0; /* Se posicionará con JS */
+  left: 0.25rem;
+  right: 0.25rem;
+  background-color: #f3f4f6; /* Gris claro de fondo */
+  border-radius: 6px;
+  z-index: 1;
+  opacity: 0; /* Oculto hasta que se mueva por primera vez */
+
+  /* La animación clave */
+  transition: transform 0.25s cubic-bezier(0.25, 0.1, 0.25, 1),
+    opacity 0.2s ease;
+}
+
+/* * Cada opción individual (son <button>)
+ */
+.fluid-dropdown-item {
+  position: relative;
+  z-index: 2; /* Debe estar SOBRE el resaltado */
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 0.75rem 1rem;
+  font-size: 0.95em;
+  color: #333;
+  background-color: transparent;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  text-align: left;
+  transition: color 0.15s ease;
+}
+
+/* Separador (el <hr> que ponemos después de "Seleccionar") */
+.fluid-dropdown-separator {
+  border: none;
+  border-top: 1px solid #e9ecef;
+  margin: 0.5rem 0.75rem;
+}
+
+/* * Contenedor del ícono (para animar el 'scale' y 'color')
+ */
+.fluid-dropdown-icon-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px; /* Ancho fijo para alineación */
+  margin-right: 0.75rem;
+  transition: transform 0.2s ease, color 0.2s ease;
+  color: #6b7280; /* Color de ícono por defecto */
+}
+
+/* * Efectos de Hover sobre el item
+ * 1. El texto del item se vuelve más oscuro
+ * 2. El ícono del item escala y toma su color específico
+ */
+.fluid-dropdown-item:hover {
+  color: #111;
+}
+
+.fluid-dropdown-item:hover .fluid-dropdown-icon-wrapper {
+  transform: scale(1.2);
+  /* El color se aplica desde JS usando una variable CSS */
+  color: var(--icon-color, #6b7280);
+}
+
+/* * Estilos para el ícono y texto del item SELECCIONADO
+ * (cuando se muestra en el botón principal)
+ */
+.fluid-dropdown-trigger .fluid-dropdown-icon-wrapper {
+  color: var(--icon-color, #6b7280);
+  transition: color 0.2s ease;
+}

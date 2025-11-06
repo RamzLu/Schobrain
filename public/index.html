@@ -16,6 +16,9 @@
     />
     <link rel="icon" type="image/png" href="assets/img/logoSchobrain.png" />
     <link rel="stylesheet" href="assets/style.css" />
+
+    <link rel="stylesheet" href="assets/fluid-dropdown.css" />
+
     <link
       rel="stylesheet"
       type="text/css"
@@ -281,7 +284,13 @@
 
           <div class="input-group">
             <label for="tag-select">Tema</label>
-            <select id="tag-select" name="tags" class="custom-select" required>
+
+            <select
+              id="tag-select"
+              name="tags"
+              class="custom-select fluid-select-target"
+              required
+            >
               <option value="">Selecciona una asignatura</option>
             </select>
           </div>
@@ -360,10 +369,11 @@
 
           <div class="input-group">
             <label for="edit-tag-select">Tema</label>
+
             <select
               id="edit-tag-select"
               name="tags"
-              class="custom-select"
+              class="custom-select fluid-select-target"
               required
             ></select>
           </div>
@@ -453,5 +463,7 @@
     <script type="module" src="./js/article/article.ui.js"></script>
     <script type="module" src="./js/article/article.handler.js"></script>
     <script type="module" src="./js/services/tag.service.js"></script>
+
+    <script type="module" src="./js/utils/fluid-dropdown.js"></script>
   </body>
 </html>
