@@ -40,15 +40,50 @@
           />
         </div>
         <div class="header-center">
-          <div class="search-bar">
-            <input
-              type="text"
-              id="text-searchBar"
-              placeholder="busca preguntas específicas"
-            />
-            <button type="button" class="search-button">
-              <i class="fas fa-search"></i>
-            </button>
+          <div class="action-search-bar-wrapper" id="action-search-bar-wrapper">
+            <div class="action-search-input-container">
+              <input
+                type="text"
+                id="action-search-input"
+                placeholder="Buscar preguntas escolares..."
+                autocomplete="off"
+              />
+              <div
+                class="action-search-icon-container"
+                id="action-search-icon-container"
+              >
+                <i class="fas fa-search" id="action-search-icon"></i>
+                <i
+                  class="fas fa-arrow-right"
+                  id="action-send-icon"
+                  style="display: none"
+                ></i>
+              </div>
+            </div>
+
+            <div class="action-search-panel" id="action-search-panel">
+              <div class="search-history-section" id="search-history-section">
+                <div class="search-history-header">
+                  <span class="search-history-title">
+                    <i class="fas fa-history"></i> Búsquedas Recientes
+                  </span>
+                  <button
+                    class="search-history-clear-btn"
+                    id="search-history-clear-btn"
+                  >
+                    <i class="fas fa-trash-alt"></i> Limpiar
+                  </button>
+                </div>
+                <div class="search-history-list" id="search-history-list"></div>
+              </div>
+
+              <ul class="search-results-list" id="search-results-list"></ul>
+
+              <div class="action-search-footer">
+                <span>Escribe para buscar preguntas</span>
+                <span>ESC para cancelar</span>
+              </div>
+            </div>
           </div>
         </div>
         <div class="header-right">

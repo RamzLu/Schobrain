@@ -27,9 +27,18 @@ import { showSuccessToast, showErrorToast } from "./utils/notifications.js";
 import { fetchAllTags } from "./services/tag.service.js";
 // Ensure this service exists and exports getProfile correctly
 import { getProfile } from "./services/profile.service.js";
+// === INICIO DE LA MODIFICACIÓN (Importar debounce) ===
+import { debounce } from "./utils/debounce.js";
+// === FIN DE LA MODIFICACIÓN ===
 
 // Guarda la lista actual de IDs favoritos del usuario
 let currentUserFavorites = [];
+// === INICIO DE LA MODIFICACIÓN (Variables para la nueva búsqueda) ===
+let allQuestionsCache = []; // Almacena todas las preguntas para filtrar localmente
+let searchHistory = [];
+let isSearchFocused = false;
+let currentAuthData = null; // Almacenará los datos de auth para usarlos en la búsqueda
+// === FIN DE LA MODIFICACIÓN ===
 
 const renderAdminMenuOption = () => {
   const userMenu = document.getElementById("user-menu");
@@ -56,6 +65,12 @@ const initializeArticleFeed = async (currentUser) => {
     // Asegúrate de que initializeFeed está definido en article.handler.js y exportado
     // Si initializeFeed está en este archivo, simplemente llámalo
     await initializeFeed(currentUser, currentUserFavorites);
+
+    // === INICIO DE LA MODIFICACIÓN (Cachear artículos) ===
+    // Asumimos que initializeFeed carga los artículos iniciales, pero
+    // para estar seguros, los cargamos aquí para el caché de búsqueda.
+    allQuestionsCache = await fetchAllArticles();
+    // === FIN DE LA MODIFICACIÓN ===
   } catch (error) {
     console.error("Error al inicializar el feed con favoritos:", error);
     showErrorToast(
@@ -65,6 +80,280 @@ const initializeArticleFeed = async (currentUser) => {
     await initializeFeed(currentUser); // Carga sin favoritos si falla
   }
 };
+
+// =================================================================
+// === INICIO DE LA MODIFICACIÓN (Lógica de la Nueva Barra de Búsqueda) ===
+// =================================================================
+
+/**
+ * Carga el historial desde localStorage
+ */
+const loadSearchHistory = () => {
+  const saved = localStorage.getItem("searchHistory");
+  if (saved) {
+    searchHistory = JSON.parse(saved);
+  }
+};
+
+/**
+ * Guarda el historial en localStorage
+ */
+const saveSearchHistory = () => {
+  localStorage.setItem("searchHistory", JSON.stringify(searchHistory));
+};
+
+/**
+ * Muestra los items del historial en el panel
+ */
+const renderHistory = () => {
+  const historySection = document.getElementById("search-history-section");
+  const historyList = document.getElementById("search-history-list");
+  if (!historySection || !historyList) return;
+
+  if (searchHistory.length > 0) {
+    historySection.style.display = "block";
+    historyList.innerHTML = searchHistory
+      .map(
+        (item) =>
+          `<button class="history-item-btn" data-query="${item}">${item}</button>`
+      )
+      .join("");
+  } else {
+    historySection.style.display = "none";
+  }
+};
+
+/**
+ * Limpia el historial
+ */
+const clearHistory = () => {
+  searchHistory = [];
+  saveSearchHistory();
+  renderHistory();
+};
+
+/**
+ * Devuelve la clase CSS para el color de la asignatura (basado en React)
+ */
+const getSubjectColorClass = (subjectName) => {
+  const subjectColors = {
+    Matemáticas: "result-subject-math",
+    Biología: "result-subject-biologia",
+    Historia: "result-subject-historia",
+    Literatura: "result-subject-literatura",
+  };
+  return subjectColors[subjectName] || "result-subject-default";
+};
+
+/**
+ * Muestra los resultados filtrados en el panel
+ */
+const renderResults = (questions) => {
+  const resultsList = document.getElementById("search-results-list");
+  if (!resultsList) return;
+
+  if (questions.length === 0) {
+    resultsList.innerHTML = `<li class="no-results-item">No se encontraron preguntas</li>`;
+    return;
+  }
+
+  resultsList.innerHTML = questions
+    .map((question) => {
+      const subject = question.tags?.[0]?.name || "General";
+      const subjectColor = getSubjectColorClass(subject);
+      const authorName = question.author?.username || "Anónimo";
+
+      return `
+      <li class="search-result-item" data-article-id="${question._id}">
+        <div class="result-header">
+          <span class="result-subject ${subjectColor}">${subject}</span>
+        </div>
+        <p class="result-title">${question.content}</p>
+        <span class="result-author">Pregunta por ${authorName}</span>
+      </li>
+    `;
+    })
+    .join("");
+};
+
+/**
+ * Filtra los artículos cacheados y muestra resultados o historial
+ */
+const performDropdownSearch = () => {
+  const searchInput = document.getElementById("action-search-input");
+  const resultsList = document.getElementById("search-results-list");
+  const historySection = document.getElementById("search-history-section");
+  if (!searchInput || !resultsList || !historySection) return;
+
+  const query = searchInput.value.trim().toLowerCase();
+  updateSearchIcon(query);
+
+  if (!query) {
+    resultsList.innerHTML = "";
+    resultsList.style.display = "none";
+    renderHistory(); // Muestra el historial si no hay query
+    return;
+  }
+
+  historySection.style.display = "none"; // Oculta el historial si hay query
+  resultsList.style.display = "block";
+
+  const filteredQuestions = allQuestionsCache.filter((question) => {
+    const subject = question.tags?.[0]?.name || "";
+    const searchableText =
+      `${question.content} ${subject} ${question.author?.username}`.toLowerCase();
+    return searchableText.includes(query);
+  });
+
+  renderResults(filteredQuestions);
+};
+
+/**
+ * Ejecuta la búsqueda principal (actualiza el feed de artículos)
+ */
+const executeMainSearch = async () => {
+  const searchInput = document.getElementById("action-search-input");
+  if (!searchInput) return;
+
+  const query = searchInput.value.trim();
+  if (!query) {
+    showErrorToast("Por favor, ingresa un término para buscar.");
+    return;
+  }
+
+  // Añadir al historial
+  searchHistory = [
+    query,
+    ...searchHistory.filter((item) => item !== query),
+  ].slice(0, 5); // Limita a 5
+  saveSearchHistory();
+
+  try {
+    const results = await searchArticles(query); // API call
+    loadArticles(results, currentAuthData, currentUserFavorites); // Renders main feed
+    showSuccessToast(`${results.length} resultados para "${query}"`);
+    searchInput.blur(); // Cierra el panel
+  } catch (error) {
+    showErrorToast(error.message);
+  }
+};
+
+/**
+ * Cambia el icono de la barra de búsqueda
+ */
+const updateSearchIcon = (query) => {
+  const searchIcon = document.getElementById("action-search-icon");
+  const sendIcon = document.getElementById("action-send-icon");
+  if (!searchIcon || !sendIcon) return;
+
+  if (query.length > 0) {
+    searchIcon.style.display = "none";
+    sendIcon.style.display = "block";
+  } else {
+    searchIcon.style.display = "block";
+    sendIcon.style.display = "none";
+  }
+};
+
+/**
+ * Inicializa todos los listeners para la barra de búsqueda
+ */
+const initializeActionSearchBar = (authData) => {
+  currentAuthData = authData; // Guarda los datos de auth
+  const searchWrapper = document.getElementById("action-search-bar-wrapper");
+  const searchInput = document.getElementById("action-search-input");
+  const searchPanel = document.getElementById("action-search-panel");
+  const clearHistoryBtn = document.getElementById("search-history-clear-btn");
+  const resultsList = document.getElementById("search-results-list");
+  const historyList = document.getElementById("search-history-list");
+  const sendIcon = document.getElementById("action-send-icon");
+
+  if (
+    !searchWrapper ||
+    !searchInput ||
+    !searchPanel ||
+    !clearHistoryBtn ||
+    !resultsList ||
+    !historyList ||
+    !sendIcon
+  ) {
+    return;
+  }
+
+  loadSearchHistory();
+
+  const debouncedDropdownSearch = debounce(performDropdownSearch, 200);
+
+  searchInput.addEventListener("input", () => {
+    debouncedDropdownSearch();
+  });
+
+  searchInput.addEventListener("focus", () => {
+    isSearchFocused = true;
+    searchPanel.classList.add("visible");
+    performDropdownSearch(); // Muestra historial o resultados
+  });
+
+  searchInput.addEventListener("blur", () => {
+    setTimeout(() => {
+      if (isSearchFocused) {
+        isSearchFocused = false;
+        searchPanel.classList.remove("visible");
+      }
+    }, 200); // Delay para permitir clics en el panel
+  });
+
+  searchInput.addEventListener("keydown", (event) => {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      executeMainSearch();
+    }
+    if (event.key === "Escape") {
+      searchInput.blur();
+    }
+  });
+
+  sendIcon.addEventListener("click", executeMainSearch);
+  clearHistoryBtn.addEventListener("click", clearHistory);
+
+  // Clic en un item de resultado
+  resultsList.addEventListener("click", (event) => {
+    const item = event.target.closest(".search-result-item");
+    if (item) {
+      const articleId = item.dataset.articleId;
+      const question = allQuestionsCache.find((q) => q._id === articleId);
+      if (question) {
+        // Añadir al historial
+        const historyText =
+          question.content.length > 40
+            ? question.content.substring(0, 40) + "..."
+            : question.content;
+        searchHistory = [
+          historyText,
+          ...searchHistory.filter((h) => h !== historyText),
+        ].slice(0, 5);
+        saveSearchHistory();
+      }
+      // Redirigir a la página de la pregunta
+      window.location.href = `/pregunta.html?id=${articleId}`;
+    }
+  });
+
+  // Clic en un item de historial
+  historyList.addEventListener("click", (event) => {
+    const item = event.target.closest(".history-item-btn");
+    if (item) {
+      const query = item.dataset.query;
+      searchInput.value = query;
+      isSearchFocused = true;
+      performDropdownSearch();
+      searchInput.focus(); // Mantener el foco
+    }
+  });
+};
+// =================================================================
+// === FIN DE LA MODIFICACIÓN (Lógica de la Nueva Barra de Búsqueda) ===
+// =================================================================
 
 const initializeIndexPage = async () => {
   let authData;
@@ -86,7 +375,7 @@ const initializeIndexPage = async () => {
   // Llama a la nueva función de inicialización que obtiene favoritos primero
   await initializeArticleFeed(authData.data);
 
-  // --- El resto del código de inicialización (menú, modal, búsqueda, filtros, etc.) ---
+  // --- El resto del código de inicialización (menú, modal, filtros, etc.) ---
   const menuToggle = document.querySelector(".menu-toggle");
   const userMenu = document.getElementById("user-menu");
 
@@ -131,33 +420,20 @@ const initializeIndexPage = async () => {
     includeFunctions: true,
   });
 
-  const searchBar = document.querySelector(".search-bar");
-  const searchInput = searchBar?.querySelector("input");
-  const searchButton = searchBar?.querySelector(".search-button");
+  // === INICIO DE LA MODIFICACIÓN (Inicializar nueva búsqueda) ===
+  // Eliminar la lógica de búsqueda antigua
+  /*
+  const searchBar = document.querySelector(".search-bar"); // ELIMINADO
+  const searchInput = searchBar?.querySelector("input"); // ELIMINADO
+  const searchButton = searchBar?.querySelector(".search-button"); // ELIMINADO
+  const performSearch = async () => { ... }; // ELIMINADO
+  searchButton?.addEventListener("click", performSearch); // ELIMINADO
+  searchInput?.addEventListener("keypress", (event) => { ... }); // ELIMINADO
+  */
 
-  const performSearch = async () => {
-    if (!searchInput) return;
-    const query = searchInput.value.trim();
-    if (!query) {
-      showErrorToast("Por favor, ingresa un término para buscar.");
-      return;
-    }
-    try {
-      const results = await searchArticles(query);
-      // Pasa la lista de favoritos al cargar resultados de búsqueda
-      loadArticles(results, authData.data, currentUserFavorites);
-      showSuccessToast(`${results.length} resultados para "${query}"`);
-    } catch (error) {
-      showErrorToast(error.message);
-    }
-  };
-
-  searchButton?.addEventListener("click", performSearch);
-  searchInput?.addEventListener("keypress", (event) => {
-    if (event.key === "Enter") {
-      performSearch();
-    }
-  });
+  // Añadir inicializador de la nueva barra
+  initializeActionSearchBar(authData.data);
+  // === FIN DE LA MODIFICACIÓN ===
 
   const subjectFilterList = document.getElementById("subject-filter-list");
   if (subjectFilterList) {

@@ -1910,3 +1910,240 @@ body {
 .input-group input[name="confirmPassword"] {
   padding-right: 3rem !important;
 }
+/* ==========================================================================
+   20. ESTILOS PARA LA NUEVA BARRA DE BÚSQUEDA (ACTION SEARCH BAR)
+   ========================================================================== */
+
+/* 1. Contenedor principal */
+.action-search-bar-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 500px; /* Mantenemos el ancho de la barra original */
+}
+
+/* 2. Contenedor del Input (para posicionar el icono) */
+.action-search-input-container {
+  position: relative;
+  width: 100%;
+}
+
+/* 3. El Input */
+#action-search-input {
+  /* Reutilizamos y adaptamos estilos de .search-bar input */
+  width: 100%;
+  border: none;
+  background-color: #b6b6b6; /* Color de la barra original */
+  color: #000000;
+  font-size: 1rem;
+  border-radius: 25px;
+  padding: 0.8rem 2.8rem 0.8rem 1.2rem; /* Espacio para el icono a la derecha */
+  outline: none;
+  height: 40px; /* Altura fija */
+  border: 1px solid transparent;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+#action-search-input::placeholder {
+  color: #6c757d;
+}
+
+#action-search-input:focus {
+  border-color: #c1c9d2;
+  box-shadow: 0 0 8px rgba(37, 117, 252, 0.2);
+}
+
+/* 4. Contenedor de Iconos (Search/Send) */
+.action-search-icon-container {
+  position: absolute;
+  right: 0;
+  top: 0;
+  height: 100%;
+  width: 2.8rem; /* Ancho para hacer clic */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #6c757d;
+  cursor: pointer;
+}
+
+#action-send-icon {
+  color: #2575fc; /* Color para el icono de "enviar" */
+}
+
+/* 5. Panel de Resultados/Historial */
+.action-search-panel {
+  position: absolute;
+  top: calc(100% + 8px); /* 8px debajo de la barra */
+  left: 0;
+  right: 0;
+  background-color: #ffffff;
+  border-radius: 12px;
+  border: 1px solid #e0e0e0;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  z-index: 100;
+  overflow: hidden;
+  max-height: 450px;
+  overflow-y: auto;
+
+  /* Animación de entrada/salida */
+  opacity: 0;
+  transform: scaleY(0.95) translateY(-10px);
+  transform-origin: top;
+  pointer-events: none;
+  transition: opacity 0.2s ease, transform 0.2s cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+
+.action-search-panel.visible {
+  opacity: 1;
+  transform: scaleY(1) translateY(0);
+  pointer-events: auto;
+}
+
+/* 6. Sección de Historial */
+.search-history-section {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid #f0f2f5;
+  display: none; /* Oculto por defecto, se muestra con JS */
+}
+
+.search-history-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+.search-history-title {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #555;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.search-history-clear-btn {
+  font-size: 0.75rem;
+  color: #888;
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.25rem;
+}
+.search-history-clear-btn:hover {
+  color: #dc3545;
+}
+
+.search-history-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.history-item-btn {
+  font-size: 0.8rem;
+  padding: 0.3rem 0.6rem;
+  border-radius: 6px;
+  background-color: #f0f2f5;
+  color: #333;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+.history-item-btn:hover {
+  background-color: #e0e0e0;
+}
+
+/* 7. Lista de Resultados */
+.search-results-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: none; /* Oculto por defecto */
+}
+
+.search-result-item {
+  padding: 0.8rem 1rem;
+  border-bottom: 1px solid #f0f2f5;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+.search-result-item:last-child {
+  border-bottom: none;
+}
+.search-result-item:hover {
+  background-color: #f8f9fa;
+}
+
+.result-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.25rem;
+}
+
+.result-subject {
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+/* Colores de Asignaturas (basados en el React) */
+.result-subject-math {
+  color: #3b82f6;
+} /* blue-500 */
+.result-subject-biologia {
+  color: #22c55e;
+} /* green-500 */
+.result-subject-historia {
+  color: #f59e0b;
+} /* amber-500 */
+.result-subject-literatura {
+  color: #a855f7;
+} /* purple-500 */
+.result-subject-default {
+  color: #6b7280;
+} /* gray-500 */
+
+.result-category {
+  font-size: 0.75rem;
+  color: #555;
+  background-color: #f0f2f5;
+  padding: 0.1rem 0.4rem;
+  border-radius: 4px;
+}
+
+.result-title {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #111;
+  margin-bottom: 0.25rem;
+  /* Acortar texto largo */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.result-author {
+  font-size: 0.75rem;
+  color: #888;
+}
+
+.no-results-item {
+  padding: 1rem;
+  text-align: center;
+  color: #888;
+  font-size: 0.9rem;
+}
+
+/* 8. Footer del Panel */
+.action-search-footer {
+  padding: 0.5rem 1rem;
+  border-top: 1px solid #f0f2f5;
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.75rem;
+  color: #aaa;
+  background-color: #fdfdfd;
+}
