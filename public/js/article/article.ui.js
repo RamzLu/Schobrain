@@ -280,17 +280,23 @@ export const renderArticleCard = (
     </div>
   `;
 
-  const articleActionsHtml = `
-    <div class="article-actions">
-        <a href="/pregunta.html?id=${article._id}">
-            ${
-              options.isMyContent
-                ? "Ver mi pregunta"
-                : "Ver discusión y responder"
-            }
-        </a>
-    </div>
-  `;
+  // === INICIO DE LA MODIFICACIÓN (Ocultar enlace en página de detalle) ===
+  let articleActionsHtml = "";
+  // Si la opción 'isDetailPage' (pasada desde pregunta.js) es true, no renderiza el enlace
+  if (!options.isDetailPage) {
+    articleActionsHtml = `
+      <div class="article-actions">
+          <a href="/pregunta.html?id=${article._id}">
+              ${
+                options.isMyContent
+                  ? "Ver mi pregunta"
+                  : "Ver discusión y responder"
+              }
+          </a>
+      </div>
+    `;
+  }
+  // === FIN DE LA MODIFICACIÓN ===
 
   return `
     <article class="article-card" data-id="${article._id}">
@@ -311,8 +317,6 @@ export const renderArticleCard = (
       </div>
     </article>`;
 };
-
-// ... (El resto del archivo 'loadArticles', 'setupCancelButton', 'initializeSymbolsPanel' no cambia) ...
 
 export const loadArticles = (articles, currentUser, userFavorites = []) => {
   if (questionsList) {
@@ -366,9 +370,18 @@ export function initializeSymbolsPanel({
   panelId,
   includeFunctions = false,
 }) {
-  const textarea = document.getElementById(textareaId);
-  const toggleSymbolsBtn = document.getElementById(toggleBtnId);
-  const symbolsPanel = document.getElementById(panelId);
+  // === INICIO MODIFICACIÓN: Aceptar elementos DOM o IDs de string ===
+  const textarea =
+    typeof textareaId === "string"
+      ? document.getElementById(textareaId)
+      : textareaId;
+  const toggleSymbolsBtn =
+    typeof toggleBtnId === "string"
+      ? document.getElementById(toggleBtnId)
+      : toggleBtnId;
+  const symbolsPanel =
+    typeof panelId === "string" ? document.getElementById(panelId) : panelId;
+  // === FIN MODIFICACIÓN ===
 
   if (!textarea || !toggleSymbolsBtn || !symbolsPanel) return;
 

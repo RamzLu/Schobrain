@@ -33,6 +33,20 @@ export const createCommentValidation = [
         throw new Error("El articulo referenciado no existe.");
       }
     }),
+
+  body("parentComment")
+    .optional() // Es opcional
+    .isMongoId()
+    .withMessage("El ID del comentario padre no es un ObjectId válido.")
+    .custom(async (value) => {
+      // Solo validamos si el valor se proporciona (no es null o undefined)
+      if (value) {
+        const comment = await CommentModel.findById(value);
+        if (!comment) {
+          throw new Error("El comentario padre referenciado no existe.");
+        }
+      }
+    }),
 ];
 
 export const updateCommentValidation = [

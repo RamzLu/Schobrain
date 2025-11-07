@@ -1,9 +1,10 @@
 import { ArticleModel } from "../models/article.model.js";
 import { CommentModel } from "../models/comment.model.js";
+import mongoose from "mongoose"; // Importar mongoose
 
 export const createComment = async (req, res) => {
-  // === INICIO DE LA MODIFICACIÓN ===
-  const { content, author, article } = req.body;
+  // === INICIO DE LA MODIFICACIÓN (Añadir parentComment) ===
+  const { content, author, article, parentComment } = req.body;
 
   let imageUrls = [];
   if (req.files && req.files.length > 0) {
@@ -11,17 +12,35 @@ export const createComment = async (req, res) => {
   }
 
   try {
-    const comment = await CommentModel.create({
+    // === CORRECCIÓN CRÍTICA ===
+    // Preparamos el objeto del comentario
+    const commentData = {
       content,
       author,
       article,
-      imageUrls, // Añadimos las URLs
-    });
-    // === FIN DE LA MODIFICACIÓN ===
+      imageUrls,
+    };
+
+    // Verificamos si parentComment es un ID de Mongo válido
+    // FormData puede enviar 'null' o 'undefined' como strings
+    if (parentComment && mongoose.Types.ObjectId.isValid(parentComment)) {
+      commentData.parentComment = parentComment;
+    } else {
+      commentData.parentComment = null; // Aseguramos que sea null si no es válido
+    }
+    // === FIN DE LA CORRECCIÓN ===
+
+    const comment = await CommentModel.create(commentData);
+
+    // Populamos el comentario recién creado para devolverlo
+    const populatedComment = await CommentModel.findById(comment._id).populate(
+      "author",
+      "username profile role"
+    );
 
     return res.status(201).json({
       msg: "Comentado publicado correctamente",
-      data: comment,
+      data: populatedComment,
     });
   } catch (error) {
     console.log(error);
@@ -83,10 +102,29 @@ export const updateComment = async (req, res) => {
 export const deleteComment = async (req, res) => {
   const { id } = req.params;
   try {
-    const comment = await CommentModel.findByIdAndDelete(id);
+    const comment = await CommentModel.findById(id);
+    if (!comment) {
+      return res.status(404).json({ msg: "Comentario no encontrado." });
+    }
+
+    // Función recursiva para eliminar todas las respuestas anidadas
+    const deleteReplies = async (commentId) => {
+      const replies = await CommentModel.find({ parentComment: commentId });
+      for (const reply of replies) {
+        await deleteReplies(reply._id); // Llama recursivamente
+        await CommentModel.findByIdAndDelete(reply._id);
+      }
+    };
+
+    // Iniciar el borrado en cascada
+    await deleteReplies(id);
+
+    // Borrar el comentario principal
+    await CommentModel.findByIdAndDelete(id);
+
     return res.status(200).json({
-      msg: "Comentario eliminado correctamente",
-      data: comment,
+      msg: "Comentario y respuestas eliminados correctamente",
+      data: comment, // Devuelve el comentario que se eliminó
     });
   } catch (error) {
     console.log(error);
@@ -96,21 +134,28 @@ export const deleteComment = async (req, res) => {
   }
 };
 
+// Esta función ya no es utilizada por getArticleById, pero la mantenemos
 export const getCommentsByArticle = async (req, res) => {
   const { articleId } = req.params;
   try {
-    const article = await ArticleModel.findById(articleId)
+    const comments = await CommentModel.find({
+      article: articleId,
+      parentComment: null, // Solo comentarios de nivel superior
+    })
       .populate("author", "username profile role")
       .populate({
-        path: "comments",
+        path: "replies", // Pobla las respuestas (Nivel 2)
         populate: {
+          // Pobla el autor de esas respuestas
           path: "author",
           select: "username profile role",
         },
-      });
+      })
+      .sort({ likes: -1, createdAt: -1 }); // Ordenar por likes/fecha
+
     return res.status(200).json({
       msg: "Comentarios del artículo obtenidos correctamente",
-      data: article,
+      data: comments, // Devolvemos solo los comentarios
     });
   } catch (error) {
     console.log(error);

@@ -1,5 +1,6 @@
 import { ArticleModel } from "../models/article.model.js";
 import { TagModel } from "../models/tag.model.js";
+import { CommentModel } from "../models/comment.model.js"; // Importar CommentModel
 
 export const createArticle = async (req, res) => {
   const authorId = req.userLog.id;
@@ -60,24 +61,39 @@ export const getAllArticles = async (req, res) => {
 export const getArticleById = async (req, res) => {
   const { id } = req.params;
   try {
-    const article = await ArticleModel.findById(id)
-      .populate("author", "username profile role")
-      .populate({
-        path: "comments",
-        // Ordenamos por likes (desc) y luego por fecha (desc)
-        options: { sort: { likes: -1, createdAt: -1 } },
-        populate: {
-          path: "author",
-          model: "User",
-          select: "username profile role",
-        },
-      });
+    // === INICIO DE LA MODIFICACIÓN (Mejor estrategia de carga) ===
 
-    if (!article) {
+    // 1. Obtenemos el artículo principal (sin poblar comentarios)
+    // Usamos .lean() para que Mongoose devuelva un objeto JS plano (más rápido)
+    const articlePromise = ArticleModel.findById(id)
+      .populate("author", "username profile role")
+      .populate("tags", "name")
+      .lean();
+
+    // 2. Obtenemos TODOS los comentarios asociados a ese artículo en una consulta separada
+    // Los poblamos y ordenamos por fecha
+    const commentsPromise = CommentModel.find({ article: id })
+      .populate("author", "username profile role")
+      .sort({ createdAt: 1 }) // Ordenar por más antiguo primero
+      .lean();
+
+    // 3. Ejecutamos ambas promesas en paralelo
+    const [articleData, allComments] = await Promise.all([
+      articlePromise,
+      commentsPromise,
+    ]);
+
+    if (!articleData) {
       return res.status(404).json({ msg: "Pregunta no encontrada." });
     }
 
-    return res.status(200).json(article);
+    // 4. Adjuntamos la lista plana de comentarios al objeto del artículo
+    // El frontend (pregunta.js) se encargará de construir el árbol anidado
+    articleData.comments = allComments;
+
+    // === FIN DE LA MODIFICACIÓN ===
+
+    return res.status(200).json(articleData);
   } catch (error) {
     console.log(error);
     return res.status(501).json({

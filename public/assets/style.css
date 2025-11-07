@@ -2344,3 +2344,236 @@ form.new-comment-form:focus-within {
   max-width: 400px;
   height: fit-content;
 }
+/* ==========================================================================
+   22. ESTILOS PARA RESPUESTAS ANIDADAS (PREGUNTA.HTML)
+   ========================================================================== */
+
+/* Contenedor de un solo comentario y sus respuestas */
+.comment-thread-item {
+  position: relative;
+  display: flex;
+  gap: 12px; /* Espacio entre la línea/avatar y el contenido */
+}
+
+/* El contenedor del avatar y la línea vertical */
+.comment-connector-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-shrink: 0;
+  width: 32px; /* Ancho fijo para el avatar (más pequeño) */
+}
+
+/* La línea vertical que conecta respuestas */
+.comment-connector-line {
+  width: 1px;
+  background-color: #e0e7ff; /* --border */
+  flex-grow: 1;
+  transition: background-color 0.2s;
+}
+.comment-connector-container:hover .comment-connector-line {
+  background-color: #0066cc; /* --primary */
+}
+
+/* El botón de colapsar */
+.comment-collapse-button {
+  background: white; /* Fondo blanco para que tape la línea */
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  margin: 0;
+  width: 16px;
+  height: 16px;
+  color: #a0a0b0; /* --muted-foreground */
+  flex-shrink: 0;
+  margin-top: 8px; /* Espacio superior */
+  z-index: 1; /* Encima de la línea */
+}
+.comment-collapse-button svg {
+  width: 16px;
+  height: 16px;
+}
+.comment-collapse-button:hover svg {
+  color: #111;
+}
+
+/* El avatar (reutiliza el estilo base .author-avatar) */
+.comment-connector-container .author-avatar {
+  width: 32px;
+  height: 32px;
+  margin-top: 8px; /* Espacio desde el botón de colapsar */
+}
+
+/* Contenedor para el contenido del comentario (tarjeta) */
+.comment-content-container {
+  flex-grow: 1;
+  min-width: 0;
+  padding-top: 8px; /* Alinea con el botón de colapsar/avatar */
+}
+
+/* Modificación de la tarjeta de comentario existente */
+.comment-card {
+  border: none;
+  padding: 0;
+  margin-bottom: 1rem; /* Espacio antes del formulario de respuesta */
+}
+
+/* Contenedor para las respuestas anidadas */
+.comment-replies-container {
+  margin-top: 1rem;
+}
+
+/* Ocultar contenido cuando está colapsado */
+.comment-thread-item.is-collapsed .comment-content,
+.comment-thread-item.is-collapsed .comment-footer,
+.comment-thread-item.is-collapsed .comment-replies-container,
+.comment-thread-item.is-collapsed .comment-header .comment-date,
+.comment-thread-item.is-collapsed .comment-header .comment-options-menu,
+.comment-thread-item.is-collapsed .reply-form-container {
+  display: none;
+}
+/* Estilo del avatar cuando está colapsado */
+.comment-thread-item.is-collapsed .comment-connector-container .author-avatar {
+  display: none;
+}
+/* Estilo del header cuando está colapsado */
+.comment-thread-item.is-collapsed .comment-header {
+  margin-bottom: 0;
+}
+/* Ocultar línea conectora si está colapsado */
+.comment-thread-item.is-collapsed .comment-connector-line {
+  display: none;
+}
+
+/* --- Formulario de Respuesta Anidado --- */
+
+.reply-form-container {
+  margin-top: 1rem;
+}
+
+/* Adaptación del formulario de comentario para ser un formulario de respuesta */
+.reply-form {
+  position: relative;
+  border: 2px solid #a5b4fc;
+  border-radius: 1rem;
+  padding: 0.8rem;
+  background-color: #ffffff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.reply-form:focus-within {
+  border-color: #6366f1;
+  box-shadow: 0 6px 16px rgba(99, 102, 241, 0.1);
+}
+
+.reply-form .comment-form-content {
+  overflow: hidden;
+}
+
+/* Previsualizaciones de archivos en respuestas (más pequeñas) */
+.reply-form .comment-file-previews {
+  display: none;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-bottom: 0.5rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #e0e6f7;
+}
+
+.reply-form .file-preview-item {
+  gap: 0.4rem;
+  padding: 0.2rem 0.5rem;
+  font-size: 0.8rem;
+}
+.reply-form .file-preview-remove i {
+  font-size: 0.8rem;
+}
+
+/* Textarea de respuesta (más pequeño) */
+.reply-form .comment-textarea {
+  font-size: 0.95rem;
+  min-height: 22px;
+  max-height: 100px;
+}
+
+/* Footer de acciones de respuesta */
+.reply-form .comment-actions-footer {
+  margin-top: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.reply-form .comment-tool-buttons {
+  display: flex;
+  align-items: center;
+  gap: 0.1rem;
+}
+
+.reply-form .comment-tool-btn {
+  height: 28px;
+  width: 28px;
+}
+.reply-form .comment-tool-btn i {
+  font-size: 0.95rem;
+}
+
+/* Botones de acción del formulario de respuesta (Cancelar/Enviar) */
+.reply-form .reply-action-buttons {
+  display: flex;
+  gap: 0.5rem;
+}
+
+/* Reutilizamos modal-button pero lo hacemos más pequeño */
+.reply-form .modal-button {
+  padding: 0.4rem 0.8rem;
+  font-size: 0.85rem;
+  border-radius: 6px;
+}
+
+.reply-form .comment-submit-btn {
+  background-color: #4f46e5;
+  color: white;
+}
+.reply-form .comment-submit-btn:disabled {
+  background-color: #c7d2fe;
+  color: #a5b4fc;
+  cursor: not-allowed;
+}
+
+/* Panel de símbolos para el formulario de respuesta */
+.reply-form .symbols-panel {
+  bottom: calc(100% + 5px); /* Posicionarlo encima del formulario */
+  left: 0.5rem;
+  z-index: 10;
+  max-width: 350px;
+}
+/* ==========================================================================
+   23. ESTILOS PARA BOTÓN DE RESPUESTA (GHOST)
+   ========================================================================== */
+
+.reply-btn-ghost {
+  background: none;
+  border: none;
+  color: #6c757d; /* Color de texto "silenciado" */
+  cursor: pointer;
+  padding: 0.5rem 0.75rem;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  font-family: "Outfit", sans-serif;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem; /* Espacio entre icono y texto */
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.reply-btn-ghost:hover {
+  background-color: #eef2ff; /* Un fondo azulado/gris claro */
+  color: #1e1b4b; /* Texto oscuro */
+}
+
+.reply-btn-ghost i {
+  font-size: 0.9rem; /* Ajusta el icono */
+}

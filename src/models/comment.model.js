@@ -63,11 +63,26 @@ const commentSchema = new Schema(
         ref: "User",
       },
     ],
+
+    parentComment: {
+      type: Types.ObjectId,
+      ref: "Comment",
+      default: null,
+    },
   },
   {
     versionKey: false,
     timestamps: true,
+    toJSON: { virtuals: true },
   }
 );
+
+// Popular virtualmente las respuestas anidadas
+commentSchema.virtual("replies", {
+  ref: "Comment",
+  localField: "_id",
+  foreignField: "parentComment",
+  options: { sort: { createdAt: 1 } }, // Opcional: ordenar respuestas
+});
 
 export const CommentModel = model("Comment", commentSchema);
