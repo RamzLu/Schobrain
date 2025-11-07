@@ -25,3 +25,22 @@ export const fetchPublicUserProfile = async (userId) => {
     throw error;
   }
 };
+
+export const fetchTopContributors = async () => {
+  try {
+    const response = await fetch(`${API_URL}/top-contributors`, {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.msg || "Error al cargar los contribuyentes.");
+    }
+    return data; // Devuelve el array de usuarios
+  } catch (error) {
+    console.error("Error en fetchTopContributors service:", error);
+    throw error;
+  }
+};

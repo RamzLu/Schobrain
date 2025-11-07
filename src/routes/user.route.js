@@ -5,6 +5,7 @@ import {
   getPublicUserProfileById, // <-- 1. Importar la nueva función
   getUserById,
   updateUser,
+  getTopContributors,
 } from "../controllers/user.controller.js";
 import { validateToken } from "../middlewares/authMiddleware.js";
 import { authAdmin } from "../middlewares/adminMiddleware.js";
@@ -21,6 +22,8 @@ export const routeUser = Router();
 // 2. Añadir la nueva ruta pública (sin middlewares de autenticación)
 routeUser.get("/users/:id/public", getPublicUserProfileById);
 // --- FIN DE LA MODIFICACIÓN ---
+
+routeUser.get("/users/top-contributors", getTopContributors);
 
 routeUser.delete(
   "/users/:id",
