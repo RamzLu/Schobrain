@@ -365,8 +365,8 @@ const renderCommentItem = (
   connectorLine.className = "comment-connector-line";
 
   // Ensamblar conector
-  connectorContainer.appendChild(collapseBtn);
-  connectorContainer.appendChild(avatarImg); // Añade el elemento avatar
+  connectorContainer.appendChild(avatarImg); // <-- MODIFICADO: Avatar primero
+  connectorContainer.appendChild(collapseBtn); // <-- MODIFICADO: Botón después
   connectorContainer.appendChild(connectorLine);
 
   // --- 2. Contenedor del Contenido (Header, Body, Footer, Respuestas) ---
@@ -523,7 +523,14 @@ const renderCommentItem = (
     collapseBtn.title = isCollapsed ? "Expandir hilo" : "Colapsar hilo";
     collapseBtn.innerHTML = isCollapsed ? expandBtnHtml : collapseBtnHtml;
 
-    avatarImg.style.display = isCollapsed ? "none" : "block"; // Oculta avatar al colapsar
+    // ************************************************************
+    // *
+    // * ¡AQUÍ ESTÁ LA CORRECCIÓN!
+    // * Esta línea es la que ocultaba el avatar. La comentamos:
+    // *
+    // avatarImg.style.display = isCollapsed ? "none" : "block"; // Oculta avatar al colapsar
+    // *
+    // ************************************************************
   });
 
   // Ocultar botón de colapsar si no hay respuestas

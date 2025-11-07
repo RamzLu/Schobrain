@@ -301,7 +301,7 @@ body {
   color: #e0e0e0;
   position: sticky;
   top: 0;
-  z-index: 1;
+  z-index: 2;
 }
 
 .header-logo {
@@ -2362,6 +2362,7 @@ form.new-comment-form:focus-within {
   align-items: center;
   flex-shrink: 0;
   width: 32px; /* Ancho fijo para el avatar (más pequeño) */
+  position: relative;
 }
 
 /* La línea vertical que conecta respuestas */
@@ -2370,24 +2371,44 @@ form.new-comment-form:focus-within {
   background-color: #e0e7ff; /* --border */
   flex-grow: 1;
   transition: background-color 0.2s;
+  order: 3;
 }
 .comment-connector-container:hover .comment-connector-line {
   background-color: #0066cc; /* --primary */
 }
 
+/* La línea horizontal que va al avatar */
+.comment-connector-container::before {
+  content: "";
+  position: absolute;
+  background-color: #e0e7ff; /* Color de la línea */
+  transition: background-color 0.2s;
+  width: 16px;
+  height: 1px;
+  left: 0;
+  top: 24px; /* Centro vertical del avatar (margin-top 8px + avatar/2 16px) */
+  z-index: 0; /* Detrás del avatar y el botón */
+}
+
+/* Hover para la nueva línea horizontal */
+.comment-thread-item:hover .comment-connector-container::before {
+  background-color: #0066cc; /* Color primario al hacer hover */
+}
+
 /* El botón de colapsar */
 .comment-collapse-button {
-  background: white; /* Fondo blanco para que tape la línea */
+  background: white;
   border: none;
   cursor: pointer;
   padding: 0;
   margin: 0;
   width: 16px;
   height: 16px;
-  color: #a0a0b0; /* --muted-foreground */
+  color: #a0a0b0;
   flex-shrink: 0;
-  margin-top: 8px; /* Espacio superior */
-  z-index: 1; /* Encima de la línea */
+  margin-top: 8px; /* Espacio entre el avatar y el botón */
+  z-index: 1;
+  order: 2; /* Segundo en orden */
 }
 .comment-collapse-button svg {
   width: 16px;
@@ -2401,14 +2422,17 @@ form.new-comment-form:focus-within {
 .comment-connector-container .author-avatar {
   width: 32px;
   height: 32px;
-  margin-top: 8px; /* Espacio desde el botón de colapsar */
+  margin-top: 8px; /* Espacio superior */
+  position: relative;
+  z-index: 1;
+  order: 1; /* Primero en orden */
 }
 
 /* Contenedor para el contenido del comentario (tarjeta) */
 .comment-content-container {
   flex-grow: 1;
   min-width: 0;
-  padding-top: 8px; /* Alinea con el botón de colapsar/avatar */
+  padding-top: 8px; /* Alinea con el avatar (que tiene 8px de margin-top) */
 }
 
 /* Modificación de la tarjeta de comentario existente */
@@ -2423,27 +2447,36 @@ form.new-comment-form:focus-within {
   margin-top: 1rem;
 }
 
-/* Ocultar contenido cuando está colapsado */
-.comment-thread-item.is-collapsed .comment-content,
-.comment-thread-item.is-collapsed .comment-footer,
-.comment-thread-item.is-collapsed .comment-replies-container,
-.comment-thread-item.is-collapsed .comment-header .comment-date,
-.comment-thread-item.is-collapsed .comment-header .comment-options-menu,
-.comment-thread-item.is-collapsed .reply-form-container {
+/* * ============================================
+ * === ¡AQUÍ ESTÁ LA MODIFICACIÓN CLAVE! ===
+ * ============================================
+ *
+ * Ahora, solo ocultamos el '.comment-replies-container'
+ * y la línea vertical '.comment-connector-line'.
+ *
+ * Mantenemos visibles:
+ * - .comment-content (el texto del padre)
+ * - .comment-footer (los botones de like/reply del padre)
+ * - .comment-header (el nombre del autor padre)
+ * - .reply-form-container (el formulario de respuesta al padre)
+ */
+.comment-thread-item.is-collapsed .comment-replies-container {
   display: none;
 }
-/* Estilo del avatar cuando está colapsado */
-.comment-thread-item.is-collapsed .comment-connector-container .author-avatar {
-  display: none;
-}
-/* Estilo del header cuando está colapsado */
-.comment-thread-item.is-collapsed .comment-header {
-  margin-bottom: 0;
-}
+
 /* Ocultar línea conectora si está colapsado */
 .comment-thread-item.is-collapsed .comment-connector-line {
   display: none;
 }
+/* Ocultar la línea horizontal cuando está colapsado */
+.comment-thread-item.is-collapsed .comment-connector-container::before {
+  display: none;
+}
+/*
+ * ============================================
+ * === FIN DE LA MODIFICACIÓN CLAVE ===
+ * ============================================
+ */
 
 /* --- Formulario de Respuesta Anidado --- */
 
@@ -2546,11 +2579,11 @@ form.new-comment-form:focus-within {
 .reply-form .symbols-panel {
   bottom: calc(100% + 5px); /* Posicionarlo encima del formulario */
   left: 0.5rem;
-  z-index: 10;
+  z-index: 1;
   max-width: 350px;
 }
 /* ==========================================================================
-   23. ESTILOS PARA BOTÓN DE RESPUESTA (GHOST)
+   23. ESTILOS PARA BOTÓN DE RESPUESTA
    ========================================================================== */
 
 .reply-btn-ghost {
