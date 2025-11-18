@@ -33,6 +33,13 @@ const userSchema = new Schema(
       enum: ["admin", "user"],
       default: "user",
     },
+    // ESTADO DE VERIFICACIÓN DOCENTE
+    // none: No ha solicitado / pending: Solicitó / review: En revisión / verified: Aceptado / rejected: Rechazado
+    teacherStatus: {
+      type: String,
+      enum: ["none", "pending", "review", "verified", "rejected"],
+      default: "none",
+    },
     profile: {
       firstName: {
         type: String,

@@ -44,31 +44,38 @@ export const getPublicUserProfileById = async (req, res) => {
   const { id } = req.params;
   try {
     const user = await UserModel.findById(id)
-      .select("username profile role") // Solo seleccionamos campos públicos
+      // === MODIFICACIÓN: Añadir teacherStatus ===
+      .select("username profile role teacherStatus")
       .populate({
         path: "articles", // Populamos sus preguntas
         model: "Article",
         options: { sort: { createdAt: -1 } }, // Ordenamos
-        // === INICIO DE LA MODIFICACIÓN (Bug 2) ===
+
         select:
           "content author createdAt tags imageUrls likes dislikes votedUp votedDown", // <-- Añadido 'author'
         populate: [
           { path: "tags", model: "Tag", select: "name" },
-          { path: "author", model: "User", select: "username profile role" }, // <-- Populamos el autor de la pregunta
+          {
+            path: "author",
+            model: "User",
+            select: "username profile role teacherStatus",
+          }, // <-- Añadido teacherStatus
         ],
-        // === FIN DE LA MODIFICACIÓN ===
       })
       .populate({
         path: "comments", // Populamos sus respuestas
         model: "Comment",
         options: { sort: { createdAt: -1 } },
-        // === INICIO DE LA MODIFICACIÓN (Bug 2) ===
+
         select: "content author createdAt article imageUrls", // <-- Añadido 'author'
         populate: [
           { path: "article", model: "Article", select: "content" },
-          { path: "author", model: "User", select: "username profile role" }, // <-- Populamos el autor de la respuesta
+          {
+            path: "author",
+            model: "User",
+            select: "username profile role teacherStatus",
+          }, // <-- Añadido teacherStatus
         ],
-        // === FIN DE LA MODIFICACIÓN ===
       });
 
     if (!user) {
@@ -94,7 +101,7 @@ export const getUserById = async (req, res) => {
           {
             path: "author",
             model: "User",
-            select: "username email profile role",
+            select: "username email profile role teacherStatus",
           },
           {
             path: "comments",
@@ -102,7 +109,7 @@ export const getUserById = async (req, res) => {
             populate: {
               path: "author",
               model: "User",
-              select: "username email profile role",
+              select: "username email profile role teacherStatus",
             },
           },
         ],

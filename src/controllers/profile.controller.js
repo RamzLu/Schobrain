@@ -5,12 +5,12 @@ import { CommentModel } from "../models/comment.model.js"; // Importa CommentMod
 import path from "path";
 import { comparePassword, hashPassword } from "../helpers/bcrypt.helper.js";
 
-// Obtener perfil (actualizado para incluir favoriteComments)
+// Obtener perfil (actualizado para incluir favoriteComments y teacherStatus)
 export const getProfile = async (req, res) => {
   try {
-    // Incluimos 'favorites' y 'favoriteComments' en el select
+    // Incluimos 'favorites', 'favoriteComments' y 'teacherStatus' en el select
     const user = await UserModel.findById(req.userLog.id).select(
-      "profile email username role favorites favoriteComments"
+      "profile email username role favorites favoriteComments teacherStatus"
     );
     if (!user)
       return res.status(404).json({ message: "Usuario no encontrado" });
@@ -60,6 +60,7 @@ export const updateProfile = async (req, res) => {
       email: user.email,
       username: user.username,
       role: user.role,
+      teacherStatus: user.teacherStatus, // Devolver estado docente
       favorites: user.favorites, // Devolver también los favoritos de preguntas
       favoriteComments: user.favoriteComments, // Devolver también los favoritos de respuestas
     });
@@ -287,7 +288,7 @@ export const getFavoriteArticles = async (req, res) => {
         model: "Article",
         populate: [
           // Populamos autor y tags de los artículos favoritos
-          { path: "author", select: "username profile role" },
+          { path: "author", select: "username profile role teacherStatus" }, // teacherStatus aquí también es útil
           { path: "tags", select: "name" },
         ],
         // Ordenamos los favoritos por fecha de creación (los más recientes primero)
@@ -370,7 +371,7 @@ export const getFavoriteComments = async (req, res) => {
         model: "Comment",
         populate: [
           // Populamos autor del comentario
-          { path: "author", select: "username profile role" },
+          { path: "author", select: "username profile role teacherStatus" },
           // Populamos el artículo al que pertenece. Aseguramos el _id.
           { path: "article", select: "_id content author" }, // <-- VERIFICACIÓN DE SELECCIÓN
         ],

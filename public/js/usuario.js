@@ -32,7 +32,6 @@ const formatRelativeTime = (dateString) => {
   return `hace ${yearsElapsed} año${yearsElapsed > 1 ? "s" : ""}`;
 };
 
-// === INICIO DE LA MODIFICACIÓN (Bug 2) ===
 const renderUserCommentCard = (comment) => {
   const relativeTime = formatRelativeTime(comment.createdAt);
   const articleContentSnippet =
@@ -83,7 +82,6 @@ const renderUserCommentCard = (comment) => {
     </div>
   `;
 };
-// === FIN DE LA MODIFICACIÓN ===
 
 // --- Fin de funciones copiadas ---
 
@@ -132,7 +130,7 @@ const loadContent = (type, articles, comments, currentUser, userFavorites) => {
  * Rellena la tarjeta de perfil
  */
 const renderProfileCard = (user) => {
-  const { profile, username, role } = user;
+  const { profile, username, role, teacherStatus } = user; // Destructuramos teacherStatus
   document.getElementById("firstName").textContent =
     profile.firstName || "Nombre";
   document.getElementById("lastName").textContent =
@@ -140,18 +138,29 @@ const renderProfileCard = (user) => {
   document.getElementById("username").textContent = `@${
     username || "username"
   }`;
-  document.getElementById("role").textContent = role || "Usuario";
+
+  // === INICIO MODIFICACIÓN: Badge de Profesor ===
+  const roleElement = document.getElementById("role");
+  if (teacherStatus === "verified") {
+    roleElement.innerHTML =
+      '<i class="fas fa-chalkboard-teacher"></i> Profesor Verificado <i class="fas fa-check-circle" style="color: #27ae60; margin-left: 4px;"></i>';
+    roleElement.style.backgroundColor = "#e8f5e9";
+    roleElement.style.color = "#27ae60";
+    roleElement.style.border = "1px solid #27ae60";
+  } else {
+    roleElement.textContent = role || "Usuario";
+  }
+  // === FIN MODIFICACIÓN ===
+
   document.getElementById("biography-display").textContent =
     profile.biography || "No hay biografía disponible.";
 
-  // === INICIO DE LA MODIFICACIÓN (Bug 1) ===
   const birthDate = profile.birthDate
     ? new Date(profile.birthDate + "T00:00:00")
     : null;
   document.getElementById("birthdate-display").textContent = birthDate
     ? birthDate.toLocaleDateString("es-ES", { timeZone: "UTC" })
     : "No especificada.";
-  // === FIN DE LA MODIFICACIÓN ===
 
   const avatarDisplay = document.getElementById("avatarUrl");
   avatarDisplay.src =
@@ -182,8 +191,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     currentUser = authData.data;
     document.getElementById("logged-in-username").textContent =
       currentUser.firstName;
-    // (Podríamos cargar los favoritos del currentUser si quisiéramos mostrar
-    // si le ha dado like a las preguntas de este perfil, pero lo omitimos por simplicidad)
   } catch (error) {
     // No está logueado, ocultamos el saludo
     document.querySelector(".header-right").style.display = "none";

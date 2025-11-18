@@ -28,6 +28,21 @@ const fileFilter = (req, file, cb) => {
   }
 };
 
+// Filtro para documentos de verificación (Imágenes + PDF)
+const documentFilter = (req, file, cb) => {
+  const allowedTypes = [
+    "image/jpeg",
+    "image/png",
+    "image/jpg",
+    "application/pdf",
+  ];
+  if (allowedTypes.includes(file.mimetype)) {
+    cb(null, true);
+  } else {
+    cb(new Error("Formato no válido. Solo se permiten imágenes y PDF."), false);
+  }
+};
+
 // 3. Inicializar Multer para múltiples imágenes
 export const uploadImages = multer({
   storage: storage,
@@ -36,3 +51,12 @@ export const uploadImages = multer({
     fileSize: 1024 * 1024 * 5, // Límite de 5MB por archivo
   },
 }).array("imageFiles", 5); // 'imageFiles' es el nombre del campo, y 5 es el máximo de archivos
+
+// 4. Inicializar Multer para documentos de verificación
+export const uploadDocuments = multer({
+  storage: storage,
+  fileFilter: documentFilter,
+  limits: {
+    fileSize: 1024 * 1024 * 10, // Límite de 10MB para documentos
+  },
+}).array("documents", 5); // 'documents' será el nombre del campo en el form data

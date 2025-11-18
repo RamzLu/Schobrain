@@ -95,6 +95,9 @@
           </button>
           <div class="user-menu" id="user-menu">
             <a href="perfil.html">Configuración</a>
+            <a href="#" id="open-teacher-verification-btn" style="display: none"
+              >¿Eres docente? Verifícate aquí</a
+            >
           </div>
         </div>
       </header>
@@ -366,6 +369,7 @@
         </form>
       </div>
     </div>
+
     <div id="edit-question-modal" class="modal-overlay">
       <div class="modal-content question-modal-content custom-modal">
         <div class="modal-header">
@@ -451,6 +455,7 @@
         </form>
       </div>
     </div>
+
     <div id="logout-modal" class="modal-overlay">
       <div class="modal-content">
         <h2>¿Seguro que quieres cerrar sesión?</h2>
@@ -464,6 +469,7 @@
         </div>
       </div>
     </div>
+
     <div id="delete-confirm-modal" class="modal-overlay">
       <div class="modal-content">
         <h2>¿Confirmas la eliminación?</h2>
@@ -492,6 +498,106 @@
       />
     </div>
 
+    <div id="teacher-verification-modal" class="modal-overlay">
+      <div class="modal-content question-modal-content custom-modal">
+        <div class="modal-header">
+          <h2>Verificación Docente</h2>
+          <button
+            type="button"
+            class="close-modal-button"
+            id="close-teacher-modal"
+          >
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <form id="teacherVerificationForm" enctype="multipart/form-data">
+          <div class="input-group">
+            <label for="teacher-dni">DNI / Cédula</label>
+            <input
+              type="text"
+              id="teacher-dni"
+              name="dni"
+              required
+              placeholder="Ingresa tu número de identificación"
+              class="custom-input"
+              style="
+                width: 100%;
+                padding: 10px;
+                border: 1px solid #ccc;
+                border-radius: 5px;
+              "
+            />
+          </div>
+
+          <div class="input-group">
+            <label for="teacher-specialty">Especialidad Principal</label>
+            <input
+              type="text"
+              id="teacher-specialty"
+              name="specialty"
+              required
+              placeholder="Ej: Matemáticas, Historia, Física..."
+              class="custom-input"
+              style="
+                width: 100%;
+                padding: 10px;
+                border: 1px solid #ccc;
+                border-radius: 5px;
+              "
+            />
+          </div>
+
+          <div class="input-group">
+            <label for="teacher-description"
+              >Breve Descripción / Experiencia</label
+            >
+            <textarea
+              id="teacher-description"
+              name="description"
+              rows="3"
+              placeholder="Cuéntanos brevemente sobre tu experiencia docente..."
+              style="
+                width: 100%;
+                padding: 10px;
+                border: 1px solid #ccc;
+                border-radius: 5px;
+              "
+            ></textarea>
+          </div>
+
+          <div class="input-group file-input-group">
+            <label for="teacher-docs" class="file-input-label">
+              <i class="fas fa-cloud-upload-alt"></i> Subir Título/Certificados
+            </label>
+            <span id="teacher-file-name-display" class="file-name-display">
+              Soporta PDF e Imágenes (Max 10MB)
+            </span>
+            <input
+              type="file"
+              id="teacher-docs"
+              name="documents"
+              accept=".pdf, image/jpeg, image/png, image/jpg"
+              class="hidden-file-input"
+              multiple
+              required
+            />
+          </div>
+
+          <div class="modal-actions">
+            <button
+              type="button"
+              id="cancel-teacher-verification"
+              class="modal-button secondary custom-cancel-button"
+            >
+              Cancelar
+            </button>
+            <button type="submit" class="modal-button custom-submit-button">
+              Enviar Solicitud
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
     <script type="module" src="./js/main.js"></script>
     <script type="module" src="./js/index.js"></script>
     <script type="module" src="./js/services/article.service.js"></script>

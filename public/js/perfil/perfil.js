@@ -30,7 +30,7 @@ import {
 import { initializeLightbox } from "../utils/lightbox.js";
 import { fetchAllTags } from "../services/tag.service.js";
 
-// Helper para el formato de tiempo (necesario para el renderizado del comentario)
+// Helper para el formato de tiempo
 const formatRelativeTime = (dateString) => {
   const now = new Date();
   const past = new Date(dateString);
@@ -56,25 +56,17 @@ const formatRelativeTime = (dateString) => {
   return `hace ${yearsElapsed} año${yearsElapsed > 1 ? "s" : ""}`;
 };
 
-// FUNCIÓN para renderizar una tarjeta de comentario favorito
 const renderFavoriteCommentCard = (comment) => {
-  // FIX 1: Usar username en lugar de nombre y apellido
   const authorName = comment.author.username || "Usuario Desconocido";
-
-  // FIX 2: Construir HTML del avatar
   const defaultAvatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(
     comment.author.username || "NN"
   )}&background=random`;
   const avatarUrl = comment.author.profile?.avatarUrl || defaultAvatarUrl;
   const avatarHtml = `<img src="${avatarUrl}" alt="Avatar" class="author-avatar comment-avatar" loading="lazy"/>`;
-  // FIN FIX 2
-
-  // El backend de favoritos popula article.content
   const articleContentSnippet =
     comment.article.content.substring(0, 80) + "...";
   const relativeTime = formatRelativeTime(comment.createdAt);
 
-  // === INICIO DE LA MODIFICACIÓN (Añadir Galería de Imágenes) ===
   let imagesHtml = "";
   if (comment.imageUrls && comment.imageUrls.length > 0) {
     const imageElements = comment.imageUrls
@@ -85,11 +77,8 @@ const renderFavoriteCommentCard = (comment) => {
       </a>`
       )
       .join("");
-
-    // Reutilizamos las clases CSS de la galería de artículos
     imagesHtml = `<div class="article-images-gallery">${imageElements}</div>`;
   }
-  // === FIN DE LA MODIFICACIÓN ===
 
   return `
     <div class="comment-favorite-card" data-id="${comment._id}">
@@ -122,13 +111,10 @@ const renderFavoriteCommentCard = (comment) => {
   `;
 };
 
-// NUEVA FUNCIÓN para renderizar una tarjeta de comentario propio (TAREA 1)
 const renderMyCommentCard = (comment) => {
-  // Aquí no tenemos los datos del autor (nosotros mismos) ni del artículo populados
   const relativeTime = formatRelativeTime(comment.createdAt);
   const articleLink = `/pregunta.html?id=${comment.article}`;
 
-  // === INICIO DE LA MODIFICACIÓN (Añadir Galería de Imágenes) ===
   let imagesHtml = "";
   if (comment.imageUrls && comment.imageUrls.length > 0) {
     const imageElements = comment.imageUrls
@@ -139,10 +125,8 @@ const renderMyCommentCard = (comment) => {
       </a>`
       )
       .join("");
-    // Reutilizamos las clases CSS de la galería de artículos
     imagesHtml = `<div class="article-images-gallery">${imageElements}</div>`;
   }
-  // === FIN DE LA MODIFICACIÓN ===
 
   return `
     <div class="comment-favorite-card my-comment-card" data-id="${comment._id}">
@@ -188,35 +172,31 @@ const openEditModal = async (articleId) => {
     document.getElementById("edit-article-id").value = article._id;
     document.getElementById("edit-question-content").value = article.content;
 
-    // 1. Cargar y seleccionar Tags
     const tagSelect = document.getElementById("edit-tag-select");
     const tags = await fetchAllTags();
-    tagSelect.innerHTML = ""; // Limpiar opciones anteriores
+    tagSelect.innerHTML = "";
     tags.forEach((tag) => {
       const option = document.createElement("option");
       option.value = tag._id;
       option.textContent = tag.name;
-      // Seleccionar el tag actual del artículo
       if (article.tags && article.tags[0] && tag._id === article.tags[0]._id) {
         option.selected = true;
       }
       tagSelect.appendChild(option);
     });
 
-    // 2. Lógica para mostrar imágenes actuales y permitir eliminar
     const currentImagesPreview = document.getElementById(
       "current-images-preview"
     );
     if (currentImagesPreview) {
-      currentImagesPreview.innerHTML = ""; // Limpiar
+      currentImagesPreview.innerHTML = "";
       if (article.imageUrls && article.imageUrls.length > 0) {
         article.imageUrls.forEach((url) => {
           const imgContainer = document.createElement("div");
-          // Estilo básico para el contenedor de imagen y botón (usando estilo en línea como fallback)
           imgContainer.style.position = "relative";
           imgContainer.style.display = "inline-block";
           imgContainer.style.margin = "5px";
-          imgContainer.classList.add("image-preview-item"); // Clase para identificarlo
+          imgContainer.classList.add("image-preview-item");
 
           imgContainer.innerHTML = `
             <img src="${url}" alt="Imagen actual" style="max-width: 100px; height: auto; display: block;">
@@ -229,14 +209,12 @@ const openEditModal = async (articleId) => {
       }
     }
 
-    // 3. Limpiar input de nuevos archivos
     if (editFileInput) editFileInput.value = "";
     if (editFileNameDisplay)
       editFileNameDisplay.textContent = "Ningún archivo seleccionado";
 
     editQuestionModal.classList.add("visible");
 
-    // Inicializar panel de símbolos para el modal de edición
     initializeSymbolsPanel({
       textareaId: "edit-question-content",
       toggleBtnId: "edit-toggle-symbols-btn",
@@ -254,7 +232,6 @@ const handleEditFormSubmit = async (event) => {
   const articleId = document.getElementById("edit-article-id").value;
   const formData = new FormData(event.target);
 
-  // Recolectar URLs de imágenes marcadas para eliminar
   const imagesToDelete = [];
   document
     .querySelectorAll(
@@ -264,22 +241,19 @@ const handleEditFormSubmit = async (event) => {
       imagesToDelete.push(input.value);
     });
 
-  // Añadir las URLs al FormData si hay alguna
   if (imagesToDelete.length > 0) {
     imagesToDelete.forEach((url) => formData.append("imagesToDelete", url));
   }
 
-  // Limpiar el campo de archivos nuevos si no se seleccionó nada nuevo
   if (editFileInput && editFileInput.files.length === 0) {
     formData.delete("imageFiles");
   }
 
   try {
-    const result = await updateArticle(articleId, formData);
+    await updateArticle(articleId, formData);
     showSuccessToast("Pregunta actualizada con éxito.");
     editQuestionModal?.classList.remove("visible");
 
-    // Recargar la página para ver los cambios actualizados en el perfil
     setTimeout(() => {
       window.location.reload();
     }, 900);
@@ -293,7 +267,6 @@ const setupEditModalListeners = (currentUser) => {
   const cancelEditBtn = document.getElementById("cancel-edit-question");
   const closeEditModalBtn = document.getElementById("close-edit-modal");
 
-  // Manejo de archivos en modal de edición
   if (editFileInput && editFileNameDisplay) {
     editFileInput.addEventListener("change", (event) => {
       const { files } = event.target;
@@ -307,7 +280,6 @@ const setupEditModalListeners = (currentUser) => {
     });
   }
 
-  // Listener para botones de eliminar imagen en modal de edición (delegación)
   document
     .getElementById("current-images-preview")
     ?.addEventListener("click", (event) => {
@@ -337,7 +309,6 @@ const setupEditModalListeners = (currentUser) => {
       }
     });
 
-  // Cierre del modal
   cancelEditBtn?.addEventListener("click", () => {
     editQuestionModal?.classList.remove("visible");
   });
@@ -350,14 +321,11 @@ const setupEditModalListeners = (currentUser) => {
     }
   });
 
-  // Manejo del formulario
   editQuestionForm?.addEventListener("submit", handleEditFormSubmit);
 };
 
-// Variable para almacenar el estado del filtro de contenido
 let currentMyContentType = "my-articles";
 
-// NUEVA FUNCIÓN: Establecer los contadores en el DOM
 const setProfileStats = (articleCount, commentCount) => {
   const articleDisplay = document.getElementById("article-count-display");
   const commentDisplay = document.getElementById("comment-count-display");
@@ -365,21 +333,17 @@ const setProfileStats = (articleCount, commentCount) => {
   if (commentDisplay) commentDisplay.textContent = commentCount;
 };
 
-// NUEVA FUNCIÓN: Cargar y calcular los contadores del perfil
 const loadProfileStats = async () => {
   try {
-    // Usamos los mismos servicios que obtienen el contenido propio
     const articles = await getMyArticles();
     const comments = await getMyComments();
-
     setProfileStats(articles.length, comments.length);
   } catch (error) {
     console.error("Error al cargar los contadores de actividad:", error);
-    setProfileStats(0, 0); // Muestra 0 en caso de error
+    setProfileStats(0, 0);
   }
 };
 
-// FUNCIÓN PRINCIPAL para cargar y mostrar el contenido propio
 const loadMyContent = async (
   filterType = currentMyContentType,
   currentUser
@@ -389,7 +353,6 @@ const loadMyContent = async (
 
   contentListContainer.innerHTML = "<p>Cargando tu contenido...</p>";
 
-  // Actualizar el estado visual del filtro
   const filterButtons = document.querySelectorAll(
     "#my-content-section .favorites-filter-btn"
   );
@@ -400,28 +363,23 @@ const loadMyContent = async (
     }
   });
 
-  currentMyContentType = filterType; // Actualiza el estado
+  currentMyContentType = filterType;
 
   try {
     let items = [];
     let emptyMessage = "";
-    const userFavorites = currentUser.favorites || []; // Necesario para renderArticleCard
+    const userFavorites = currentUser.favorites || [];
 
     if (filterType === "my-articles") {
       const response = await getMyArticles();
       items = response;
       emptyMessage = "Aún no has publicado ninguna pregunta.";
 
-      // Renderizar artículos.
       const contentHtml = items
-        .map(
-          (article) =>
-            // === INICIO DE LA MODIFICACIÓN ===
-            // Pasamos un objeto de opciones para indicar que es la vista "Mi Contenido"
-            renderArticleCard(article, currentUser, userFavorites, {
-              isMyContent: true,
-            })
-          // === FIN DE LA MODIFICACIÓN ===
+        .map((article) =>
+          renderArticleCard(article, currentUser, userFavorites, {
+            isMyContent: true,
+          })
         )
         .join("");
 
@@ -435,11 +393,7 @@ const loadMyContent = async (
       const contentHtml = items.map(renderMyCommentCard).join("");
 
       contentListContainer.innerHTML = contentHtml;
-
-      // === INICIO DE LA MODIFICACIÓN ===
-      // Añadimos el lightbox también para las imágenes de "Mis Respuestas"
       initializeLightbox("my-content-list");
-      // === FIN DE LA MODIFICACIÓN ===
     }
 
     if (items.length === 0) {
@@ -455,12 +409,11 @@ const loadMyContent = async (
 
 document.addEventListener("DOMContentLoaded", async () => {
   let currentUser;
-  let fullProfileData = null; // Almacenará favorites y favoriteComments
-  let currentFilterType = "articles"; // Estado inicial del filtro: preguntas
+  let fullProfileData = null;
+  let currentFilterType = "articles";
 
   try {
     const authData = await verifyAuth();
-    // Aseguramos que currentUser contenga la info necesaria para renderArticleCard
     currentUser = authData.data;
     document.getElementById("logged-in-username").textContent =
       currentUser.firstName;
@@ -469,14 +422,12 @@ document.addEventListener("DOMContentLoaded", async () => {
     return;
   }
 
-  // --- Elementos Comunes ---
   const logoutBtnPerfil = document.getElementById("logout-btn-perfil");
   const logoutModal = document.getElementById("logout-modal");
   const cancelLogoutBtn = document.getElementById("cancel-logout");
   const confirmLogoutBtn = document.getElementById("confirm-logout");
   const navLinks = document.querySelectorAll(".profile-nav .nav-link");
 
-  // --- Elementos de Perfil (RESTAURADO) ---
   const profileSection = document.getElementById("profile-section");
   const profileOptionsMenu = profileSection?.querySelector(
     ".profile-options-menu"
@@ -494,7 +445,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   const avatarInput = document.getElementById("avatar-input");
   const avatarDisplay = document.getElementById("avatarUrl");
 
-  // --- Elementos de Cuenta (RESTAURADO) ---
   const accountSection = document.getElementById("account-section");
   const accountOptionsMenu = accountSection?.querySelector(
     ".account-options-menu"
@@ -509,7 +459,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   const cancelAccountBtn = document.getElementById("cancel-edit-account-btn");
   const editAccountForm = document.getElementById("edit-account-form");
 
-  // --- Elementos de Zona de Peligro ---
   const deleteAccountBtn = document.getElementById("delete-account-btn");
   const deleteAccountModal = document.getElementById("delete-account-modal");
   const cancelDeleteAccountBtn = document.getElementById(
@@ -522,19 +471,16 @@ document.addEventListener("DOMContentLoaded", async () => {
     "delete-confirm-password"
   );
 
-  // --- Elementos de Mi Contenido ---
   const myContentListContainer = document.getElementById("my-content-list");
   const myContentFilterButtons = document.querySelectorAll(
     "#my-content-section .favorites-filter-btn"
   );
 
-  // --- Elementos de Favoritos ---
   const favoritesListContainer = document.getElementById("favorites-list");
   const filterButtons = document.querySelectorAll(
     "#favorites-section .favorites-filter-btn"
   );
 
-  // --- Elementos del nuevo modal de confirmación de comentario ---
   const deleteCommentConfirmModal = document.getElementById(
     "delete-comment-confirm-modal"
   );
@@ -546,7 +492,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   );
   let commentIdToDelete = null;
 
-  // --- Funciones de utilidad para menús ---
   const closeAllDropdowns = () => {
     document
       .querySelectorAll(".options-dropdown.visible")
@@ -557,8 +502,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     try {
       const data = await getProfile();
       fullProfileData = data;
-      // Se necesita la lógica de setProfileFields aquí
-      const { profile, email, username, role } = data;
+
+      const { profile, email, username, role, teacherStatus } = data; // Destructuramos teacherStatus
+
       document.getElementById("firstName").textContent =
         profile.firstName || "Nombre";
       document.getElementById("lastName").textContent =
@@ -566,7 +512,24 @@ document.addEventListener("DOMContentLoaded", async () => {
       document.getElementById("username").textContent = `@${
         username || "username"
       }`;
-      document.getElementById("role").textContent = role || "Usuario";
+
+      // === INICIO MODIFICACIÓN: Badge de Profesor ===
+      const roleElement = document.getElementById("role");
+      if (teacherStatus === "verified") {
+        roleElement.innerHTML =
+          '<i class="fas fa-chalkboard-teacher"></i> Profesor Verificado <i class="fas fa-check-circle" style="color: #27ae60; margin-left: 4px;"></i>';
+        roleElement.style.backgroundColor = "#e8f5e9";
+        roleElement.style.color = "#27ae60";
+        roleElement.style.border = "1px solid #27ae60";
+      } else {
+        roleElement.textContent = role || "Usuario";
+        // Resetear estilos por si acaso
+        roleElement.style.backgroundColor = "";
+        roleElement.style.color = "";
+        roleElement.style.border = "";
+      }
+      // === FIN MODIFICACIÓN ===
+
       document.getElementById("biography-display").textContent =
         profile.biography || "No has añadido una biografía.";
       const birthDate = profile.birthDate
@@ -577,7 +540,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         : "No especificada.";
       document.getElementById("email-display").textContent = email || "";
 
-      // Asumiendo que el elemento del avatar existe
       const avatarDisplay = document.getElementById("avatarUrl");
       avatarDisplay.src =
         profile.avatarUrl ||
@@ -585,7 +547,6 @@ document.addEventListener("DOMContentLoaded", async () => {
           profile.firstName || "NN"
         )}+${encodeURIComponent(profile.lastName || "")}&background=random`;
 
-      // Asegura que currentUser tiene los favoritos actualizados
       currentUser.favorites = data.favorites || [];
       currentUser.favoriteComments = data.favoriteComments || [];
     } catch (err) {
@@ -593,12 +554,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   };
 
-  // FUNCIÓN PRINCIPAL para cargar y mostrar favoritos (adaptada)
   const loadFavorites = async (filterType = currentFilterType) => {
     if (!favoritesListContainer) return;
     favoritesListContainer.innerHTML = "<p>Cargando favoritos...</p>";
 
-    // Actualizar el estado visual del filtro
     filterButtons.forEach((btn) => {
       btn.classList.remove("active");
       if (btn.dataset.filterType === filterType) {
@@ -606,7 +565,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       }
     });
 
-    currentFilterType = filterType; // Actualiza el estado
+    currentFilterType = filterType;
 
     try {
       let items = [];
@@ -648,10 +607,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           .join("");
         favoritesListContainer.innerHTML = contentHtml;
 
-        // === INICIO DE LA MODIFICACIÓN ===
-        // Añadimos el lightbox también para las imágenes de "Respuestas Favoritas"
         initializeLightbox("favorites-list");
-        // === FIN DE LA MODIFICACIÓN ===
       }
     } catch (error) {
       console.error(`Error al cargar ${filterType} favoritos:`, error);
@@ -661,7 +617,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   };
 
-  // Función para cambiar la sección visible
   const switchSection = (sectionId) => {
     document.querySelectorAll(".profile-content").forEach((section) => {
       section.classList.remove("active-section");
@@ -674,10 +629,6 @@ document.addEventListener("DOMContentLoaded", async () => {
       link.classList.toggle("active", link.dataset.section === sectionId);
     });
 
-    // Lógica para cargar contenido basado en la sección
-
-    // *** INICIO DE LA MODIFICACIÓN ***
-    // Si la sección es "profile", cargamos "Mi Contenido"
     if (sectionId === "profile") {
       document
         .getElementById("filter-my-articles-btn")
@@ -687,7 +638,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         ?.classList.toggle("active", currentMyContentType === "my-comments");
       loadMyContent(currentMyContentType, currentUser);
     } else if (sectionId === "favorites") {
-      // La lógica de favoritos permanece igual
       document
         .getElementById("filter-articles-btn")
         ?.classList.toggle("active", currentFilterType === "articles");
@@ -696,13 +646,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         ?.classList.toggle("active", currentFilterType === "comments");
       loadFavorites(currentFilterType);
     }
-    // El "else if" para "my-content" se ha eliminado
-    // *** FIN DE LA MODIFICACIÓN ***
   };
 
-  // --- Event Listeners ---
-
-  // Navegación entre secciones
   navLinks.forEach((link) => {
     link.addEventListener("click", (e) => {
       e.preventDefault();
@@ -711,7 +656,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
   });
 
-  // Listener para los nuevos botones de filtro de FAVORITOS
   filterButtons.forEach((btn) => {
     btn.addEventListener("click", (e) => {
       e.preventDefault();
@@ -720,7 +664,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
   });
 
-  // Listener para los nuevos botones de filtro de MI CONTENIDO
   myContentFilterButtons.forEach((btn) => {
     btn.addEventListener("click", (e) => {
       e.preventDefault();
@@ -729,7 +672,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
   });
 
-  // Listener para quitar favoritos (artículos y comentarios) desde la vista de favoritos
   favoritesListContainer.addEventListener("click", async (event) => {
     const removeCommentBtn = event.target.closest(".favorite-remove-btn");
     const removeArticleStar = event.target.closest(".favorite-remove-star");
@@ -773,8 +715,6 @@ document.addEventListener("DOMContentLoaded", async () => {
       }
     }
 
-    // === INICIO DE LA MODIFICACIÓN ===
-    // Añadir listener para el lightbox en las imágenes de comentarios favoritos
     if (link && currentFilterType === "comments") {
       const modal = document.getElementById("image-preview-modal");
       const previewImage = document.getElementById("preview-image-src");
@@ -784,35 +724,30 @@ document.addEventListener("DOMContentLoaded", async () => {
         modal.classList.add("visible");
       }
     }
-    // === FIN DE LA MODIFICACIÓN ===
   });
 
-  // TAREA: Listener para la funcionalidad completa de la tarjeta de artículo en MI CONTENIDO
   myContentListContainer.addEventListener("click", async (event) => {
-    // --- Funciones de utilidad para menús ---
     const closeAllDropdowns = () => {
       document
         .querySelectorAll(".options-dropdown.visible")
         .forEach((d) => d.classList.remove("visible"));
     };
 
-    // 1. Lógica para el menú de opciones (3 puntitos)
     const toggleBtn = event.target.closest(".options-toggle-btn");
     if (toggleBtn && currentMyContentType === "my-articles") {
       const dropdown = toggleBtn.nextElementSibling;
-      closeAllDropdowns(); // Cerrar todos antes de abrir uno
+      closeAllDropdowns();
       dropdown.classList.toggle("visible");
       return;
     }
 
-    // 2. Lógica para Votar (Likes/Dislikes) - SOLO ARTÍCULOS
     const voteBtn = event.target.closest(".vote-btn");
     if (voteBtn && currentMyContentType === "my-articles") {
       const articleId = voteBtn.dataset.articleId;
       const voteType = voteBtn.dataset.voteType;
 
       try {
-        const updatedVotes = await voteOnArticle(articleId, voteType); // Servicio de article.service.js
+        const updatedVotes = await voteOnArticle(articleId, voteType);
 
         const articleCard = myContentListContainer.querySelector(
           `.article-card[data-id="${articleId}"]`
@@ -842,20 +777,17 @@ document.addEventListener("DOMContentLoaded", async () => {
       return;
     }
 
-    // 3. Lógica para Favorito (Botón en Menú) - SOLO ARTÍCULOS
     const favoriteBtn = event.target.closest(".favorite-btn");
     if (favoriteBtn && currentMyContentType === "my-articles") {
       const articleId = favoriteBtn.dataset.id;
-      favoriteBtn.closest(".options-dropdown")?.classList.remove("visible"); // Cierra dropdown
+      favoriteBtn.closest(".options-dropdown")?.classList.remove("visible");
 
       try {
         const result = await toggleFavoriteArticle(articleId);
         showSuccessToast(result.message);
 
-        // Actualizar estado local
         currentUser.favorites = result.favorites;
 
-        // Actualizar UI del botón de favorito
         const isFavorite = result.favorites.includes(articleId);
         favoriteBtn.dataset.isFavorite = isFavorite;
         favoriteBtn.innerHTML = `
@@ -868,33 +800,29 @@ document.addEventListener("DOMContentLoaded", async () => {
       return;
     }
 
-    // 4. Lógica para Editar (Botón en Menú) - SOLO ARTÍCULOS
     const editBtn = event.target.closest(".edit-btn");
     if (editBtn && currentMyContentType === "my-articles") {
       const articleIdToEdit = editBtn.dataset.id;
       openEditModal(articleIdToEdit);
-      editBtn.closest(".options-dropdown")?.classList.remove("visible"); // Cierra dropdown
+      editBtn.closest(".options-dropdown")?.classList.remove("visible");
       return;
     }
 
-    // 5. Lógica para Eliminar (Botón en Menú) - SOLO ARTÍCULOS
     const deleteArticleBtn = event.target.closest(".delete-btn");
     if (deleteArticleBtn && currentMyContentType === "my-articles") {
       const articleId = deleteArticleBtn.dataset.id;
       deleteArticleBtn
         .closest(".options-dropdown")
-        ?.classList.remove("visible"); // Cierra dropdown
+        ?.classList.remove("visible");
 
       const confirmDelete = window.confirm(
         "¿Estás seguro de eliminar esta pregunta? Esta acción es permanente."
       );
       if (confirmDelete) {
         try {
-          await deleteArticle(articleId); // Servicio de article.service.js
+          await deleteArticle(articleId);
           showSuccessToast("Pregunta eliminada correctamente.");
-          // Recargar lista
           await loadMyContent("my-articles", currentUser);
-          // Actualizar contadores
           await loadProfileStats();
         } catch (error) {
           showErrorToast(`Error al eliminar la pregunta: ${error.message}`);
@@ -903,7 +831,6 @@ document.addEventListener("DOMContentLoaded", async () => {
       return;
     }
 
-    // 6. Lógica para mostrar Modal de Eliminación de Comentario - SOLO COMENTARIOS
     const deleteCommentIcon = event.target.closest(".delete-my-comment-icon");
     if (deleteCommentIcon && currentMyContentType === "my-comments") {
       commentIdToDelete = deleteCommentIcon.dataset.commentId;
@@ -911,7 +838,6 @@ document.addEventListener("DOMContentLoaded", async () => {
       return;
     }
 
-    // 7. Lógica para el lightbox (para artículos y comentarios en "Mi Contenido")
     const link = event.target.closest(".article-image-link");
     if (
       link &&
@@ -928,16 +854,12 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   });
 
-  // --- Lógica del Modal de Confirmación de Eliminación de Comentarios ---
-
   confirmCommentDeleteBtn?.addEventListener("click", async () => {
     if (commentIdToDelete) {
       try {
-        await deleteComment(commentIdToDelete); // Servicio de comment.service.js
+        await deleteComment(commentIdToDelete);
         showSuccessToast("Respuesta eliminada correctamente.");
-        // Recargar lista
         await loadMyContent("my-comments", currentUser);
-        // Actualizar contadores
         await loadProfileStats();
       } catch (error) {
         showErrorToast(`Error al eliminar la respuesta: ${error.message}`);
@@ -958,31 +880,27 @@ document.addEventListener("DOMContentLoaded", async () => {
       deleteCommentConfirmModal.classList.remove("visible");
     }
   });
-  // --- Fin Lógica Modal de Confirmación ---
 
-  // Cierre de dropdowns al hacer clic fuera del menú de opciones
   document.addEventListener("click", (event) => {
     if (!event.target.closest(".article-options-menu")) {
       closeAllDropdowns();
     }
   });
 
-  // --- Lógica del Menú de Opciones (Perfil y Cuenta) ---
   if (profileOptionsToggleBtn) {
     profileOptionsToggleBtn.addEventListener("click", (e) => {
       e.stopPropagation();
       profileOptionsDropdown?.classList.toggle("visible");
-      accountOptionsDropdown?.classList.remove("visible"); // Cierra el otro
+      accountOptionsDropdown?.classList.remove("visible");
     });
   }
   if (accountOptionsToggleBtn) {
     accountOptionsToggleBtn.addEventListener("click", (e) => {
       e.stopPropagation();
       accountOptionsDropdown?.classList.toggle("visible");
-      profileOptionsDropdown?.classList.remove("visible"); // Cierra el otro
+      profileOptionsDropdown?.classList.remove("visible");
     });
   }
-  // Cerrar menús al hacer clic fuera
   document.addEventListener("click", (event) => {
     if (!profileOptionsMenu?.contains(event.target)) {
       profileOptionsDropdown?.classList.remove("visible");
@@ -992,10 +910,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   });
 
-  // --- Botón Logout ---
   logoutBtnPerfil?.addEventListener("click", () => {
     logoutModal?.classList.add("visible");
-    profileOptionsDropdown?.classList.remove("visible"); // Cierra dropdown si está abierto
+    profileOptionsDropdown?.classList.remove("visible");
   });
   cancelLogoutBtn?.addEventListener("click", () =>
     logoutModal?.classList.remove("visible")
@@ -1012,7 +929,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (e.target === logoutModal) logoutModal.classList.remove("visible");
   });
 
-  // --- Modal Editar Perfil ---
   editProfileBtn?.addEventListener("click", () => {
     if (fullProfileData) {
       document.getElementById("modal-username").value =
@@ -1023,9 +939,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         fullProfileData.profile.lastName || "";
       document.getElementById("modal-biography").value =
         fullProfileData.profile.biography || "";
-      // Formatear fecha para input type="date" (YYYY-MM-DD)
       const birthDate = fullProfileData.profile.birthDate
-        ? new Date(fullProfileData.profile.birthDate + "T00:00:00") // Asegura local
+        ? new Date(fullProfileData.profile.birthDate + "T00:00:00")
             .toISOString()
             .split("T")[0]
         : "";
@@ -1050,11 +965,10 @@ document.addEventListener("DOMContentLoaded", async () => {
         firstName: document.getElementById("modal-firstName").value.trim(),
         lastName: document.getElementById("modal-lastName").value.trim(),
         biography: document.getElementById("modal-biography").value.trim(),
-        birthDate: document.getElementById("modal-birthDate").value || null, // Enviar null si está vacío
+        birthDate: document.getElementById("modal-birthDate").value || null,
       },
     };
 
-    // Validaciones básicas
     if (!profileData.username || profileData.username.length < 3) {
       showErrorToast("El nombre de usuario debe tener al menos 3 caracteres.");
       return;
@@ -1075,16 +989,15 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     try {
-      const result = await updateProfileData(profileData); // Usa servicio
+      const result = await updateProfileData(profileData);
       showSuccessToast("Perfil guardado correctamente.");
       profileModal?.classList.remove("visible");
-      await fetchProfile(); // Recarga los datos del perfil
+      await fetchProfile();
     } catch (err) {
       showErrorToast(err.message);
     }
   });
 
-  // --- Modal Editar Cuenta ---
   editAccountBtn?.addEventListener("click", () => {
     if (fullProfileData) {
       document.getElementById("modal-email").value =
@@ -1115,13 +1028,11 @@ document.addEventListener("DOMContentLoaded", async () => {
       "modal-confirmPassword"
     ).value;
     let dataToSend = { email };
-    // Validar email
     const emailRegex = /^\S+@\S+\.\S+$/;
     if (!emailRegex.test(email)) {
       showErrorToast("El formato del correo electrónico no es válido.");
       return;
     }
-    // Validar y añadir contraseña si se intenta cambiar
     if (newPassword || currentPassword || confirmPassword) {
       if (!currentPassword) {
         showErrorToast("Ingresa tu contraseña actual para cambiarla.");
@@ -1152,18 +1063,17 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     try {
-      const result = await updateAccountData(dataToSend); // Usa servicio
+      const result = await updateAccountData(dataToSend);
       showSuccessToast("Cuenta actualizada correctamente.");
       accountModal?.classList.remove("visible");
-      await fetchProfile(); // Recarga los datos del perfil
+      await fetchProfile();
     } catch (err) {
       showErrorToast(err.message);
     }
   });
 
-  // --- Zona de Peligro ---
   deleteAccountBtn?.addEventListener("click", () => {
-    deleteConfirmPasswordInput.value = ""; // Limpia contraseña anterior
+    deleteConfirmPasswordInput.value = "";
     deleteAccountModal?.classList.add("visible");
   });
 
@@ -1178,7 +1088,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       return;
     }
     try {
-      await deleteAccount(password); // Usa servicio de auth
+      await deleteAccount(password);
       showSuccessToast("Cuenta eliminada correctamente. Serás redirigido.");
       setTimeout(() => {
         window.location.href = "/login.html";
@@ -1194,7 +1104,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   });
 
-  // --- Lógica para Editar Avatar ---
   avatarWrapper?.addEventListener("click", () => {
     avatarInput?.click();
   });
@@ -1216,19 +1125,18 @@ document.addEventListener("DOMContentLoaded", async () => {
     formData.append("avatar", file);
 
     try {
-      const result = await updateAvatarImage(formData); // Usa servicio
-      avatarDisplay.src = result.avatarUrl + `?t=${new Date().getTime()}`; // Actualiza con timestamp
+      const result = await updateAvatarImage(formData);
+      avatarDisplay.src = result.avatarUrl + `?t=${new Date().getTime()}`;
       showSuccessToast("Avatar actualizado correctamente.");
     } catch (error) {
       showErrorToast(`Error al actualizar avatar: ${error.message}`);
     } finally {
-      avatarInput.value = ""; // Resetea input
+      avatarInput.value = "";
     }
   });
 
-  // --- Inicialización ---
-  await fetchProfile(); // Carga inicial del perfil
-  await loadProfileStats(); // CARGA INICIAL DE CONTADORES
-  setupEditModalListeners(currentUser); // Configura listeners para el modal de edición
-  switchSection("profile"); // Muestra la sección de perfil por defecto
+  await fetchProfile();
+  await loadProfileStats();
+  setupEditModalListeners(currentUser);
+  switchSection("profile");
 });
