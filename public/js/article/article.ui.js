@@ -121,6 +121,7 @@ export const renderArticleCard = (
   let authorName = "Usuario Desconocido";
   let statusBadges = "";
   let avatarHtml = "";
+  let verifiedBadge = ""; // Icono de verificado
 
   // Lógica de autor (corregida)
   if (author && typeof author === "object") {
@@ -138,6 +139,11 @@ export const renderArticleCard = (
     if (author.role === "admin") {
       statusBadges += `<span class="admin-badge">Administrador</span>`;
     }
+
+    // === LÓGICA PARA ICONO DE VERIFICADO ===
+    if (author.teacherStatus === "verified") {
+      verifiedBadge = `<i class="fas fa-check-circle" style="color: #27ae60; margin-left: 5px;" title="Docente Verificado"></i>`;
+    }
   } else if (author && typeof author === "string") {
     authorId = author;
     authorName = currentUser.username || "Usuario";
@@ -152,6 +158,11 @@ export const renderArticleCard = (
       currentUser.avatarUrl ||
       defaultAvatarUrl;
     avatarHtml = `<img src="${avatarUrl}" alt="Avatar" class="author-avatar" loading="lazy"/>`;
+
+    // Si el usuario actual es verificado y es el autor (caso raro en renderizado de lista, pero posible)
+    if (currentUser.teacherStatus === "verified") {
+      verifiedBadge = `<i class="fas fa-check-circle" style="color: #27ae60; margin-left: 5px;" title="Docente Verificado"></i>`;
+    }
   }
 
   const isAuthor = currentUser && currentUser.id === authorId;
@@ -171,11 +182,12 @@ export const renderArticleCard = (
     : `/usuario.html?id=${authorId}`;
 
   // 2. Envolvemos el avatar y el nombre en el enlace
+  // AÑADIDO: verifiedBadge dentro del span del nombre
   const authorInfoHtml = `
     <a href="${authorLinkHref}" class="author-link">
       ${avatarHtml}
       <div class="author-text-group">
-          <span class="article-author">${authorName}</span>
+          <span class="article-author">${authorName}${verifiedBadge}</span>
           ${statusBadges}
       </div>
     </a>

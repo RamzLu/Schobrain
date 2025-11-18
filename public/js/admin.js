@@ -6,8 +6,9 @@ import {
 } from "./services/admin.service.js";
 import { showSuccessToast, showErrorToast } from "./utils/notifications.js";
 
-// Estado global para filtro actual
+// Estado global para filtro actual y modal de rechazo
 let currentFilterStatus = "pending";
+let currentRequestIdToReject = null;
 
 const initializeAdminPage = async () => {
   let authData;
@@ -33,6 +34,7 @@ const initializeAdminPage = async () => {
     loadRequests(currentFilterStatus);
     setupFilters();
     setupModalLogic();
+    setupRejectModalLogic(); // Nueva función para el modal de rechazo
   } catch (error) {
     console.error("Error de autenticación o permiso:", error);
     window.location.href = "/login.html";
@@ -105,7 +107,14 @@ const renderRequests = (requests, container) => {
       `;
     } else {
       // Si ya está verificado o rechazado, no mostramos botones principales
-      actionsHtml = `<span style="color:#777; font-size:0.9rem;">Procesado por Admin</span>`;
+      // Mostrar comentario de admin si existe (ej: motivo de rechazo)
+      let feedbackHtml = "";
+      if (req.adminComments) {
+        feedbackHtml = `<div style="margin-top:10px; font-size:0.85rem; color:#666; background:#f9f9f9; padding:5px; border-radius:5px;">
+          <strong>Nota Admin:</strong> ${req.adminComments}
+        </div>`;
+      }
+      actionsHtml = `<span style="color:#777; font-size:0.9rem;">Procesado por Admin</span>${feedbackHtml}`;
     }
 
     card.innerHTML = `
@@ -146,7 +155,7 @@ const renderRequests = (requests, container) => {
         handleStatusChange(req._id, "verified")
       );
     if (rejectBtn)
-      rejectBtn.addEventListener("click", () => handleReject(req._id));
+      rejectBtn.addEventListener("click", () => openRejectModal(req._id)); // Cambiado para usar modal
 
     // Listeners para ver documentos
     card.querySelectorAll(".view-doc-btn").forEach((btn) => {
@@ -168,15 +177,6 @@ const handleStatusChange = async (id, status, comments = "") => {
     loadRequests(currentFilterStatus); // Recargar lista actual
   } catch (error) {
     showErrorToast(error.message);
-  }
-};
-
-const handleReject = (id) => {
-  // Simple prompt para motivo de rechazo (se podría hacer con un modal mejor)
-  const reason = prompt("Indica el motivo del rechazo (opcional):");
-  if (reason !== null) {
-    // Si no cancela
-    handleStatusChange(id, "rejected", reason);
   }
 };
 
@@ -226,6 +226,64 @@ const openDocPreview = (url) => {
     : `${window.location.origin}${url}`;
 
   frame.src = fullUrl;
+  modal.classList.add("visible");
+};
+
+// === MODAL RECHAZO ===
+
+const setupRejectModalLogic = () => {
+  const modal = document.getElementById("reject-request-modal");
+  const form = document.getElementById("reject-form");
+  const cancelBtn = document.getElementById("cancel-reject-btn");
+  const selectReason = document.getElementById("reject-reason-select");
+  const textarea = document.getElementById("reject-comment");
+
+  // Cerrar modal
+  const closeModal = () => {
+    modal.classList.remove("visible");
+    currentRequestIdToReject = null;
+    form.reset();
+  };
+
+  cancelBtn.addEventListener("click", closeModal);
+  modal.addEventListener("click", (e) => {
+    if (e.target === modal) closeModal();
+  });
+
+  // Lógica para el select: copia el texto al textarea
+  selectReason.addEventListener("change", (e) => {
+    const selectedReason = e.target.value;
+    if (selectedReason) {
+      // Si ya hay texto, añade el motivo seleccionado al final
+      const currentText = textarea.value.trim();
+      if (currentText.length > 0) {
+        textarea.value = currentText + "\n" + selectedReason;
+      } else {
+        textarea.value = selectedReason;
+      }
+    }
+  });
+
+  // Manejo del envío del formulario
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const comments = textarea.value.trim();
+
+    if (!comments) {
+      showErrorToast("Por favor, ingresa un motivo para el rechazo.");
+      return;
+    }
+
+    if (currentRequestIdToReject) {
+      await handleStatusChange(currentRequestIdToReject, "rejected", comments);
+      closeModal();
+    }
+  });
+};
+
+const openRejectModal = (id) => {
+  currentRequestIdToReject = id;
+  const modal = document.getElementById("reject-request-modal");
   modal.classList.add("visible");
 };
 

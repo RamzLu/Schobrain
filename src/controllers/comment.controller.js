@@ -35,7 +35,7 @@ export const createComment = async (req, res) => {
     // Populamos el comentario recién creado para devolverlo
     const populatedComment = await CommentModel.findById(comment._id).populate(
       "author",
-      "username profile role"
+      "username profile role teacherStatus" // Agregado teacherStatus
     );
 
     return res.status(201).json({
@@ -55,14 +55,14 @@ export const getAllComments = async (req, res) => {
     const comment = await CommentModel.find().populate([
       {
         path: "author",
-        select: "username profile role",
+        select: "username profile role teacherStatus", // Agregado teacherStatus
       },
       {
         path: "article",
         populate: {
           path: "author",
           model: "User",
-          select: "username profile role",
+          select: "username profile role teacherStatus", // Agregado teacherStatus
         },
       },
     ]);
@@ -142,13 +142,13 @@ export const getCommentsByArticle = async (req, res) => {
       article: articleId,
       parentComment: null, // Solo comentarios de nivel superior
     })
-      .populate("author", "username profile role")
+      .populate("author", "username profile role teacherStatus") // Agregado teacherStatus
       .populate({
         path: "replies", // Pobla las respuestas (Nivel 2)
         populate: {
           // Pobla el autor de esas respuestas
           path: "author",
-          select: "username profile role",
+          select: "username profile role teacherStatus", // Agregado teacherStatus
         },
       })
       .sort({ likes: -1, createdAt: -1 }); // Ordenar por likes/fecha

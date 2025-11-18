@@ -25,7 +25,7 @@ export const createArticle = async (req, res) => {
     });
 
     const populatedArticle = await ArticleModel.findById(article._id)
-      .populate("author", "username profile role")
+      .populate("author", "username profile role teacherStatus") // Agregado teacherStatus
       .populate("tags", "name");
 
     return res.status(201).json({
@@ -43,7 +43,7 @@ export const createArticle = async (req, res) => {
 export const getAllArticles = async (req, res) => {
   try {
     const articles = await ArticleModel.find()
-      .populate("author", "username profile role")
+      .populate("author", "username profile role teacherStatus") // Agregado teacherStatus
       .populate("tags", "name")
       .select(
         "content author createdAt tags imageUrls likes dislikes votedUp votedDown"
@@ -66,14 +66,14 @@ export const getArticleById = async (req, res) => {
     // 1. Obtenemos el artículo principal (sin poblar comentarios)
     // Usamos .lean() para que Mongoose devuelva un objeto JS plano (más rápido)
     const articlePromise = ArticleModel.findById(id)
-      .populate("author", "username profile role")
+      .populate("author", "username profile role teacherStatus") // Agregado teacherStatus
       .populate("tags", "name")
       .lean();
 
     // 2. Obtenemos TODOS los comentarios asociados a ese artículo en una consulta separada
     // Los poblamos y ordenamos por fecha
     const commentsPromise = CommentModel.find({ article: id })
-      .populate("author", "username profile role")
+      .populate("author", "username profile role teacherStatus") // Agregado teacherStatus
       .sort({ createdAt: 1 }) // Ordenar por más antiguo primero
       .lean();
 
@@ -118,7 +118,7 @@ export const searchArticles = async (req, res) => {
       // 'i' hace que la búsqueda no distinga mayúsculas/minúsculas
       content: { $regex: query, $options: "i" },
     })
-      .populate("author", "username profile role")
+      .populate("author", "username profile role teacherStatus") // Agregado teacherStatus
       .populate("tags", "name")
       .select(
         "content author createdAt tags imageUrls likes dislikes votedUp votedDown"
@@ -185,7 +185,7 @@ export const updateArticle = async (req, res) => {
       },
       { new: true }
     )
-      .populate("author", "username profile role")
+      .populate("author", "username profile role teacherStatus") // Agregado teacherStatus
       .populate("tags", "name");
 
     return res.status(200).json({
@@ -204,7 +204,7 @@ export const getUserLogArticles = async (req, res) => {
   const user = req.userLog;
   try {
     const article = await ArticleModel.find({ author: user.id })
-      .populate("author", "username profile role") // ¡AÑADIDA POPULACIÓN!
+      .populate("author", "username profile role teacherStatus") // Agregado teacherStatus
       .select(
         "content author createdAt tags imageUrls likes dislikes votedUp votedDown"
       )
@@ -231,7 +231,7 @@ export const getArticlesByTag = async (req, res) => {
     }
 
     const articles = await ArticleModel.find({ tags: tag._id })
-      .populate("author", "username profile role")
+      .populate("author", "username profile role teacherStatus") // Agregado teacherStatus
       .populate("tags", "name")
       .select(
         "content author createdAt tags imageUrls likes dislikes votedUp votedDown"

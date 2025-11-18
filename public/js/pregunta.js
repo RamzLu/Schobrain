@@ -389,6 +389,12 @@ const renderCommentItem = (
     statusBadges += `<span class="author-badge">Tú</span>`;
   }
 
+  // === LÓGICA PARA ICONO DE VERIFICADO EN COMENTARIOS ===
+  let verifiedBadge = "";
+  if (author.teacherStatus === "verified") {
+    verifiedBadge = `<i class="fas fa-check-circle" style="color: #27ae60; margin-left: 5px;" title="Docente Verificado"></i>`;
+  }
+
   const authorLinkHref = isCommentAuthor
     ? "/perfil.html"
     : `/usuario.html?id=${author._id}`;
@@ -397,7 +403,7 @@ const renderCommentItem = (
     <div class="comment-author-date">
       <a href="${authorLinkHref}" class="author-link" style="gap: 10px;">
         <div class="author-text-group">
-            <span class="comment-author">${commentAuthorUsername}</span>
+            <span class="comment-author">${commentAuthorUsername}${verifiedBadge}</span>
             ${statusBadges}
         </div>
       </a>

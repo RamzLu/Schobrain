@@ -257,6 +257,36 @@
         font-size: 1.5rem;
         cursor: pointer;
       }
+
+      /* Reject Modal Specific Styles */
+      .reject-reason-group {
+        margin-bottom: 1.5rem;
+      }
+      .reject-reason-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: bold;
+        color: #333;
+      }
+      .reject-select {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        font-size: 1rem;
+        margin-bottom: 1rem;
+        background-color: #fff;
+      }
+      .reject-textarea {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        font-size: 1rem;
+        min-height: 100px;
+        resize: vertical;
+        font-family: inherit;
+      }
     </style>
   </head>
   <body>
@@ -331,6 +361,71 @@
           <button class="close-preview" id="close-doc-preview">&times;</button>
         </div>
         <iframe id="doc-preview-frame" src=""></iframe>
+      </div>
+    </div>
+
+    <div id="reject-request-modal" class="modal-overlay">
+      <div class="modal-content">
+        <h2 style="color: #e74c3c">Rechazar Solicitud</h2>
+        <p style="margin-bottom: 1rem; color: #555">
+          Por favor, indica el motivo del rechazo. Esta información será visible
+          para el usuario.
+        </p>
+
+        <form id="reject-form">
+          <div class="reject-reason-group">
+            <label for="reject-reason-select">Motivo predeterminado:</label>
+            <select id="reject-reason-select" class="reject-select">
+              <option value="">-- Selecciona un motivo (Opcional) --</option>
+              <option value="Documentación borrosa o ilegible.">
+                Documentación borrosa o ilegible
+              </option>
+              <option
+                value="El documento no acredita claramente la condición de docente."
+              >
+                El documento no acredita condición de docente
+              </option>
+              <option
+                value="Los datos del documento no coinciden con el perfil del usuario."
+              >
+                Datos no coinciden con el perfil
+              </option>
+              <option
+                value="El documento parece estar vencido o no actualizado."
+              >
+                Documento vencido o no actualizado
+              </option>
+              <option value="Falta el reverso del documento.">
+                Falta el reverso del documento
+              </option>
+            </select>
+          </div>
+
+          <div class="reject-reason-group">
+            <label for="reject-comment"
+              >Justificación manual / Detalles adicionales:</label
+            >
+            <textarea
+              id="reject-comment"
+              class="reject-textarea"
+              placeholder="Escribe aquí los detalles del rechazo..."
+              required
+            ></textarea>
+          </div>
+
+          <div class="modal-actions">
+            <button
+              type="button"
+              id="cancel-reject-btn"
+              class="modal-button secondary"
+            >
+              Cancelar
+            </button>
+            <button type="submit" class="modal-button danger">
+              Confirmar Rechazo
+            </button>
+          </div>
+        </form>
       </div>
     </div>
 

@@ -27,8 +27,6 @@ import { showSuccessToast, showErrorToast } from "./utils/notifications.js";
 import { fetchAllTags } from "./services/tag.service.js";
 import { getProfile } from "./services/profile.service.js";
 import { debounce } from "./utils/debounce.js";
-// === IMPORTACIÓN DEL NUEVO SERVICIO ===
-import { createTeacherRequest } from "./services/teacherRequest.service.js";
 
 // Guarda la lista actual de IDs favoritos del usuario
 let currentUserFavorites = [];
@@ -317,94 +315,6 @@ const initializeIndexPage = async () => {
       if (authData.data.role === "admin") {
         renderAdminMenuOption();
       }
-
-      // === INICIO LÓGICA VERIFICACIÓN DOCENTE ===
-      const teacherBtn = document.getElementById(
-        "open-teacher-verification-btn"
-      );
-      const teacherModal = document.getElementById(
-        "teacher-verification-modal"
-      );
-      const teacherForm = document.getElementById("teacherVerificationForm");
-      const closeTeacherModal = document.getElementById("close-teacher-modal");
-      const cancelTeacherBtn = document.getElementById(
-        "cancel-teacher-verification"
-      );
-
-      if (teacherBtn) {
-        const status = authData.data.teacherStatus || "none";
-
-        if (status === "none" || status === "rejected") {
-          teacherBtn.style.display = "block";
-          if (status === "rejected") {
-            teacherBtn.textContent = "Solicitud rechazada. ¿Reintentar?";
-            teacherBtn.style.color = "#e74c3c"; // Rojo suave
-          }
-
-          teacherBtn.addEventListener("click", (e) => {
-            e.preventDefault();
-            teacherModal.classList.add("visible");
-          });
-        } else if (status === "pending" || status === "review") {
-          teacherBtn.style.display = "block";
-          teacherBtn.textContent = "Verificación en revisión...";
-          teacherBtn.style.color = "#f39c12"; // Naranja
-          teacherBtn.style.pointerEvents = "none"; // Deshabilitar click
-          teacherBtn.style.cursor = "default";
-        } else if (status === "verified") {
-          teacherBtn.style.display = "block";
-          teacherBtn.innerHTML =
-            '<i class="fas fa-check-circle"></i> Docente Verificado';
-          teacherBtn.style.color = "#27ae60"; // Verde
-          teacherBtn.style.pointerEvents = "none";
-          teacherBtn.style.cursor = "default";
-        }
-      }
-
-      if (teacherForm) {
-        teacherForm.addEventListener("submit", async (e) => {
-          e.preventDefault();
-          const submitBtn = teacherForm.querySelector('button[type="submit"]');
-          const originalText = submitBtn.textContent;
-
-          try {
-            submitBtn.disabled = true;
-            submitBtn.textContent = "Enviando...";
-
-            const formData = new FormData(teacherForm);
-            const response = await createTeacherRequest(formData);
-
-            showSuccessToast(response.msg);
-            teacherModal.classList.remove("visible");
-            teacherForm.reset();
-
-            // Actualizar botón visualmente sin recargar
-            if (teacherBtn) {
-              teacherBtn.textContent = "Verificación en revisión...";
-              teacherBtn.style.color = "#f39c12";
-              teacherBtn.style.pointerEvents = "none";
-            }
-          } catch (error) {
-            showErrorToast(error.message);
-          } finally {
-            submitBtn.disabled = false;
-            submitBtn.textContent = originalText;
-          }
-        });
-      }
-
-      // Cerrar modal
-      if (closeTeacherModal) {
-        closeTeacherModal.addEventListener("click", () =>
-          teacherModal.classList.remove("visible")
-        );
-      }
-      if (cancelTeacherBtn) {
-        cancelTeacherBtn.addEventListener("click", () =>
-          teacherModal.classList.remove("visible")
-        );
-      }
-      // === FIN LÓGICA VERIFICACIÓN DOCENTE ===
     }
   } catch (error) {
     console.error("Error de autenticación, redirigiendo a login:", error);

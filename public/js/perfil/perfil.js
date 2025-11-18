@@ -29,6 +29,7 @@ import {
 } from "../article/article.ui.js";
 import { initializeLightbox } from "../utils/lightbox.js";
 import { fetchAllTags } from "../services/tag.service.js";
+import { createTeacherRequest } from "../services/teacherRequest.service.js";
 
 // Helper para el formato de tiempo
 const formatRelativeTime = (dateString) => {
@@ -492,6 +493,19 @@ document.addEventListener("DOMContentLoaded", async () => {
   );
   let commentIdToDelete = null;
 
+  // === VARIABLES VERIFICACIÓN DOCENTE ===
+  const teacherBtn = document.getElementById("open-teacher-verification-btn");
+  const teacherModal = document.getElementById("teacher-verification-modal");
+  const teacherForm = document.getElementById("teacherVerificationForm");
+  const cancelTeacherBtn = document.getElementById(
+    "cancel-teacher-verification"
+  );
+  const closeTeacherModalBtn = document.getElementById("close-teacher-modal"); // NUEVO
+  const teacherDocsInput = document.getElementById("teacher-docs"); // NUEVO
+  const teacherFileNameDisplay = document.getElementById(
+    "teacher-file-name-display"
+  ); // NUEVO
+
   const closeAllDropdowns = () => {
     document
       .querySelectorAll(".options-dropdown.visible")
@@ -513,7 +527,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         username || "username"
       }`;
 
-      // === INICIO MODIFICACIÓN: Badge de Profesor ===
+      // === INICIO MODIFICACIÓN: Badge de Profesor en el Header ===
       const roleElement = document.getElementById("role");
       if (teacherStatus === "verified") {
         roleElement.innerHTML =
@@ -523,12 +537,44 @@ document.addEventListener("DOMContentLoaded", async () => {
         roleElement.style.border = "1px solid #27ae60";
       } else {
         roleElement.textContent = role || "Usuario";
-        // Resetear estilos por si acaso
         roleElement.style.backgroundColor = "";
         roleElement.style.color = "";
         roleElement.style.border = "";
       }
       // === FIN MODIFICACIÓN ===
+
+      // === ACTUALIZACIÓN DEL BOTÓN EN SECCIÓN CUENTA ===
+      if (teacherBtn) {
+        const status = teacherStatus || "none";
+
+        if (status === "none" || status === "rejected") {
+          teacherBtn.style.display = "block";
+          if (status === "rejected") {
+            teacherBtn.textContent = "Solicitud rechazada. ¿Reintentar?";
+            teacherBtn.style.color = "#e74c3c"; // Rojo
+            teacherBtn.style.pointerEvents = "auto";
+            teacherBtn.style.cursor = "pointer";
+          } else {
+            teacherBtn.textContent = "¿Eres docente? Verifícate aquí";
+            teacherBtn.style.color = "#495057";
+            teacherBtn.style.pointerEvents = "auto";
+            teacherBtn.style.cursor = "pointer";
+          }
+        } else if (status === "pending" || status === "review") {
+          teacherBtn.style.display = "block";
+          teacherBtn.textContent = "Verificación en revisión...";
+          teacherBtn.style.color = "#f39c12"; // Naranja
+          teacherBtn.style.pointerEvents = "none";
+          teacherBtn.style.cursor = "default";
+        } else if (status === "verified") {
+          teacherBtn.style.display = "block";
+          teacherBtn.innerHTML =
+            '<i class="fas fa-check-circle"></i> Docente Verificado';
+          teacherBtn.style.color = "#27ae60"; // Verde
+          teacherBtn.style.pointerEvents = "none";
+          teacherBtn.style.cursor = "default";
+        }
+      }
 
       document.getElementById("biography-display").textContent =
         profile.biography || "No has añadido una biografía.";
@@ -553,6 +599,8 @@ document.addEventListener("DOMContentLoaded", async () => {
       showErrorToast(`Error al cargar datos: ${err.message}`);
     }
   };
+
+  // ... (resto de funciones loadFavorites, loadMyContent, etc. sin cambios) ...
 
   const loadFavorites = async (filterType = currentFilterType) => {
     if (!favoritesListContainer) return;
@@ -1103,6 +1151,75 @@ document.addEventListener("DOMContentLoaded", async () => {
       deleteAccountModal.classList.remove("visible");
     }
   });
+
+  // === EVENT LISTENER MODAL DOCENTE ===
+  if (teacherBtn) {
+    teacherBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      teacherModal.classList.add("visible");
+    });
+  }
+
+  if (teacherForm) {
+    teacherForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const submitBtn = teacherForm.querySelector('button[type="submit"]');
+      const originalText = submitBtn.textContent;
+
+      try {
+        submitBtn.disabled = true;
+        submitBtn.textContent = "Enviando...";
+
+        const formData = new FormData(teacherForm);
+        const response = await createTeacherRequest(formData);
+
+        showSuccessToast(response.msg);
+        teacherModal.classList.remove("visible");
+        teacherForm.reset();
+        if (teacherFileNameDisplay) {
+          teacherFileNameDisplay.textContent =
+            "Soporta PDF e Imágenes (Max 10MB)";
+        }
+
+        // Recargar perfil para actualizar estado del botón
+        await fetchProfile();
+      } catch (error) {
+        showErrorToast(error.message);
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalText;
+      }
+    });
+  }
+
+  // Lógica para actualizar el texto del input file
+  if (teacherDocsInput && teacherFileNameDisplay) {
+    teacherDocsInput.addEventListener("change", (event) => {
+      const files = event.target.files;
+      if (files && files.length > 0) {
+        if (files.length === 1) {
+          teacherFileNameDisplay.textContent = files[0].name;
+        } else {
+          teacherFileNameDisplay.textContent = `${files.length} archivos seleccionados`;
+        }
+      } else {
+        teacherFileNameDisplay.textContent =
+          "Soporta PDF e Imágenes (Max 10MB)";
+      }
+    });
+  }
+
+  const closeTeacherModal = () => {
+    if (teacherModal) teacherModal.classList.remove("visible");
+  };
+
+  if (cancelTeacherBtn) {
+    cancelTeacherBtn.addEventListener("click", closeTeacherModal);
+  }
+
+  if (closeTeacherModalBtn) {
+    closeTeacherModalBtn.addEventListener("click", closeTeacherModal);
+  }
 
   avatarWrapper?.addEventListener("click", () => {
     avatarInput?.click();
