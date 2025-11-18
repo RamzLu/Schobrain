@@ -500,11 +500,11 @@ document.addEventListener("DOMContentLoaded", async () => {
   const cancelTeacherBtn = document.getElementById(
     "cancel-teacher-verification"
   );
-  const closeTeacherModalBtn = document.getElementById("close-teacher-modal"); // NUEVO
-  const teacherDocsInput = document.getElementById("teacher-docs"); // NUEVO
+  const closeTeacherModalBtn = document.getElementById("close-teacher-modal");
+  const teacherDocsInput = document.getElementById("teacher-docs");
   const teacherFileNameDisplay = document.getElementById(
     "teacher-file-name-display"
-  ); // NUEVO
+  );
 
   const closeAllDropdowns = () => {
     document
@@ -517,7 +517,9 @@ document.addEventListener("DOMContentLoaded", async () => {
       const data = await getProfile();
       fullProfileData = data;
 
-      const { profile, email, username, role, teacherStatus } = data; // Destructuramos teacherStatus
+      // Obtenemos también 'teacherRequest' del backend
+      const { profile, email, username, role, teacherStatus, teacherRequest } =
+        data;
 
       document.getElementById("firstName").textContent =
         profile.firstName || "Nombre";
@@ -544,21 +546,36 @@ document.addEventListener("DOMContentLoaded", async () => {
       // === FIN MODIFICACIÓN ===
 
       // === ACTUALIZACIÓN DEL BOTÓN EN SECCIÓN CUENTA ===
+      // Elemento para mostrar la razón del rechazo
+      const rejectionReasonElement = document.getElementById(
+        "teacher-rejection-reason"
+      );
+      if (rejectionReasonElement) rejectionReasonElement.style.display = "none"; // Reset inicial
+
       if (teacherBtn) {
         const status = teacherStatus || "none";
 
-        if (status === "none" || status === "rejected") {
+        if (status === "none") {
           teacherBtn.style.display = "block";
-          if (status === "rejected") {
-            teacherBtn.textContent = "Solicitud rechazada. ¿Reintentar?";
-            teacherBtn.style.color = "#e74c3c"; // Rojo
-            teacherBtn.style.pointerEvents = "auto";
-            teacherBtn.style.cursor = "pointer";
-          } else {
-            teacherBtn.textContent = "¿Eres docente? Verifícate aquí";
-            teacherBtn.style.color = "#495057";
-            teacherBtn.style.pointerEvents = "auto";
-            teacherBtn.style.cursor = "pointer";
+          teacherBtn.textContent = "¿Eres docente? Verifícate aquí";
+          teacherBtn.style.color = "#495057";
+          teacherBtn.style.pointerEvents = "auto";
+          teacherBtn.style.cursor = "pointer";
+        } else if (status === "rejected") {
+          teacherBtn.style.display = "block";
+          teacherBtn.textContent = "Solicitud rechazada. ¿Reintentar?";
+          teacherBtn.style.color = "#e74c3c"; // Rojo
+          teacherBtn.style.pointerEvents = "auto";
+          teacherBtn.style.cursor = "pointer";
+
+          // Lógica para mostrar la razón del rechazo
+          if (
+            teacherRequest &&
+            teacherRequest.adminComments &&
+            rejectionReasonElement
+          ) {
+            rejectionReasonElement.textContent = `Motivo del rechazo: ${teacherRequest.adminComments}`;
+            rejectionReasonElement.style.display = "block";
           }
         } else if (status === "pending" || status === "review") {
           teacherBtn.style.display = "block";

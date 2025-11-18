@@ -1,11 +1,12 @@
 // src/controllers/profile.controller.js
 import { UserModel } from "../models/user.model.js";
 import { ArticleModel } from "../models/article.model.js";
-import { CommentModel } from "../models/comment.model.js"; // Importa CommentModel
+import { CommentModel } from "../models/comment.model.js";
+import { TeacherRequestModel } from "../models/teacherRequest.model.js"; // Importamos el modelo
 import path from "path";
 import { comparePassword, hashPassword } from "../helpers/bcrypt.helper.js";
 
-// Obtener perfil (actualizado para incluir favoriteComments y teacherStatus)
+// Obtener perfil (actualizado para incluir favoriteComments, teacherStatus y la solicitud docente)
 export const getProfile = async (req, res) => {
   try {
     // Incluimos 'favorites', 'favoriteComments' y 'teacherStatus' en el select
@@ -14,7 +15,17 @@ export const getProfile = async (req, res) => {
     );
     if (!user)
       return res.status(404).json({ message: "Usuario no encontrado" });
-    res.json(user);
+
+    // BUSCAR LA ÚLTIMA SOLICITUD DOCENTE PARA OBTENER COMENTARIOS DE ADMIN
+    const latestRequest = await TeacherRequestModel.findOne({
+      user: req.userLog.id,
+    }).sort({ createdAt: -1 });
+
+    // Convertimos a objeto para poder agregarle la propiedad teacherRequest
+    const responseData = user.toObject();
+    responseData.teacherRequest = latestRequest;
+
+    res.json(responseData);
   } catch (error) {
     console.error("Error al obtener perfil:", error);
     res.status(500).json({ message: "Error interno al obtener perfil" });
@@ -169,7 +180,7 @@ export const updateAccount = async (req, res) => {
   }
 };
 
-// FUNCIÓN para eliminar la cuenta (EXPORTACIÓN RESTAURADA)
+// FUNCIÓN para eliminar la cuenta
 export const deleteAccount = async (req, res) => {
   const userId = req.userLog.id;
   const { password } = req.body; // Recibe la contraseña del body
