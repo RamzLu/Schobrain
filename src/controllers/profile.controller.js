@@ -239,6 +239,26 @@ export const updateAvatar = async (req, res) => {
   }
 };
 
+// === NUEVA FUNCIÓN: Subir/cambiar BANNER ===
+export const updateBanner = async (req, res) => {
+  try {
+    if (!req.file)
+      return res.status(400).json({ message: "No se envió archivo" });
+    const user = await UserModel.findById(req.userLog.id);
+    if (!user)
+      return res.status(404).json({ message: "Usuario no encontrado" });
+
+    const bannerUrl = "/uploads/" + req.file.filename;
+    user.profile.bannerUrl = bannerUrl;
+    await user.save();
+
+    res.json({ bannerUrl });
+  } catch (error) {
+    console.error("Error al actualizar banner:", error);
+    res.status(500).json({ message: "Error interno al actualizar banner" });
+  }
+};
+
 // FUNCIÓN para añadir/quitar artículo de favoritos (Preguntas)
 export const toggleFavoriteArticle = async (req, res) => {
   const userId = req.userLog.id;

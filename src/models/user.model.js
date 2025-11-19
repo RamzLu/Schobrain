@@ -60,6 +60,12 @@ const userSchema = new Schema(
       avatarUrl: {
         type: String,
       },
+      // === NUEVO CAMPO BANNER ===
+      bannerUrl: {
+        type: String,
+        default: "assets/img/pred-banner.png", // Imagen predeterminada
+      },
+      // ==========================
       birthDate: {
         type: String, // Cambiado a String para consistencia con el frontend
       },

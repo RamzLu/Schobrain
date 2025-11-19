@@ -85,6 +85,27 @@
 
         <section id="profile-section" class="profile-content active-section">
           <div class="profile-card">
+            <div class="profile-banner-container">
+              <img
+                id="bannerUrl"
+                class="profile-banner-img"
+                src=""
+                alt="Banner de perfil"
+              />
+              <button
+                class="edit-banner-btn"
+                id="edit-banner-btn"
+                title="Cambiar portada"
+              >
+                <i class="fas fa-camera"></i>
+              </button>
+              <input
+                type="file"
+                id="banner-input"
+                accept="image/jpeg, image/png, image/gif"
+                style="display: none"
+              />
+            </div>
             <div class="profile-card-header">
               <div
                 id="avatar-wrapper"
@@ -564,6 +585,24 @@
         </div>
         <form id="teacherVerificationForm" enctype="multipart/form-data">
           <div class="input-group">
+            <label for="teacher-dni">DNI / Cédula</label>
+            <input
+              type="text"
+              id="teacher-dni"
+              name="dni"
+              required
+              placeholder="Ingresa tu número de identificación"
+              class="custom-input"
+              style="
+                width: 100%;
+                padding: 10px;
+                border: 1px solid #ccc;
+                border-radius: 5px;
+              "
+            />
+          </div>
+
+          <div class="input-group">
             <label for="teacher-specialty">Especialidad Principal</label>
             <input
               type="text"
@@ -598,23 +637,7 @@
               "
             ></textarea>
           </div>
-          <div class="input-group">
-            <label for="teacher-dni">DNI sin comas/ Cédula</label>
-            <input
-              type="text"
-              id="teacher-dni"
-              name="dni"
-              required
-              placeholder="Ingresa tu número de identificación"
-              class="custom-input"
-              style="
-                width: 100%;
-                padding: 10px;
-                border: 1px solid #ccc;
-                border-radius: 5px;
-              "
-            />
-          </div>
+
           <div class="input-group file-input-group">
             <label for="teacher-dni-front" class="file-input-label">
               <i class="fas fa-id-card"></i> DNI Frente
@@ -653,9 +676,9 @@
             <label for="teacher-docs" class="file-input-label">
               <i class="fas fa-cloud-upload-alt"></i> Títulos / Certificados
             </label>
-            <span id="teacher-file-name-display" class="file-name-display"
-              >Opcional (PDF/IMG)</span
-            >
+            <span id="teacher-file-name-display" class="file-name-display">
+              Opcional (PDF/IMG)
+            </span>
             <input
               type="file"
               id="teacher-docs"
@@ -681,6 +704,7 @@
         </form>
       </div>
     </div>
+
     <script type="module" src="/js/perfil/perfil.js"></script>
     <script type="module" src="/js/article/article.ui.js"></script>
     <script type="module" src="/js/utils/lightbox.js"></script>

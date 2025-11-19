@@ -168,6 +168,19 @@ const renderProfileCard = (user) => {
     `https://ui-avatars.com/api/?name=${encodeURIComponent(
       profile.firstName || "NN"
     )}+${encodeURIComponent(profile.lastName || "")}&background=random`;
+
+  // === BANNER ===
+  const bannerDisplay = document.getElementById("bannerUrl");
+  if (
+    profile.bannerUrl &&
+    profile.bannerUrl !== "assets/img/default-banner.png"
+  ) {
+    bannerDisplay.src = profile.bannerUrl;
+  } else {
+    // Fallback si es la default
+    bannerDisplay.src =
+      "https://via.placeholder.com/1200x400/e0e7ff/4338ca?text=Schobrain";
+  }
 };
 
 /**

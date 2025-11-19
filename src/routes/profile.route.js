@@ -3,6 +3,7 @@ import {
   getProfile,
   updateProfile,
   updateAvatar,
+  updateBanner, // <-- NUEVA IMPORTACIÓN
   updateAccount,
   deleteAccount, // <-- RESTAURADA LA IMPORTACIÓN
   toggleFavoriteArticle,
@@ -22,7 +23,8 @@ const storage = multer.diskStorage({
   },
   filename: (req, file, cb) => {
     const extension = file.originalname.split(".").pop();
-    cb(null, `avatar-${req.userLog.id}-${Date.now()}.${extension}`);
+    // Usamos prefijo genérico para que sirva para avatars y banners
+    cb(null, `upload-${req.userLog.id}-${Date.now()}.${extension}`);
   },
 });
 const upload = multer({
@@ -61,6 +63,14 @@ profileRouter.put(
   validateToken,
   upload.single("avatar"), // 'avatar' debe coincidir con el nombre del campo en FormData
   updateAvatar
+);
+
+// === NUEVA RUTA PARA ACTUALIZAR BANNER ===
+profileRouter.put(
+  "/banner",
+  validateToken,
+  upload.single("banner"), // 'banner' debe coincidir con el nombre del campo en FormData
+  updateBanner
 );
 
 // RUTA ACTUALIZADA para añadir/quitar un artículo de favoritos (PREGUNTAS)

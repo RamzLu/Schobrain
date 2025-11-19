@@ -9,6 +9,7 @@ import {
   updateProfileData,
   updateAccountData,
   updateAvatarImage,
+  updateBannerImage, // <-- Importar
   getFavoriteArticles,
   getFavoriteComments,
   toggleFavoriteComment,
@@ -446,6 +447,11 @@ document.addEventListener("DOMContentLoaded", async () => {
   const avatarInput = document.getElementById("avatar-input");
   const avatarDisplay = document.getElementById("avatarUrl");
 
+  // === NUEVAS VARIABLES PARA EL BANNER ===
+  const bannerInput = document.getElementById("banner-input");
+  const bannerDisplay = document.getElementById("bannerUrl");
+  const editBannerBtn = document.getElementById("edit-banner-btn");
+
   const accountSection = document.getElementById("account-section");
   const accountOptionsMenu = accountSection?.querySelector(
     ".account-options-menu"
@@ -610,14 +616,25 @@ document.addEventListener("DOMContentLoaded", async () => {
           profile.firstName || "NN"
         )}+${encodeURIComponent(profile.lastName || "")}&background=random`;
 
+      // === CARGAR BANNER ===
+      // Si no hay bannerUrl, usamos un placeholder o imagen default
+      if (
+        profile.bannerUrl &&
+        profile.bannerUrl !== "assets/img/default-banner.png"
+      ) {
+        bannerDisplay.src = profile.bannerUrl;
+      } else {
+        // Fallback si es la default
+        bannerDisplay.src =
+          "https://via.placeholder.com/1200x400/e0e7ff/4338ca?text=Schobrain";
+      }
+
       currentUser.favorites = data.favorites || [];
       currentUser.favoriteComments = data.favoriteComments || [];
     } catch (err) {
       showErrorToast(`Error al cargar datos: ${err.message}`);
     }
   };
-
-  // ... (resto de funciones loadFavorites, loadMyContent, etc. sin cambios) ...
 
   const loadFavorites = async (filterType = currentFilterType) => {
     if (!favoritesListContainer) return;
@@ -1266,6 +1283,40 @@ document.addEventListener("DOMContentLoaded", async () => {
       showErrorToast(`Error al actualizar avatar: ${error.message}`);
     } finally {
       avatarInput.value = "";
+    }
+  });
+
+  // === NUEVA LÓGICA CAMBIO DE BANNER ===
+  editBannerBtn?.addEventListener("click", () => {
+    bannerInput?.click();
+  });
+
+  bannerInput?.addEventListener("change", async (event) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+      showErrorToast(
+        "Por favor, selecciona un archivo de imagen para el banner."
+      );
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      showErrorToast("La imagen del banner no debe superar los 5MB.");
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("banner", file);
+
+    try {
+      const result = await updateBannerImage(formData);
+      bannerDisplay.src = result.bannerUrl + `?t=${new Date().getTime()}`;
+      showSuccessToast("Portada actualizada correctamente.");
+    } catch (error) {
+      showErrorToast(`Error al actualizar portada: ${error.message}`);
+    } finally {
+      bannerInput.value = "";
     }
   });
 

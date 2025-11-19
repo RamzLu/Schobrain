@@ -1,3 +1,5 @@
+/* public/assets/perfil.css */
+
 /* Limpiamos el fondo del body, ya que lo hereda del style.css principal */
 body {
   background-color: #f0f2f5;
@@ -49,19 +51,16 @@ body {
 .profile-content {
   display: none; /* Oculto por defecto */
   flex-grow: 1;
-
-  /* === INICIO DE LA MODIFICACIÓN (SCROLLBAR) === */
-  max-height: 85vh; /* Altura máxima del 85% de la ventana */
-  overflow-y: auto; /* Scrollbar vertical si el contenido excede la altura */
-  padding-right: 1rem; /* Espacio para la scrollbar */
-  /* === FIN DE LA MODIFICACIÓN === */
+  max-height: 85vh;
+  overflow-y: auto;
+  padding-right: 1rem;
 }
 
 .profile-content.active-section {
   display: block; /* Mostrar solo la activa */
 }
 
-/* --- Estilos Tarjeta de Perfil (Ajustes) --- */
+/* --- Estilos Tarjeta de Perfil --- */
 .profile-card {
   background-color: #ffffff;
   border-radius: 12px;
@@ -69,71 +68,143 @@ body {
   overflow: hidden;
 }
 
-.profile-card-header {
+/* === ESTILOS PARA BANNER === */
+.profile-banner-container {
+  width: 100%;
+  height: 220px; /* Altura del banner */
+  position: relative;
+  background-color: #e0e7ff;
+  overflow: hidden;
+}
+
+.profile-banner-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.edit-banner-btn {
+  position: absolute;
+  bottom: 15px;
+  right: 15px;
+  background-color: rgba(0, 0, 0, 0.6);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
   display: flex;
   align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  z-index: 2;
+}
+
+.edit-banner-btn:hover {
+  background-color: rgba(0, 0, 0, 0.8);
+}
+
+.edit-banner-btn i {
+  font-size: 1.1rem;
+}
+
+/* === CABECERA DEL PERFIL (CORREGIDA) === */
+.profile-card-header {
+  display: flex;
+  align-items: flex-end; /* Alinea los elementos al fondo del contenedor */
   gap: 1.5rem;
-  padding: 2rem;
+  padding: 0 2rem 1.5rem 2rem; /* Padding normal */
   border-bottom: 1px solid #e9ecef;
+  position: relative;
+  /* ELIMINADO: margin-top negativo. Ahora el header empieza debajo del banner */
+  background-color: #fff; /* Asegura fondo blanco para el texto */
 }
 
 .avatar-container {
   position: relative;
   flex-shrink: 0;
+  /* CLAVE: Solo el avatar tiene margen negativo para subir sobre el banner */
+  margin-top: -75px;
+  z-index: 5; /* Asegura que quede por encima del banner */
 }
 
 .profile-avatar {
-  width: 100px;
-  height: 100px;
+  width: 140px; /* Tamaño generoso */
+  height: 140px;
   border-radius: 50%;
   object-fit: cover;
-  border: 4px solid #ffffff;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border: 5px solid #ffffff; /* Borde grueso para separar del banner */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  background-color: #fff;
 }
 
-.avatar-edit-button {
-  position: absolute;
-  bottom: 0;
-  right: 0;
-  background-color: #4338ca;
-  color: white;
-  width: 32px;
-  height: 32px;
+.clickable-avatar {
+  cursor: pointer;
   border-radius: 50%;
+}
+
+.avatar-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  color: white;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  cursor: pointer;
-  border: 2px solid white;
-  transition: background-color 0.2s;
+  border-radius: 50%; /* Mantiene la forma circular */
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  font-size: 0.9rem;
+  text-align: center;
+
+  /* Corrección para que el overlay respete el borde blanco */
+  width: 130px; /* 140px - 10px de borde total (5px cada lado) */
+  height: 130px;
+  top: 5px;
+  left: 5px;
 }
 
-.avatar-edit-button:hover {
-  background-color: #3730a3;
+.avatar-overlay i {
+  font-size: 1.5rem;
+  margin-bottom: 0.3rem;
+}
+
+.clickable-avatar:hover .avatar-overlay {
+  opacity: 1;
 }
 
 .user-details {
   flex-grow: 1;
+  /* Padding normal, ya no necesitamos empujarlo hacia abajo */
+  padding-bottom: 5px;
 }
 
 .user-details .username-display {
-  font-size: 1.5rem;
+  font-size: 1.6rem;
   color: #111827;
-  font-weight: 700;
+  font-weight: 800;
   margin: 0;
+  line-height: 1.2;
+  margin-top: 4px;
 }
 
 .user-details .full-name {
   font-size: 1.1rem;
   color: #4b5563;
-  margin: 0.25rem 0 0.5rem 0;
+  margin: 0.2rem 0 0.6rem 0;
+  font-weight: 500;
 }
 
 .user-meta {
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  margin-top: 0.5rem;
 }
 
 .user-details .role-badge {
@@ -141,20 +212,24 @@ body {
   color: #4338ca;
   padding: 0.25rem 0.75rem;
   border-radius: 12px;
-  font-size: 0.8rem;
-  font-weight: 600;
-}
-
-.email-display {
-  font-size: 0.9rem;
-  color: #6b7280;
+  font-size: 0.85rem;
+  font-weight: 700;
 }
 
 .profile-card-body {
   padding: 2rem;
 }
 
-/* --- Estilos Tarjeta de Cuenta (NUEVO) --- */
+/* Menú de opciones */
+.profile-options-menu,
+.account-options-menu {
+  position: relative;
+  margin-bottom: 10px;
+  align-self: flex-start; /* Alineado arriba dentro del flex container */
+  margin-top: 1rem;
+}
+
+/* Resto de estilos (Account Card, Info Groups, Modals, etc.) MANTENER IGUAL */
 .account-card {
   background-color: #ffffff;
   border-radius: 12px;
@@ -181,43 +256,36 @@ body {
 }
 
 .password-display {
-  font-family: monospace; /* Para que los puntos se vean uniformes */
-}
-
-/* --- Estilos Menú Opciones (General) --- */
-.profile-options-menu,
-.account-options-menu {
-  position: relative;
-  /* margin-left: auto; */ /* Quitamos esto si interfiere con el layout del header */
+  font-family: monospace;
 }
 
 .options-toggle-btn {
   background: none;
   border: none;
-  font-size: 1rem; /* Ajustado */
+  font-size: 1.1rem;
   cursor: pointer;
   color: #6b7280;
-  padding: 0.4rem; /* Padding para hacer clic más fácil */
+  padding: 0.5rem;
   border-radius: 50%;
   transition: background-color 0.2s, color 0.2s;
 }
 
 .options-toggle-btn:hover {
-  background-color: #f3f4f6; /* Fondo sutil al pasar el ratón */
+  background-color: #f3f4f6;
   color: #111827;
 }
 
 .options-dropdown {
   display: none;
   position: absolute;
-  top: 100%; /* Justo debajo del botón */
+  top: 100%;
   right: 0;
   background-color: #ffffff;
   border-radius: 8px;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
   z-index: 10;
-  width: 160px; /* Ancho ajustado */
-  overflow: hidden; /* Para que el border-radius funcione bien */
+  width: 160px;
+  overflow: hidden;
 }
 
 .options-dropdown.visible {
@@ -234,33 +302,31 @@ body {
   text-align: left;
   padding: 0.8rem 1rem;
   font-size: 0.9rem;
-  color: #374151; /* Color de texto base */
+  color: #374151;
   cursor: pointer;
   transition: background-color 0.2s;
 }
 
 .dropdown-item i {
-  color: #6b7280; /* Color del icono */
-  width: 16px; /* Para alinear iconos */
+  color: #6b7280;
+  width: 16px;
   text-align: center;
 }
 
 .dropdown-item:hover {
-  background-color: #f9fafb; /* Fondo sutil al pasar el ratón */
+  background-color: #f9fafb;
 }
 
 .dropdown-item#logout-btn-perfil {
-  /* ID específico para Logout */
-  color: #e05d5d; /* Color rojo para cerrar sesión */
+  color: #e05d5d;
 }
 
 .dropdown-item#logout-btn-perfil i {
   color: #e05d5d;
 }
 
-/* --- Estilos Generales Info Group (Para ambos Modales) --- */
 .info-group {
-  margin-bottom: 1.2rem; /* Reducido un poco */
+  margin-bottom: 1.2rem;
 }
 
 .info-group label {
@@ -268,16 +334,16 @@ body {
   font-weight: 600;
   color: #374151;
   margin-bottom: 0.5rem;
-  font-size: 0.9rem; /* Ligeramente más pequeño */
+  font-size: 0.9rem;
 }
 
 .info-group input,
 .info-group textarea {
   width: 100%;
-  padding: 0.7rem 0.9rem; /* Reducido */
-  border-radius: 6px; /* Menos redondeado */
+  padding: 0.7rem 0.9rem;
+  border-radius: 6px;
   border: 1px solid #d1d5db;
-  font-size: 0.95rem; /* Reducido */
+  font-size: 0.95rem;
   background: #f9fafb;
   transition: border-color 0.2s, box-shadow 0.2s;
   font-family: "Outfit", sans-serif;
@@ -286,17 +352,16 @@ body {
 .info-group input:focus,
 .info-group textarea:focus {
   border-color: #4f46e5;
-  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15); /* Sombra más sutil */
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
   outline: none;
 }
 
 .info-group textarea {
-  min-height: 100px; /* Reducido */
+  min-height: 100px;
   resize: vertical;
 }
 
 .info-group small {
-  /* Estilo para texto de ayuda */
   display: block;
   font-size: 0.8rem;
   color: #6b7280;
@@ -306,13 +371,10 @@ body {
 .profile-text {
   color: #4b5563;
   font-size: 1rem;
+  line-height: 1.5;
 }
 
-/* Footer (ya no es necesario si no hay botón Save directo en perfil) */
-/* .profile-card-footer { ... } */
-/* .save-button { ... } */
-
-/* --- Estilos para Modal Overlay (General) --- */
+/* Modales Generales */
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -321,130 +383,105 @@ body {
   height: 100%;
   background-color: rgba(0, 0, 0, 0.6);
   backdrop-filter: blur(5px);
-  display: none; /* Oculto por defecto */
+  display: none;
   justify-content: center;
   align-items: center;
   z-index: 1000;
-  padding: 1rem; /* Añade padding para evitar que toque los bordes en móvil */
+  padding: 1rem;
 }
 
 .modal-overlay.visible {
   display: flex;
 }
 
-/* --- Estilos para Modal Content (General) --- */
 .modal-content {
   background: #fff;
-  padding: 2rem; /* Padding reducido */
+  padding: 2rem;
   border-radius: 10px;
   box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
   width: 100%;
-  max-width: 500px; /* Ancho máximo por defecto */
-  text-align: left; /* Alineación izquierda por defecto */
+  max-width: 500px;
+  text-align: left;
 }
 
 .modal-content h2 {
-  color: #111827; /* Título oscuro */
+  color: #111827;
   margin-bottom: 1.5rem;
-  font-size: 1.4rem; /* Reducido */
-  text-align: center; /* Centrar título del modal */
+  font-size: 1.4rem;
+  text-align: center;
 }
 
 .modal-actions {
   display: flex;
-  justify-content: flex-end; /* Botones a la derecha */
-  gap: 0.8rem; /* Reducido */
-  margin-top: 1.5rem; /* Espacio sobre los botones */
+  justify-content: flex-end;
+  gap: 0.8rem;
+  margin-top: 1.5rem;
 }
 
-/* --- Estilos para Botones del Modal (General) --- */
 .modal-button {
-  background-color: #4f46e5; /* Color primario */
+  background-color: #4f46e5;
   color: white;
   border: none;
-  padding: 0.7rem 1.4rem; /* Reducido */
+  padding: 0.7rem 1.4rem;
   border-radius: 6px;
-  font-size: 0.95rem; /* Reducido */
+  font-size: 0.95rem;
   font-weight: 600;
   cursor: pointer;
   transition: background-color 0.2s, transform 0.1s;
 }
 
 .modal-button:hover {
-  background-color: #4338ca; /* Color primario más oscuro */
+  background-color: #4338ca;
 }
 .modal-button:active {
-  transform: scale(0.98); /* Efecto al presionar */
+  transform: scale(0.98);
 }
 
 .modal-button.secondary {
-  background-color: #e5e7eb; /* Gris claro */
-  color: #374151; /* Texto oscuro */
+  background-color: #e5e7eb;
+  color: #374151;
 }
 
 .modal-button.secondary:hover {
-  background-color: #d1d5db; /* Gris un poco más oscuro */
+  background-color: #d1d5db;
 }
 
 .modal-button.danger {
-  background-color: #ef4444; /* Rojo */
+  background-color: #ef4444;
 }
 .modal-button.danger:hover {
-  background-color: #dc2626; /* Rojo más oscuro */
+  background-color: #dc2626;
 }
 
-/* --- Estilos Específicos para Modal Editar Cuenta (NUEVO) --- */
+/* Estilos específicos modales */
 .rectangular-modal {
-  max-width: 550px; /* Un poco más ancho si es necesario */
+  max-width: 550px;
 }
 
 .modal-divider {
-  /* Separador visual */
   border: none;
-  border-top: 1px solid #e5e7eb; /* Línea gris clara */
-  margin: 1.5rem 0; /* Espaciado vertical */
+  border-top: 1px solid #e5e7eb;
+  margin: 1.5rem 0;
 }
 
 .password-change-info {
-  /* Texto informativo */
-  font-size: 0.9rem;
-  color: #6b7280;
-  margin-bottom: 1rem;
-  text-align: center;
-}
-/* ... (Estilos existentes hasta el final) ... */
-
-/* --- Estilos Específicos para Modal Editar Cuenta (NUEVO) --- */
-.rectangular-modal {
-  max-width: 550px; /* Un poco más ancho si es necesario */
-}
-
-.modal-divider {
-  /* Separador visual */
-  border: none;
-  border-top: 1px solid #e5e7eb; /* Línea gris clara */
-  margin: 1.5rem 0; /* Espaciado vertical */
-}
-
-.password-change-info {
-  /* Texto informativo */
   font-size: 0.9rem;
   color: #6b7280;
   margin-bottom: 1rem;
   text-align: center;
 }
 
-/* --- ESTILOS PARA ZONA DE PELIGRO (NUEVO) --- */
+/* Danger Zone */
 .danger-zone {
-  margin-top: 2rem; /* Espacio separador de la tarjeta anterior */
-  border: 1px solid #fecaca; /* Borde rojo claro */
+  margin-top: 2rem;
+  border: 1px solid #fecaca;
   border-radius: 12px;
-  background-color: #fff1f2; /* Fondo rosa muy pálido */
+  background-color: #fff1f2;
 }
 
 .danger-zone h2 {
   font-size: 1.3rem;
-  color: #b91c1c; /* Rojo oscuro */
+  color: #b91c1c;
   padding: 1rem 2rem;
   border-bottom: 1px solid #fecaca;
   margin: 0;
@@ -464,44 +501,37 @@ body {
 
 .danger-item h3 {
   font-size: 1.1rem;
-  color: #dc2626; /* Rojo */
+  color: #dc2626;
   margin: 0 0 0.3rem 0;
 }
 
 .danger-item p {
   font-size: 0.9rem;
-  color: #7f1d1d; /* Rojo más oscuro para texto */
+  color: #7f1d1d;
   line-height: 1.5;
 }
 
 .danger-zone-button {
-  padding: 0.6rem 1.2rem; /* Botón ligeramente más pequeño */
+  padding: 0.6rem 1.2rem;
   font-size: 0.9rem;
-  flex-shrink: 0; /* Evita que el botón se encoja */
+  flex-shrink: 0;
 }
 
-/* ... (Estilos existentes hasta el final) ... */
-
-/* --- ESTILOS PARA MODAL DE CONFIRMACIÓN (NUEVO y Modificado) --- */
+/* Delete Modal */
 #delete-account-modal .modal-content {
-  max-width: 450px; /* Más pequeño para confirmación */
+  max-width: 450px;
 }
 
 .warning-text {
-  color: #b91c1c; /* Rojo oscuro */
+  color: #b91c1c;
   font-size: 0.95rem;
   line-height: 1.6;
   margin-bottom: 1rem;
 }
 
-.warning-text strong {
-  font-weight: 700;
-}
-
-/* Estilo para el grupo de contraseña en modal de eliminación */
 .delete-password-group {
-  margin-top: 1.5rem; /* Espacio antes del campo */
-  margin-bottom: 1.5rem; /* Espacio después del campo */
+  margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
 }
 
 .delete-password-group label {
@@ -521,69 +551,16 @@ body {
 }
 
 .delete-password-group input:focus {
-  border-color: #ef4444; /* Borde rojo al enfocar */
+  border-color: #ef4444;
   box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.15);
   outline: none;
 }
 
 #delete-account-modal .modal-actions {
-  justify-content: space-between; /* Botones en extremos */
-}
-/* ... (Estilos existentes hasta el final, incluyendo los de Zona de Peligro y modal de eliminación) ... */
-
-/* --- ESTILOS PARA AVATAR CLICKEABLE (NUEVO) --- */
-.avatar-container {
-  position: relative; /* Necesario para posicionar el overlay */
-  flex-shrink: 0;
+  justify-content: space-between;
 }
 
-.clickable-avatar {
-  cursor: pointer;
-  overflow: hidden; /* Oculta el overlay si excede el borde redondeado */
-  border-radius: 50%; /* Asegura que el contenedor sea redondo */
-}
-
-.avatar-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5); /* Fondo oscuro semitransparente */
-  color: white;
-  display: flex;
-  flex-direction: column; /* Icono arriba, texto abajo */
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  opacity: 0; /* Oculto por defecto */
-  transition: opacity 0.3s ease;
-  font-size: 0.9rem;
-  text-align: center;
-}
-
-.avatar-overlay i {
-  font-size: 1.5rem;
-  margin-bottom: 0.3rem;
-}
-
-.clickable-avatar:hover .avatar-overlay {
-  opacity: 1; /* Mostrar al pasar el ratón */
-}
-
-.profile-avatar {
-  /* Asegura que la imagen no interfiera con el clic del contenedor */
-  display: block;
-  width: 100px;
-  height: 100px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 4px solid #ffffff;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-/* ... (Estilos existentes de perfil.css) ... */
-
-/* --- ESTILOS PARA LA SECCIÓN DE FAVORITOS (NUEVO) --- */
+/* Favoritos */
 #favorites-section h2 {
   font-size: 1.8rem;
   color: #12121c;
@@ -592,57 +569,6 @@ body {
   border-bottom: 1px solid #e9ecef;
 }
 
-.favorites-list-container {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem; /* Espacio entre tarjetas de favoritos */
-}
-
-/* Ajustes para las tarjetas de artículo dentro de favoritos */
-.favorites-list-container .article-card {
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-  border-left: 4px solid #4338ca; /* Usar un color consistente, como el morado principal */
-  position: relative; /* Necesario para posicionar la estrella */
-}
-.favorite-remove-star {
-  /* Ocupa el lugar del botón de 3 puntos */
-  display: block;
-  font-size: 1.4rem; /* Tamaño de la estrella */
-  color: #808080; /* Color gris para el ícono (como en tu imagen) */
-  cursor: pointer;
-  padding: 0.3rem 0.5rem;
-  transition: color 0.2s, transform 0.2s;
-  border-radius: 50%;
-}
-.favorite-remove-star:hover {
-  color: #12121c; /* Un poco más oscuro al pasar el ratón */
-  transform: scale(1.1);
-}
-.comment-favorite-card .favorite-remove-btn i {
-  color: #808080; /* Aplicar también el gris si no lo tenía */
-}
-
-.favorites-list-container .article-card .article-actions a {
-  /* Opcional: Cambiar el texto o estilo del enlace "Ver discusión" */
-  color: #4739ff;
-}
-
-.favorites-list-container .article-card .favorite-btn i {
-  color: #fdc500; /* Asegura que el icono de estrella sea dorado */
-}
-
-/* ... (Estilos existentes) ... */
-
-/* --- ESTILOS PARA LA SECCIÓN DE FAVORITOS (ACTUALIZADO) --- */
-#favorites-section h2 {
-  font-size: 1.8rem;
-  color: #12121c;
-  margin-bottom: 1.5rem;
-  padding-bottom: 0.5rem;
-  border-bottom: 1px solid #e9ecef;
-}
-
-/* NUEVOS ESTILOS PARA LA BARRA DE FILTROS */
 .favorites-toolbar {
   display: flex;
   gap: 1rem;
@@ -655,7 +581,7 @@ body {
   padding: 0.6rem 1.2rem;
   font-size: 0.95rem;
   border-radius: 6px;
-  background-color: #f3f4f6; /* Estado base no activo */
+  background-color: #f3f4f6;
   color: #4b5563;
   border: 1px solid #d1d5db;
   transition: all 0.2s;
@@ -669,33 +595,39 @@ body {
 }
 
 .favorites-filter-btn.active {
-  background-color: #e0e7ff; /* Color activo */
+  background-color: #e0e7ff;
   color: #4338ca;
   border-color: #4338ca;
   font-weight: 700;
 }
-/* FIN NUEVOS ESTILOS PARA LA BARRA DE FILTROS */
 
 .favorites-list-container {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem; /* Espacio entre tarjetas de favoritos */
+  gap: 1.5rem;
 }
 
-/* Ajustes para las tarjetas de artículo dentro de favoritos */
 .favorites-list-container .article-card {
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05); /* Sombra más sutil */
-  border-left: 4px solid #fdc500; /* Borde izquierdo dorado para destacar favoritos */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  border-left: 4px solid #fdc500;
   margin-bottom: 0;
 }
 
-/* NUEVOS ESTILOS PARA TARJETAS DE COMENTARIOS FAVORITOS */
+.favorites-list-container .article-card .article-actions a {
+  color: #4739ff;
+}
+
+.favorites-list-container .article-card .favorite-btn i {
+  color: #fdc500;
+}
+
+/* Comentarios Favoritos */
 .favorites-list-container .comment-favorite-card {
   background-color: #ffffff;
   padding: 1.5rem;
   border-radius: 10px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-  border-left: 4px solid #6a11cb; /* Borde izquierdo morado para destacar respuestas */
+  border-left: 4px solid #6a11cb;
   color: #333;
   position: relative;
 }
@@ -712,15 +644,32 @@ body {
   align-items: center;
   gap: 10px;
 }
+
+.comment-favorite-card .author-text-group {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.5rem;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
 .comment-favorite-card .author-avatar {
   width: 36px;
   height: 36px;
   flex-shrink: 0;
 }
+
 .comment-favorite-card .comment-author {
   font-weight: 700;
   color: #2575fc;
   font-size: 1.1rem;
+}
+
+.comment-favorite-card .comment-date {
+  font-size: 0.85rem;
+  color: #6c757d;
+  margin-left: 0;
 }
 
 .comment-favorite-card .comment-content p {
@@ -745,7 +694,7 @@ body {
 .comment-favorite-card .favorite-remove-btn {
   background: none;
   border: none;
-  color: #6c757d;
+  color: #808080;
   cursor: pointer;
   font-size: 1.2rem;
   padding: 5px;
@@ -761,69 +710,40 @@ body {
   color: #e63946;
   background-color: #fcebeb;
 }
-/* NUEVOS ESTILOS PARA TARJETAS DE COMENTARIOS FAVORITOS */
-.favorites-list-container .comment-favorite-card {
-  background-color: #ffffff;
-  padding: 1.5rem;
-  border-radius: 10px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-  border-left: 4px solid #6a11cb; /* Borde izquierdo morado para destacar respuestas */
-  color: #333;
-  position: relative;
+
+.favorite-remove-star {
+  display: block;
+  font-size: 1.4rem;
+  color: #808080;
+  cursor: pointer;
+  padding: 0.3rem 0.5rem;
+  transition: color 0.2s, transform 0.2s;
+  border-radius: 50%;
+}
+.favorite-remove-star:hover {
+  color: #12121c;
+  transform: scale(1.1);
 }
 
-.comment-favorite-card .comment-header {
-  margin-bottom: 0.8rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-}
-
-.comment-favorite-card .comment-author-info {
-  /* FIX: Alinea el avatar con el texto del autor */
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-/* FIX: Estilo para el grupo de texto del autor en favoritos */
-.comment-favorite-card .author-text-group {
-  display: flex;
-  flex-direction: row; /* <-- FIX: Cambiado a row para alinear horizontalmente */
-  align-items: center; /* Centrado vertical dentro del grupo */
-  gap: 0.5rem; /* Espacio entre el nombre y la fecha */
-  line-height: 1.2;
-  /* Asegura que el texto no se extienda innecesariamente */
-  white-space: nowrap;
-}
-
-.comment-favorite-card .comment-author {
-  font-weight: 700;
-  color: #2575fc;
-  font-size: 1.1rem;
-}
-
-.comment-favorite-card .comment-date {
-  font-size: 0.85rem;
-  color: #6c757d;
-  margin-left: 0; /* Asegura que no haya margen extra que desplace */
-}
+/* Mis Contenidos */
 .h2CONTENT {
   font-size: 1.8rem;
   color: #12121c;
   margin-bottom: 1.5rem;
 }
+
 .profile-stats-card {
   background-color: #f7f9fc;
   border-radius: 12px;
   padding: 1.5rem;
-  margin-top: 2rem; /* Espacio debajo de la tarjeta principal */
+  margin-top: 2rem;
   display: flex;
   justify-content: space-around;
   gap: 1rem;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
-  margin-bottom: 2rem; /* Añadido para separar del contenido de "Mi Contenido" */
+  margin-bottom: 2rem;
 }
+
 .stat-item {
   display: flex;
   flex-direction: column;
@@ -854,19 +774,20 @@ body {
   font-weight: 700;
   color: #111827;
 }
+
 #my-content-list .article-card {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
   border-left: 4px solid #2575fc;
   margin-bottom: 1.5rem;
-  padding: 1.5rem; /* Make it compact */
-  position: relative; /* Asegura que la tarjeta es el punto de anclaje */
+  padding: 1.5rem;
+  position: relative;
 }
 
-/* Ocultar botones de acción directa ya que usaremos el menú de 3 puntos */
 #my-content-list .article-card .header-right-controls .edit-btn,
 #my-content-list .article-card .header-right-controls .delete-btn {
   display: none;
 }
+
 .comment-favorite-card.my-comment-card {
   background-color: #fcfcfc;
   border-left: 4px solid #6a11cb;
@@ -876,11 +797,13 @@ body {
   margin-bottom: 1.5rem;
   position: relative;
 }
+
 .comment-favorite-card.my-comment-card .comment-header {
   align-items: center;
   margin-bottom: 0.5rem;
-  position: relative; /* Necesario para posicionar el icono de eliminar */
+  position: relative;
 }
+
 .delete-my-comment-icon {
   position: absolute;
   top: 10px;

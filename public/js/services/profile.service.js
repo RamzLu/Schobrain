@@ -1,139 +1,154 @@
 // public/js/services/profile.service.js
-import { logoutUser as authLogout } from "./auth.service.js"; // Importa si necesitas logout
 
 const API_URL = "/api/profile";
-const ACCOUNT_API_URL = "/api/profile/account";
-const AVATAR_API_URL = "/api/profile/avatar";
-// Definición de las constantes de URL para favoritos (PREGUNTAS y RESPUESTAS)
-const FAVORITES_ARTICLES_API_URL = "/api/profile/favorites/articles";
-const FAVORITES_COMMENTS_API_URL = "/api/profile/favorites/comments";
 
-// Obtener datos del perfil del usuario logueado
+const getHeaders = () => {
+  const token = localStorage.getItem("token");
+  return {
+    Authorization: `Bearer ${token}`,
+    // No Content-Type for FormData (browser sets it)
+  };
+};
+
 export const getProfile = async () => {
   try {
-    const response = await fetch(API_URL);
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
-      throw new Error(
-        errorData.message || errorData.msg || "Error al cargar el perfil."
-      );
-    }
-    return await response.json();
+    const response = await fetch(API_URL, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    });
+    const data = await response.json();
+    if (!response.ok)
+      throw new Error(data.message || "Error al obtener perfil");
+    return data;
   } catch (error) {
-    console.error("Error en getProfile service:", error);
     throw error;
   }
 };
 
-// Actualizar datos básicos del perfil (username, nombre, apellido, bio, fecha nac)
 export const updateProfileData = async (profileData) => {
   try {
     const response = await fetch(API_URL, {
       method: "PUT",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
       body: JSON.stringify(profileData),
     });
-    const result = await response.json();
-    if (!response.ok) {
-      throw new Error(
-        result.message || result.msg || "Error al guardar el perfil."
-      );
-    }
-    return result;
+    const data = await response.json();
+    if (!response.ok)
+      throw new Error(data.message || "Error al actualizar perfil");
+    return data;
   } catch (error) {
-    console.error("Error en updateProfileData service:", error);
     throw error;
   }
 };
 
-// Actualizar datos de la cuenta (email, contraseña)
 export const updateAccountData = async (accountData) => {
   try {
-    const response = await fetch(ACCOUNT_API_URL, {
+    const response = await fetch(`${API_URL}/account`, {
       method: "PUT",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
       body: JSON.stringify(accountData),
     });
-    const result = await response.json();
-    if (!response.ok) {
-      throw new Error(
-        result.message || result.msg || "Error al actualizar la cuenta."
-      );
-    }
-    return result;
+    const data = await response.json();
+    if (!response.ok)
+      throw new Error(data.message || "Error al actualizar cuenta");
+    return data;
   } catch (error) {
-    console.error("Error en updateAccountData service:", error);
     throw error;
   }
 };
 
-// Actualizar imagen de avatar
 export const updateAvatarImage = async (formData) => {
   try {
-    const response = await fetch(AVATAR_API_URL, {
+    const response = await fetch(`${API_URL}/avatar`, {
       method: "PUT",
-      body: formData, // FormData maneja Content-Type
+      headers: getHeaders(),
+      body: formData,
     });
-    const result = await response.json();
-    if (!response.ok) {
-      throw new Error(result.message || result.msg || "Error al subir imagen.");
-    }
-    return result; // Devuelve { avatarUrl: "..." }
+    const data = await response.json();
+    if (!response.ok)
+      throw new Error(data.message || "Error al actualizar avatar");
+    return data;
   } catch (error) {
-    console.error("Error en updateAvatarImage service:", error);
     throw error;
   }
 };
 
-// OBTENER artículos favoritos (Preguntas)
+// === NUEVA FUNCIÓN: SUBIR BANNER ===
+export const updateBannerImage = async (formData) => {
+  try {
+    const response = await fetch(`${API_URL}/banner`, {
+      method: "PUT",
+      headers: getHeaders(),
+      body: formData,
+    });
+    const data = await response.json();
+    if (!response.ok)
+      throw new Error(data.message || "Error al actualizar banner");
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
+
 export const getFavoriteArticles = async () => {
   try {
-    const response = await fetch(FAVORITES_ARTICLES_API_URL); // Usa la constante definida
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
-      throw new Error(
-        errorData.message || errorData.msg || "Error al cargar favoritos."
-      );
-    }
-    return await response.json();
+    const response = await fetch(`${API_URL}/favorites/articles`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    });
+    const data = await response.json();
+    if (!response.ok)
+      throw new Error(data.message || "Error al obtener favoritos");
+    return data;
   } catch (error) {
-    console.error("Error en getFavoriteArticles service:", error);
     throw error;
   }
 };
 
-// NUEVA FUNCIÓN: Obtener comentarios favoritos (Respuestas)
 export const getFavoriteComments = async () => {
   try {
-    const response = await fetch(FAVORITES_COMMENTS_API_URL); // Usa la constante definida
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
-      throw new Error(
-        errorData.message ||
-          errorData.msg ||
-          "Error al cargar respuestas favoritas."
-      );
-    }
-    return await response.json();
+    const response = await fetch(`${API_URL}/favorites/comments`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    });
+    const data = await response.json();
+    if (!response.ok)
+      throw new Error(data.message || "Error al obtener comentarios favoritos");
+    return data;
   } catch (error) {
-    console.error("Error en getFavoriteComments service:", error);
     throw error;
   }
 };
 
-// NUEVA FUNCIÓN: Añadir/quitar comentario de favoritos (Respuestas)
 export const toggleFavoriteComment = async (commentId) => {
-  // Nota: La ruta para el toggle usa el ID en la URL y la base API_URL
-  const response = await fetch(`${API_URL}/favorites/comment/${commentId}`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-  });
-
-  const data = await response.json();
-  if (!response.ok) {
-    throw new Error(
-      data.message || data.msg || "Error al actualizar la respuesta favorita."
-    );
+  try {
+    const response = await fetch(`${API_URL}/favorites/comment/${commentId}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    });
+    const data = await response.json();
+    if (!response.ok)
+      throw new Error(data.message || "Error al actualizar favoritos");
+    return data;
+  } catch (error) {
+    throw error;
   }
-  return data;
 };
