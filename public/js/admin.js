@@ -77,18 +77,38 @@ const renderRequests = (requests, container) => {
     };
     const statusInfo = statusLabels[req.status] || statusLabels.pending;
 
-    // Generar HTML de documentos
+    // --- NUEVO: Generar botones para ver DNI (Frente y Reverso) ---
+    let dniHtml = "";
+    if (req.dniFront) {
+      dniHtml += `
+        <button class="doc-link view-doc-btn" data-url="${req.dniFront}" title="Ver Frente DNI" style="border-color: #6a11cb; color: #6a11cb;">
+          <i class="fas fa-id-card"></i> Frente
+        </button>
+      `;
+    }
+    if (req.dniBack) {
+      dniHtml += `
+        <button class="doc-link view-doc-btn" data-url="${req.dniBack}" title="Ver Reverso DNI" style="border-color: #6a11cb; color: #6a11cb;">
+          <i class="fas fa-id-card"></i> Reverso
+        </button>
+      `;
+    }
+
+    // Generar HTML de documentos adicionales (Títulos)
     const docsHtml = req.documents
       .map(
         (docUrl, index) => `
       <button class="doc-link view-doc-btn" data-url="${docUrl}">
-        <i class="fas fa-file-alt"></i> Doc ${index + 1}
+        <i class="fas fa-file-alt"></i> Título ${index + 1}
       </button>
     `
       )
       .join("");
 
-    // Generar Botones según estado
+    // Unir todo (DNI primero, luego títulos)
+    const allDocsHtml = dniHtml + docsHtml;
+
+    // Generar Botones de acción según estado
     let actionsHtml = "";
     if (req.status === "pending") {
       actionsHtml = `
@@ -106,8 +126,7 @@ const renderRequests = (requests, container) => {
         </button>
       `;
     } else {
-      // Si ya está verificado o rechazado, no mostramos botones principales
-      // Mostrar comentario de admin si existe (ej: motivo de rechazo)
+      // Si ya está verificado o rechazado, mostrar feedback
       let feedbackHtml = "";
       if (req.adminComments) {
         feedbackHtml = `<div style="margin-top:10px; font-size:0.85rem; color:#666; background:#f9f9f9; padding:5px; border-radius:5px;">
@@ -129,13 +148,21 @@ const renderRequests = (requests, container) => {
         </div>
       </div>
       <div class="req-details">
-        <p><strong>DNI:</strong> ${req.dni}</p>
+        <p><strong>DNI N°:</strong> ${req.dni}</p>
         <p><strong>Especialidad:</strong> ${req.specialty}</p>
         <p><strong>Info:</strong> ${req.description || "Sin descripción"}</p>
       </div>
-      <div class="req-docs">
-        ${docsHtml}
+      
+      <div class="req-docs" style="flex-direction: column; gap: 5px; align-items: flex-start;">
+        <strong style="font-size: 0.85rem; margin-bottom: 5px;">Documentación:</strong>
+        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+          ${
+            allDocsHtml ||
+            "<span style='color: #999; font-size: 0.8rem;'>Sin archivos adjuntos</span>"
+          }
+        </div>
       </div>
+
       <div class="req-actions">
         ${actionsHtml}
       </div>
@@ -155,9 +182,9 @@ const renderRequests = (requests, container) => {
         handleStatusChange(req._id, "verified")
       );
     if (rejectBtn)
-      rejectBtn.addEventListener("click", () => openRejectModal(req._id)); // Cambiado para usar modal
+      rejectBtn.addEventListener("click", () => openRejectModal(req._id));
 
-    // Listeners para ver documentos
+    // Listeners para ver documentos (funciona tanto para DNI como para Títulos)
     card.querySelectorAll(".view-doc-btn").forEach((btn) => {
       btn.addEventListener("click", (e) => {
         openDocPreview(e.currentTarget.dataset.url);

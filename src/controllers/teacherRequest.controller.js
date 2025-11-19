@@ -16,14 +16,32 @@ export const createRequest = async (req, res) => {
       });
     }
 
-    // Procesar archivos subidos
-    let documentPaths = [];
-    if (req.files && req.files.length > 0) {
-      documentPaths = req.files.map((file) => `/uploads/${file.filename}`);
-    } else {
+    // === VALIDACIÓN DE ARCHIVOS OBLIGATORIOS (DNI) ===
+    // req.files ahora es un objeto gracias a .fields()
+    if (
+      !req.files ||
+      !req.files.dniFront ||
+      req.files.dniFront.length === 0 ||
+      !req.files.dniBack ||
+      req.files.dniBack.length === 0
+    ) {
       return res
         .status(400)
-        .json({ msg: "Debes subir al menos un documento probatorio." });
+        .json({
+          msg: "Es obligatorio subir foto del frente y reverso del DNI.",
+        });
+    }
+
+    // Obtener rutas de las imágenes del DNI
+    const dniFrontPath = `/uploads/${req.files.dniFront[0].filename}`;
+    const dniBackPath = `/uploads/${req.files.dniBack[0].filename}`;
+
+    // Procesar otros documentos opcionales
+    let documentPaths = [];
+    if (req.files.documents && req.files.documents.length > 0) {
+      documentPaths = req.files.documents.map(
+        (file) => `/uploads/${file.filename}`
+      );
     }
 
     // Crear la solicitud
@@ -32,6 +50,8 @@ export const createRequest = async (req, res) => {
       dni,
       specialty,
       description,
+      dniFront: dniFrontPath, // Guardar frente
+      dniBack: dniBackPath, // Guardar reverso
       documents: documentPaths,
       status: "pending",
     });

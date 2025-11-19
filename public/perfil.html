@@ -564,24 +564,6 @@
         </div>
         <form id="teacherVerificationForm" enctype="multipart/form-data">
           <div class="input-group">
-            <label for="teacher-dni">DNI / Cédula</label>
-            <input
-              type="text"
-              id="teacher-dni"
-              name="dni"
-              required
-              placeholder="Ingresa tu número de identificación"
-              class="custom-input"
-              style="
-                width: 100%;
-                padding: 10px;
-                border: 1px solid #ccc;
-                border-radius: 5px;
-              "
-            />
-          </div>
-
-          <div class="input-group">
             <label for="teacher-specialty">Especialidad Principal</label>
             <input
               type="text"
@@ -616,14 +598,64 @@
               "
             ></textarea>
           </div>
+          <div class="input-group">
+            <label for="teacher-dni">DNI sin comas/ Cédula</label>
+            <input
+              type="text"
+              id="teacher-dni"
+              name="dni"
+              required
+              placeholder="Ingresa tu número de identificación"
+              class="custom-input"
+              style="
+                width: 100%;
+                padding: 10px;
+                border: 1px solid #ccc;
+                border-radius: 5px;
+              "
+            />
+          </div>
+          <div class="input-group file-input-group">
+            <label for="teacher-dni-front" class="file-input-label">
+              <i class="fas fa-id-card"></i> DNI Frente
+            </label>
+            <span id="teacher-dni-front-display" class="file-name-display"
+              >Requerido</span
+            >
+            <input
+              type="file"
+              id="teacher-dni-front"
+              name="dniFront"
+              accept="image/jpeg, image/png, image/jpg"
+              class="hidden-file-input"
+              required
+            />
+          </div>
+
+          <div class="input-group file-input-group">
+            <label for="teacher-dni-back" class="file-input-label">
+              <i class="fas fa-id-card"></i> DNI Reverso
+            </label>
+            <span id="teacher-dni-back-display" class="file-name-display"
+              >Requerido</span
+            >
+            <input
+              type="file"
+              id="teacher-dni-back"
+              name="dniBack"
+              accept="image/jpeg, image/png, image/jpg"
+              class="hidden-file-input"
+              required
+            />
+          </div>
 
           <div class="input-group file-input-group">
             <label for="teacher-docs" class="file-input-label">
-              <i class="fas fa-cloud-upload-alt"></i> Subir Título/Certificados
+              <i class="fas fa-cloud-upload-alt"></i> Títulos / Certificados
             </label>
-            <span id="teacher-file-name-display" class="file-name-display">
-              Soporta PDF e Imágenes (Max 10MB)
-            </span>
+            <span id="teacher-file-name-display" class="file-name-display"
+              >Opcional (PDF/IMG)</span
+            >
             <input
               type="file"
               id="teacher-docs"
@@ -631,7 +663,6 @@
               accept=".pdf, image/jpeg, image/png, image/jpg"
               class="hidden-file-input"
               multiple
-              required
             />
           </div>
 
@@ -650,7 +681,6 @@
         </form>
       </div>
     </div>
-
     <script type="module" src="/js/perfil/perfil.js"></script>
     <script type="module" src="/js/article/article.ui.js"></script>
     <script type="module" src="/js/utils/lightbox.js"></script>

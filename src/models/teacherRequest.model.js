@@ -19,9 +19,19 @@ const teacherRequestSchema = new Schema(
     description: {
       type: String, // Breve descripción de su experiencia
     },
+    // === NUEVOS CAMPOS PARA DNI ===
+    dniFront: {
+      type: String,
+      required: true,
+    },
+    dniBack: {
+      type: String,
+      required: true,
+    },
+    // ==============================
     documents: [
       {
-        type: String, // URLs o paths de los archivos subidos
+        type: String, // URLs o paths de los archivos adicionales (títulos)
       },
     ],
     status: {

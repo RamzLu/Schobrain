@@ -2151,20 +2151,6 @@ body {
    21. ESTILOS PARA EL NUEVO FORMULARIO DE COMENTARIOS (chat-input)
    ========================================================================== */
 
-/* Eliminamos los estilos antiguos del formulario de comentarios */
-.new-comment-form {
-  /* Vaciado de estilos antiguos */
-}
-.new-comment-form textarea {
-  /* Vaciado de estilos antiguos */
-}
-.new-comment-form button[type="submit"] {
-  /* Vaciado de estilos antiguos */
-}
-.comment-form-actions {
-  /* Vaciado de estilos antiguos */
-}
-
 /* --- Nuevos Estilos --- */
 
 /* Contenedor principal del formulario */
@@ -2609,4 +2595,293 @@ form.new-comment-form:focus-within {
 
 .reply-btn-ghost i {
   font-size: 0.9rem; /* Ajusta el icono */
+}
+/* ... (Todo tu CSS anterior se mantiene) ... */
+
+/* ==========================================================================
+   ESTILOS DEL PODIO Y LISTA DE CONTRIBUYENTES (TOP 10)
+   ========================================================================== */
+
+.contributors-list {
+  padding: 10px;
+  background-color: transparent;
+}
+
+/* --- PODIO (TOP 3) --- */
+
+.podium-container {
+  display: flex;
+  align-items: flex-end; /* Alinea las barras al fondo */
+  justify-content: center;
+  gap: 8px; /* Espacio entre barras */
+  height: 260px; /* Altura total del área del podio */
+  padding-bottom: 10px;
+  margin-top: 10px;
+  margin-bottom: 1.5rem;
+}
+
+.podium-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  flex: 1;
+}
+
+/* Configuración de Alturas y Colores */
+
+/* 1er Puesto (Centro) */
+.podium-step.rank-1 {
+  order: 2; /* Visualmente en el centro */
+  z-index: 10;
+}
+.podium-step.rank-1 .podium-block {
+  height: 130px; /* El más alto */
+  background: linear-gradient(to bottom, #ffd700, #e6c200);
+  box-shadow: 0 0 15px rgba(255, 215, 0, 0.4);
+  border-top: 4px solid #fffacd;
+}
+
+/* 2do Puesto (Izquierda) */
+.podium-step.rank-2 .podium-block {
+  height: 90px;
+  background: linear-gradient(to bottom, #c0c0c0, #a9a9a9);
+  border-top: 4px solid #e8e8e8;
+}
+
+/* 3er Puesto (Derecha) */
+.podium-step.rank-3 .podium-block {
+  height: 60px;
+  background: linear-gradient(to bottom, #cd7f32, #b87333);
+  border-top: 4px solid #deb887;
+}
+
+/* Bloque Físico del Podio */
+.podium-block {
+  width: 100%;
+  border-radius: 8px 8px 0 0;
+  margin-top: 10px;
+  position: relative;
+  transition: transform 0.3s ease;
+  display: flex; /* Para centrar la imagen de la medalla */
+  justify-content: center; /* Para centrar la imagen de la medalla */
+  align-items: center; /* Para centrar la imagen de la medalla */
+  overflow: hidden; /* Asegurar que la medalla no se salga */
+}
+
+.podium-step:hover .podium-block {
+  filter: brightness(1.1);
+}
+
+/* --- ESTILOS DE LA IMAGEN DE LA MEDALLA DENTRO DEL PILAR --- */
+.podium-medal-img {
+  width: 80%; /* Ajusta el tamaño de la medalla */
+  max-width: 60px; /* Limita el ancho máximo */
+  height: auto;
+  object-fit: contain; /* Asegura que la imagen se vea completa */
+  padding-top: 5px; /* Pequeño padding superior para que no toque el borde */
+  opacity: 0.8; /* Ligeramente transparente para que se integre mejor */
+  filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.2));
+}
+
+/* Avatares y Enlaces del Podio */
+.podium-avatar-link {
+  text-decoration: none;
+  display: block;
+  position: relative;
+  transition: transform 0.2s ease;
+}
+
+.podium-avatar-link:hover {
+  transform: translateY(-5px);
+}
+
+.podium-avatar-wrapper {
+  position: relative;
+  margin-bottom: 5px;
+  display: flex;
+  justify-content: center;
+}
+
+.podium-avatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #fff;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+  background-color: #fff;
+}
+
+/* Avatar más grande para el ganador */
+.podium-step.rank-1 .podium-avatar {
+  width: 70px;
+  height: 70px;
+  border-color: #ffd700;
+}
+
+/* Corona */
+.crown-icon {
+  position: absolute;
+  top: -22px;
+  left: 50%;
+  transform: translateX(-50%) rotate(-5deg);
+  color: #ffd700;
+  font-size: 1.8rem;
+  filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.3));
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateX(-50%) rotate(-5deg) translateY(0);
+  }
+  50% {
+    transform: translateX(-50%) rotate(-5deg) translateY(-5px);
+  }
+}
+
+/* Badge de Número (1, 2, 3) */
+.podium-badge {
+  position: absolute;
+  bottom: -5px;
+  background-color: #1a1a2e;
+  color: #fff;
+  font-size: 0.7rem;
+  font-weight: bold;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #fff;
+}
+
+.podium-step.rank-1 .podium-badge {
+  background-color: #ffd700;
+  color: #333;
+  width: 24px;
+  height: 24px;
+  font-size: 0.9rem;
+}
+
+/* Info Podio (Texto) */
+.podium-info {
+  text-align: center;
+  margin-bottom: 2px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 35px;
+}
+
+.podium-name {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #333;
+  text-decoration: none;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 70px;
+}
+
+.podium-step.rank-1 .podium-name {
+  font-size: 1rem;
+  color: #6a11cb;
+}
+
+.podium-likes {
+  font-size: 0.75rem;
+  color: #666;
+}
+
+/* --- LISTA DE MENCIONES HONORÍFICAS (4 - 10) --- */
+
+.contributors-list-container {
+  background-color: #fff;
+  border-radius: 10px;
+  padding: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.contributors-list-title {
+  font-size: 0.9rem;
+  color: #888;
+  margin-bottom: 10px;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 700;
+  border-bottom: 1px solid #f0f0f0;
+  padding-bottom: 5px;
+}
+
+.contributor-list-item {
+  display: flex;
+  align-items: center;
+  padding: 8px 10px;
+  border-radius: 8px;
+  text-decoration: none;
+  margin-bottom: 5px;
+  transition: background-color 0.2s ease;
+}
+
+.contributor-list-item:hover {
+  background-color: #f8f9fa;
+}
+
+.list-rank {
+  font-weight: 700;
+  color: #a0a0b0;
+  width: 20px;
+  text-align: center;
+  margin-right: 10px;
+  font-size: 0.9rem;
+}
+
+.list-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-right: 10px;
+  border: 1px solid #eee;
+}
+
+.list-info {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.list-name {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #333;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.list-likes {
+  font-size: 0.75rem;
+  color: #6a11cb;
+}
+
+/* Responsive */
+@media (max-width: 1200px) {
+  .podium-container {
+    gap: 4px;
+  }
+  .podium-avatar {
+    width: 40px;
+    height: 40px;
+  }
+  .podium-step.rank-1 .podium-avatar {
+    width: 55px;
+    height: 55px;
+  }
 }

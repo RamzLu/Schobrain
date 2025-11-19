@@ -137,7 +137,7 @@ export const renderArticleCard = (
     avatarHtml = `<img src="${avatarUrl}" alt="Avatar" class="author-avatar" loading="lazy"/>`;
 
     if (author.role === "admin") {
-      statusBadges += `<span class="admin-badge">Administrador</span>`;
+      statusBadges += `<span class="admin-badge">Admin</span>`;
     }
 
     // === LÓGICA PARA ICONO DE VERIFICADO ===

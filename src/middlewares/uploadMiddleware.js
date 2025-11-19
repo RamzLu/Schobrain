@@ -43,20 +43,25 @@ const documentFilter = (req, file, cb) => {
   }
 };
 
-// 3. Inicializar Multer para múltiples imágenes
+// 3. Inicializar Multer para múltiples imágenes (Artículos)
 export const uploadImages = multer({
   storage: storage,
   fileFilter: fileFilter,
   limits: {
     fileSize: 1024 * 1024 * 5, // Límite de 5MB por archivo
   },
-}).array("imageFiles", 5); // 'imageFiles' es el nombre del campo, y 5 es el máximo de archivos
+}).array("imageFiles", 5);
 
 // 4. Inicializar Multer para documentos de verificación
+// AHORA USA .fields() PARA SEPARAR DNI Y OTROS DOCS
 export const uploadDocuments = multer({
   storage: storage,
   fileFilter: documentFilter,
   limits: {
-    fileSize: 1024 * 1024 * 10, // Límite de 10MB para documentos
+    fileSize: 1024 * 1024 * 10, // Límite de 10MB
   },
-}).array("documents", 5); // 'documents' será el nombre del campo en el form data
+}).fields([
+  { name: "dniFront", maxCount: 1 },
+  { name: "dniBack", maxCount: 1 },
+  { name: "documents", maxCount: 5 },
+]);

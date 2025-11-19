@@ -25,3 +25,26 @@ export const fetchPublicUserProfile = async (userId) => {
     throw error;
   }
 };
+
+/**
+ * Obtiene la lista de los mejores contribuyentes (más likes en preguntas).
+ * @returns {Promise<Array>} Lista de usuarios top.
+ */
+export const fetchTopContributors = async () => {
+  try {
+    const response = await fetch(`${API_URL}/top/contributors`, {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.msg || "Error al cargar contribuyentes.");
+    }
+    return data;
+  } catch (error) {
+    console.error("Error en fetchTopContributors:", error);
+    return []; // Retornar array vacío en caso de error para no romper la UI
+  }
+};
