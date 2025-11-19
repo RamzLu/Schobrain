@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="es">
   <head>
-    <meta charset="UTF--8" />
+    <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Schobrain | Inicio</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -16,7 +16,9 @@
     />
     <link rel="icon" type="image/png" href="assets/img/logoSchobrain.png" />
     <link rel="stylesheet" href="assets/style.css" />
+
     <link rel="stylesheet" href="assets/fluid-dropdown.css" />
+
     <link
       rel="stylesheet"
       type="text/css"
@@ -31,12 +33,16 @@
     <div class="main-container">
       <header class="main-header">
         <div class="header-left">
-          <img
-            src="assets/img/logoSchobrain.png"
-            alt="Logo Schobrain"
-            class="header-logo"
-          />
+          <a href="/" class="logo-link">
+            <img
+              src="assets/img/logoSchobrain.png"
+              alt="Logo Schobrain"
+              class="header-logo"
+            />
+            <span class="brand-name">Schobrain</span>
+          </a>
         </div>
+
         <div class="header-center">
           <div class="action-search-bar-wrapper" id="action-search-bar-wrapper">
             <div class="action-search-input-container">
@@ -74,7 +80,9 @@
                 </div>
                 <div class="search-history-list" id="search-history-list"></div>
               </div>
+
               <ul class="search-results-list" id="search-results-list"></ul>
+
               <div class="action-search-footer">
                 <span>Escribe para buscar preguntas</span>
                 <span>ESC para cancelar</span>
@@ -82,9 +90,10 @@
             </div>
           </div>
         </div>
+
         <div class="header-right">
           <span class="welcome-user"
-            >Bienvenido, <span id="logged-in-username">Usuario</span></span
+            >Hola, <span id="logged-in-username">Usuario</span></span
           >
           <button class="menu-toggle">
             <i class="fas fa-bars"></i>
@@ -94,6 +103,22 @@
             <a href="#" id="open-teacher-verification-btn" style="display: none"
               >¿Eres docente? Verifícate aquí</a
             >
+            <button
+              id="logout-button"
+              style="
+                width: 100%;
+                text-align: left;
+                background: none;
+                border: none;
+                padding: 0.8rem 1.2rem;
+                color: #e05d5d;
+                cursor: pointer;
+                font-family: inherit;
+                font-size: inherit;
+              "
+            >
+              Cerrar Sesión
+            </button>
           </div>
         </div>
       </header>
@@ -264,6 +289,7 @@
               </button>
             </div>
           </div>
+
           <div id="questions-list"></div>
         </main>
 
@@ -440,20 +466,6 @@
       </div>
     </div>
 
-    <div id="logout-modal" class="modal-overlay">
-      <div class="modal-content">
-        <h2>¿Seguro que quieres cerrar sesión?</h2>
-        <div class="modal-actions">
-          <button id="cancel-logout" class="modal-button secondary">
-            Cancelar
-          </button>
-          <button id="confirm-logout" class="modal-button danger">
-            Cerrar sesión de todas formas
-          </button>
-        </div>
-      </div>
-    </div>
-
     <div id="delete-confirm-modal" class="modal-overlay">
       <div class="modal-content">
         <h2>¿Confirmas la eliminación?</h2>
@@ -531,7 +543,7 @@
           </div>
           <div class="input-group">
             <label for="teacher-description"
-              >Breve Descripción / Experienciass</label
+              >Breve Descripción / Experiencia</label
             >
             <textarea
               id="teacher-description"
@@ -546,7 +558,6 @@
               "
             ></textarea>
           </div>
-
           <div class="input-group file-input-group">
             <label for="teacher-dni-front" class="file-input-label">
               <i class="fas fa-id-card"></i> DNI Frente
@@ -563,7 +574,6 @@
               required
             />
           </div>
-
           <div class="input-group file-input-group">
             <label for="teacher-dni-back" class="file-input-label">
               <i class="fas fa-id-card"></i> DNI Reverso
@@ -580,7 +590,6 @@
               required
             />
           </div>
-
           <div class="input-group file-input-group">
             <label for="teacher-docs" class="file-input-label">
               <i class="fas fa-cloud-upload-alt"></i> Títulos / Certificados
@@ -597,7 +606,6 @@
               multiple
             />
           </div>
-
           <div class="modal-actions">
             <button
               type="button"

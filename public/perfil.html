@@ -17,9 +17,7 @@
     <link rel="icon" type="image/png" href="assets/img/logoSchobrain.png" />
     <link rel="stylesheet" href="assets/style.css" />
     <link rel="stylesheet" href="assets/perfil.css" />
-
     <link rel="stylesheet" href="assets/fluid-dropdown.css" />
-
     <link
       rel="stylesheet"
       type="text/css"
@@ -32,34 +30,32 @@
   </head>
   <body>
     <div class="main-container">
-      <header
-        class="main-header"
-        style="background-color: #ffffff; color: #333"
-      >
-        <div
-          class="header-left"
-          style="display: flex; align-items: center; gap: 1rem"
-        >
-          <a href="/"
-            ><img
+      <header class="main-header">
+        <div class="header-left">
+          <a href="/" class="logo-link">
+            <img
               src="assets/img/logoSchobrain.png"
               alt="Logo Schobrain"
               class="header-logo"
-          /></a>
+            />
+            <span class="brand-name">Schobrain</span>
+          </a>
         </div>
         <div class="header-center"></div>
         <div class="header-right">
-          <span class="welcome-user" style="color: #333"
-            >Bienvenido, <span id="logged-in-username">Usuario</span></span
+          <span class="welcome-user"
+            >Hola, <span id="logged-in-username">Usuario</span></span
           >
           <a
             href="/"
             class="modal-button secondary"
             style="
               text-decoration: none;
-              padding: 0.6rem 1.2rem;
-              background-color: #e9ecef;
-              color: #495057;
+              padding: 0.5rem 1rem;
+              background-color: #f3f4f6;
+              color: #4b5563;
+              border: 1px solid #d1d5db;
+              font-size: 0.9rem;
             "
           >
             Volver al Feed
@@ -165,14 +161,14 @@
 
           <div class="profile-stats-card">
             <div class="stat-item">
-              <i class="fas fa-question-circle"></i>
-              <span class="stat-label">Preguntas Creadas</span>
-              <span id="article-count-display" class="stat-value">0</span>
+              <i class="fas fa-question-circle"></i
+              ><span class="stat-label">Preguntas Creadas</span
+              ><span id="article-count-display" class="stat-value">0</span>
             </div>
             <div class="stat-item">
-              <i class="fas fa-comment-dots"></i>
-              <span class="stat-label">Respuestas Publicadas</span>
-              <span id="comment-count-display" class="stat-value">0</span>
+              <i class="fas fa-comment-dots"></i
+              ><span class="stat-label">Respuestas Publicadas</span
+              ><span id="comment-count-display" class="stat-value">0</span>
             </div>
           </div>
 
@@ -199,6 +195,7 @@
             </div>
           </section>
         </section>
+
         <section id="account-section" class="profile-content">
           <div class="account-card">
             <div class="account-card-header">
@@ -223,7 +220,6 @@
                 <label>Contraseña</label>
                 <p class="profile-text password-display">••••••••</p>
               </div>
-
               <div
                 class="info-group"
                 style="
@@ -311,8 +307,8 @@
         <h2>Editar Perfil</h2>
         <form id="edit-profile-form" novalidate>
           <div class="info-group">
-            <label for="modal-username">Nombre de usuario</label>
-            <input
+            <label for="modal-username">Nombre de usuario</label
+            ><input
               type="text"
               id="modal-username"
               minlength="3"
@@ -321,8 +317,8 @@
             />
           </div>
           <div class="info-group">
-            <label for="modal-firstName">Nombre</label>
-            <input
+            <label for="modal-firstName">Nombre</label
+            ><input
               type="text"
               id="modal-firstName"
               minlength="2"
@@ -331,8 +327,8 @@
             />
           </div>
           <div class="info-group">
-            <label for="modal-lastName">Apellido</label>
-            <input
+            <label for="modal-lastName">Apellido</label
+            ><input
               type="text"
               id="modal-lastName"
               minlength="2"
@@ -341,16 +337,16 @@
             />
           </div>
           <div class="info-group">
-            <label for="modal-biography">Biografía</label>
-            <textarea
+            <label for="modal-biography">Biografía</label
+            ><textarea
               id="modal-biography"
               placeholder="Hola, soy un alumno de..."
               maxlength="500"
             ></textarea>
           </div>
           <div class="info-group">
-            <label for="modal-birthDate">Fecha de nacimiento</label>
-            <input type="date" id="modal-birthDate" />
+            <label for="modal-birthDate">Fecha de nacimiento</label
+            ><input type="date" id="modal-birthDate" />
           </div>
           <div class="modal-actions">
             <button
@@ -370,38 +366,34 @@
         <h2>Editar Cuenta</h2>
         <form id="edit-account-form" novalidate>
           <div class="info-group">
-            <label for="modal-email">Correo Electrónico</label>
-            <input type="email" id="modal-email" required />
+            <label for="modal-email">Correo Electrónico</label
+            ><input type="email" id="modal-email" required />
           </div>
           <hr class="modal-divider" />
           <p class="password-change-info">
             Para cambiar tu contraseña, completa los siguientes campos:
           </p>
           <div class="info-group">
-            <label for="modal-currentPassword">Contraseña Actual</label>
-            <input
+            <label for="modal-currentPassword">Contraseña Actual</label
+            ><input
               type="password"
               id="modal-currentPassword"
               placeholder="Escribe tu contraseña actual"
-            />
-            <small>Necesaria si quieres cambiar la contraseña.</small>
+            /><small>Necesaria si quieres cambiar la contraseña.</small>
           </div>
           <div class="info-group">
-            <label for="modal-newPassword">Nueva Contraseña</label>
-            <input
+            <label for="modal-newPassword">Nueva Contraseña</label
+            ><input
               type="password"
               id="modal-newPassword"
               placeholder="Mínimo 8 caracteres"
-            />
-            <small
+            /><small
               >Debe incluir mayúsculas, minúsculas, números y símbolos.</small
             >
           </div>
           <div class="info-group">
-            <label for="modal-confirmPassword"
-              >Confirmar Nueva Contraseña</label
-            >
-            <input
+            <label for="modal-confirmPassword">Confirmar Nueva Contraseña</label
+            ><input
               type="password"
               id="modal-confirmPassword"
               placeholder="Repite la nueva contraseña"
@@ -472,8 +464,8 @@
         <form id="editQuestionForm" novalidate enctype="multipart/form-data">
           <input type="hidden" id="edit-article-id" name="articleId" />
           <div class="input-group">
-            <label for="edit-question-content">Describe tu pregunta</label>
-            <textarea
+            <label for="edit-question-content">Describe tu pregunta</label
+            ><textarea
               id="edit-question-content"
               name="content"
               rows="5"
@@ -492,31 +484,25 @@
             </div>
             <div id="edit-math-symbols-panel" class="symbols-panel"></div>
           </div>
-
           <div class="input-group">
-            <label for="edit-tag-select">Tema</label>
-
-            <select
+            <label for="edit-tag-select">Tema</label
+            ><select
               id="edit-tag-select"
               name="tags"
               class="custom-select fluid-select-target"
               required
             ></select>
           </div>
-
           <div class="input-group">
             <label>Imágenes Actuales</label>
             <div id="current-images-preview" class="images-preview-grid"></div>
           </div>
-
           <div class="input-group file-input-group">
             <label for="edit-image-files" class="file-input-label"
               >Añadir nuevas imágenes</label
-            >
-            <span id="edit-file-name-display" class="file-name-display"
+            ><span id="edit-file-name-display" class="file-name-display"
               >Ningún archivo seleccionado</span
-            >
-            <input
+            ><input
               type="file"
               id="edit-image-files"
               name="imageFiles"
@@ -526,16 +512,14 @@
             />
           </div>
           <p class="file-size-info">Hasta 5 imágenes, tamaño máximo 5MB c/u</p>
-
           <div class="modal-actions">
             <button
               type="button"
               id="cancel-edit-question"
               class="modal-button secondary custom-cancel-button"
             >
-              Cancelar
-            </button>
-            <button type="submit" class="modal-button custom-submit-button">
+              Cancelar</button
+            ><button type="submit" class="modal-button custom-submit-button">
               Guardar Cambios
             </button>
           </div>
@@ -544,8 +528,8 @@
     </div>
 
     <div id="image-preview-modal" class="modal-overlay">
-      <span class="close-preview-btn">&times;</span>
-      <img
+      <span class="close-preview-btn">&times;</span
+      ><img
         class="preview-image"
         id="preview-image-src"
         src=""
@@ -562,9 +546,8 @@
         </p>
         <div class="modal-actions">
           <button id="cancel-comment-delete" class="modal-button secondary">
-            Cancelar
-          </button>
-          <button id="confirm-comment-delete" class="modal-button danger">
+            Cancelar</button
+          ><button id="confirm-comment-delete" class="modal-button danger">
             Sí, eliminar
           </button>
         </div>
@@ -585,8 +568,8 @@
         </div>
         <form id="teacherVerificationForm" enctype="multipart/form-data">
           <div class="input-group">
-            <label for="teacher-dni">DNI / Cédula</label>
-            <input
+            <label for="teacher-dni">DNI / Cédula</label
+            ><input
               type="text"
               id="teacher-dni"
               name="dni"
@@ -601,10 +584,9 @@
               "
             />
           </div>
-
           <div class="input-group">
-            <label for="teacher-specialty">Especialidad Principal</label>
-            <input
+            <label for="teacher-specialty">Especialidad Principal</label
+            ><input
               type="text"
               id="teacher-specialty"
               name="specialty"
@@ -619,12 +601,10 @@
               "
             />
           </div>
-
           <div class="input-group">
             <label for="teacher-description"
               >Breve Descripción / Experiencia</label
-            >
-            <textarea
+            ><textarea
               id="teacher-description"
               name="description"
               rows="3"
@@ -637,15 +617,12 @@
               "
             ></textarea>
           </div>
-
           <div class="input-group file-input-group">
-            <label for="teacher-dni-front" class="file-input-label">
-              <i class="fas fa-id-card"></i> DNI Frente
-            </label>
-            <span id="teacher-dni-front-display" class="file-name-display"
+            <label for="teacher-dni-front" class="file-input-label"
+              ><i class="fas fa-id-card"></i> DNI Frente</label
+            ><span id="teacher-dni-front-display" class="file-name-display"
               >Requerido</span
-            >
-            <input
+            ><input
               type="file"
               id="teacher-dni-front"
               name="dniFront"
@@ -654,15 +631,12 @@
               required
             />
           </div>
-
           <div class="input-group file-input-group">
-            <label for="teacher-dni-back" class="file-input-label">
-              <i class="fas fa-id-card"></i> DNI Reverso
-            </label>
-            <span id="teacher-dni-back-display" class="file-name-display"
+            <label for="teacher-dni-back" class="file-input-label"
+              ><i class="fas fa-id-card"></i> DNI Reverso</label
+            ><span id="teacher-dni-back-display" class="file-name-display"
               >Requerido</span
-            >
-            <input
+            ><input
               type="file"
               id="teacher-dni-back"
               name="dniBack"
@@ -671,15 +645,13 @@
               required
             />
           </div>
-
           <div class="input-group file-input-group">
-            <label for="teacher-docs" class="file-input-label">
-              <i class="fas fa-cloud-upload-alt"></i> Títulos / Certificados
-            </label>
-            <span id="teacher-file-name-display" class="file-name-display">
-              Opcional (PDF/IMG)
-            </span>
-            <input
+            <label for="teacher-docs" class="file-input-label"
+              ><i class="fas fa-cloud-upload-alt"></i> Títulos /
+              Certificados</label
+            ><span id="teacher-file-name-display" class="file-name-display"
+              >Opcional (PDF/IMG)</span
+            ><input
               type="file"
               id="teacher-docs"
               name="documents"
@@ -688,16 +660,14 @@
               multiple
             />
           </div>
-
           <div class="modal-actions">
             <button
               type="button"
               id="cancel-teacher-verification"
               class="modal-button secondary custom-cancel-button"
             >
-              Cancelar
-            </button>
-            <button type="submit" class="modal-button custom-submit-button">
+              Cancelar</button
+            ><button type="submit" class="modal-button custom-submit-button">
               Enviar Solicitud
             </button>
           </div>
@@ -709,7 +679,6 @@
     <script type="module" src="/js/article/article.ui.js"></script>
     <script type="module" src="/js/utils/lightbox.js"></script>
     <script type="module" src="/js/services/profile.service.js"></script>
-
     <script type="module" src="./js/utils/fluid-dropdown.js"></script>
   </body>
 </html>
