@@ -596,37 +596,75 @@ body {
 
 /* --- ESTILOS PARA EL MENÚ DE USUARIO DESPLEGABLE --- */
 
-/* --- Estilos para el menú de usuario desplegable --- */
+/* --- MENÚ DESPLEGABLE DE USUARIO (GLASSMORPHISM BLANCO) --- */
 .user-menu {
   display: none; /* Oculto por defecto */
   position: absolute;
-  top: calc(100% + 10px); /* Posición: Debajo del header + 10px de espacio */
+  top: calc(100% + 15px); /* Un poco más separado del borde */
   right: 0;
-  background-color: #1a1a2e;
-  border-radius: 8px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
-  width: 180px;
+
+  /* Fondo Blanco Transparente */
+  background-color: rgba(255, 255, 255, 0.952);
+  backdrop-filter: blur(10px); /* Efecto de desenfoque detrás */
+  -webkit-backdrop-filter: blur(10px); /* Compatibilidad Safari */
+
+  border-radius: 12px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1); /* Sombra suave */
+  border: 1px solid rgba(255, 255, 255, 0.932); /* Borde sutil */
+
+  width: 240px;
   overflow: hidden;
   z-index: 1000;
+
+  /* Animación de entrada */
+  transform-origin: top right;
+  animation: menuSlideIn 0.2s ease forwards;
+}
+
+@keyframes menuSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 
 .user-menu.visible {
-  display: block; /* Se muestra con JavaScript */
+  display: block;
 }
 
 .user-menu a {
-  display: block;
-  padding: 0.8rem 1.2rem;
-  color: #e0e0e0;
-  text-decoration: none; /* Elimina el subrayado */
-  transition: background-color 0.2s ease-in-out;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 1rem 1.5rem;
+
+  /* Texto oscuro para contrastar con el fondo blanco */
+  color: #333;
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.2s ease-in-out;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05); /* Línea separadora sutil */
+}
+
+.user-menu a:last-child {
+  border-bottom: none;
 }
 
 .user-menu a:hover {
-  background-color: #2575fc;
-  color: #ffffff;
+  background-color: rgba(106, 17, 203, 0.05); /* Fondo morado muy suave */
+  color: #6a11cb; /* Texto morado */
+  padding-left: 1.8rem; /* Pequeño desplazamiento a la derecha */
 }
 
+.user-menu a i {
+  color: #6a11cb; /* Iconos morados */
+  width: 20px;
+  text-align: center;
+}
 /* ==========================================================================
    8. MEDIA QUERIES (RESPONSIVE DESIGN) para INDEX
    ========================================================================== */
