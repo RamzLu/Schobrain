@@ -1,3 +1,4 @@
+// public/js/index.js
 import { verifyAuth, logoutUser } from "./services/auth.service.js";
 import {
   showAskQuestionModal,
@@ -73,13 +74,13 @@ const renderContributors = (contributors) => {
     let medalAlt = "";
 
     if (rank === 1) {
-      medalImageSrc = "/assets/img/1.png"; // Ruta a tu medalla de oro
+      medalImageSrc = "/assets/img/1.png";
       medalAlt = "Medalla de Oro";
     } else if (rank === 2) {
-      medalImageSrc = "/assets/img/2.png"; // Ruta a tu medalla de plata
+      medalImageSrc = "/assets/img/2.png";
       medalAlt = "Medalla de Plata";
     } else if (rank === 3) {
-      medalImageSrc = "/assets/img/3.png"; // Ruta a tu medalla de bronce
+      medalImageSrc = "/assets/img/3.png";
       medalAlt = "Medalla de Bronce";
     }
 
@@ -120,7 +121,7 @@ const renderContributors = (contributors) => {
   `;
 
   // --- 2. Renderizar LISTA (Puestos 4 al 10) ---
-  const restContributors = contributors.slice(3); // Tomamos del índice 3 en adelante
+  const restContributors = contributors.slice(3);
 
   if (restContributors.length > 0) {
     const listItems = restContributors
@@ -167,7 +168,185 @@ const initializeArticleFeed = async (currentUser) => {
   }
 };
 
-// ... (El resto del código de index.js se mantiene igual) ...
+// === LOGICA DE EDICIÓN DE PREGUNTAS ===
+
+const openEditModal = async (articleId) => {
+  const editQuestionModal = document.getElementById("edit-question-modal");
+  if (!editQuestionModal) return;
+
+  try {
+    const article = await fetchArticleById(articleId);
+    document.getElementById("edit-article-id").value = article._id;
+    document.getElementById("edit-question-content").value = article.content;
+
+    // Cargar tags y seleccionar el correcto
+    const tagSelect = document.getElementById("edit-tag-select");
+    const tags = await fetchAllTags();
+    tagSelect.innerHTML = "";
+    tags.forEach((tag) => {
+      const option = document.createElement("option");
+      option.value = tag._id;
+      option.textContent = tag.name;
+      if (article.tags && article.tags[0] && tag._id === article.tags[0]._id) {
+        option.selected = true;
+      }
+      tagSelect.appendChild(option);
+    });
+
+    // Previsualizar imágenes existentes
+    const currentImagesPreview = document.getElementById(
+      "current-images-preview"
+    );
+    if (currentImagesPreview) {
+      currentImagesPreview.innerHTML = "";
+      if (article.imageUrls && article.imageUrls.length > 0) {
+        article.imageUrls.forEach((url) => {
+          const imgContainer = document.createElement("div");
+          imgContainer.style.position = "relative";
+          imgContainer.style.display = "inline-block";
+          imgContainer.style.margin = "5px";
+          imgContainer.classList.add("image-preview-item");
+
+          imgContainer.innerHTML = `
+            <img src="${url}" alt="Imagen actual" style="max-width: 100px; height: auto; display: block;">
+            <button type="button" class="remove-image-btn" data-url="${url}" style="position: absolute; top: 2px; right: 2px; background: rgba(255,0,0,0.7); color: white; border: none; border-radius: 50%; width: 20px; height: 20px; font-size: 12px; cursor: pointer; line-height: 18px;">&times;</button>
+          `;
+          currentImagesPreview.appendChild(imgContainer);
+        });
+      } else {
+        currentImagesPreview.innerHTML = "<p>No hay imágenes adjuntas.</p>";
+      }
+    }
+
+    // Resetear input de archivos nuevos
+    const editFileInput = document.getElementById("edit-image-files");
+    const editFileNameDisplay = document.getElementById(
+      "edit-file-name-display"
+    );
+    if (editFileInput) editFileInput.value = "";
+    if (editFileNameDisplay)
+      editFileNameDisplay.textContent = "Ningún archivo seleccionado";
+
+    editQuestionModal.classList.add("visible");
+
+    // Inicializar panel de símbolos para el modal de edición
+    initializeSymbolsPanel({
+      textareaId: "edit-question-content",
+      toggleBtnId: "edit-toggle-symbols-btn",
+      panelId: "edit-math-symbols-panel",
+      includeFunctions: true,
+    });
+  } catch (error) {
+    showErrorToast("Error al cargar los datos de la pregunta para editar.");
+    console.error("Error en openEditModal:", error);
+  }
+};
+
+const handleEditFormSubmit = async (event) => {
+  event.preventDefault();
+  const articleId = document.getElementById("edit-article-id").value;
+  const formData = new FormData(event.target);
+
+  // Añadir imágenes marcadas para eliminar
+  const imagesToDelete = [];
+  document
+    .querySelectorAll(
+      '#current-images-preview input[type="hidden"][name="imagesToDelete[]"]'
+    )
+    .forEach((input) => {
+      imagesToDelete.push(input.value);
+    });
+
+  if (imagesToDelete.length > 0) {
+    imagesToDelete.forEach((url) => formData.append("imagesToDelete", url));
+  }
+
+  const editFileInput = document.getElementById("edit-image-files");
+  if (editFileInput && editFileInput.files.length === 0) {
+    formData.delete("imageFiles");
+  }
+
+  try {
+    await updateArticle(articleId, formData);
+    showSuccessToast("Pregunta actualizada con éxito.");
+    const editQuestionModal = document.getElementById("edit-question-modal");
+    editQuestionModal?.classList.remove("visible");
+
+    setTimeout(() => {
+      window.location.reload(); // Recargar para ver cambios
+    }, 900);
+  } catch (error) {
+    showErrorToast(`Error al actualizar: ${error.message}`);
+    console.error("Error en submit edit:", error);
+  }
+};
+
+const setupEditModalListeners = () => {
+  const editQuestionModal = document.getElementById("edit-question-modal");
+  const cancelEditBtn = document.getElementById("cancel-edit-question");
+  const closeEditModalBtn = document.getElementById("close-edit-modal");
+  const editQuestionForm = document.getElementById("editQuestionForm");
+  const editFileInput = document.getElementById("edit-image-files");
+  const editFileNameDisplay = document.getElementById("edit-file-name-display");
+
+  if (editFileInput && editFileNameDisplay) {
+    editFileInput.addEventListener("change", (event) => {
+      const { files } = event.target;
+      if (!files || files.length === 0) {
+        editFileNameDisplay.textContent = "Ningún archivo seleccionado";
+      } else if (files.length === 1) {
+        editFileNameDisplay.textContent = files[0].name;
+      } else {
+        editFileNameDisplay.textContent = `${files.length} archivos seleccionados`;
+      }
+    });
+  }
+
+  document
+    .getElementById("current-images-preview")
+    ?.addEventListener("click", (event) => {
+      if (event.target.classList.contains("remove-image-btn")) {
+        const urlToRemove = event.target.dataset.url;
+        const previewItem = event.target.closest(".image-preview-item");
+        if (previewItem) {
+          let hiddenInput = previewItem.querySelector(
+            `input[value="${urlToRemove}"]`
+          );
+          if (!hiddenInput) {
+            hiddenInput = document.createElement("input");
+            hiddenInput.type = "hidden";
+            hiddenInput.name = "imagesToDelete[]";
+            hiddenInput.value = urlToRemove;
+            previewItem.appendChild(hiddenInput);
+            previewItem.style.opacity = "0.5";
+            event.target.textContent = "+";
+            event.target.style.background = "rgba(0,128,0,0.7)";
+          } else {
+            hiddenInput.remove();
+            previewItem.style.opacity = "1";
+            event.target.textContent = "×";
+            event.target.style.background = "rgba(255,0,0,0.7)";
+          }
+        }
+      }
+    });
+
+  cancelEditBtn?.addEventListener("click", () => {
+    editQuestionModal?.classList.remove("visible");
+  });
+  closeEditModalBtn?.addEventListener("click", () => {
+    editQuestionModal?.classList.remove("visible");
+  });
+  editQuestionModal?.addEventListener("click", (event) => {
+    if (event.target === editQuestionModal) {
+      editQuestionModal.classList.remove("visible");
+    }
+  });
+
+  editQuestionForm?.addEventListener("submit", handleEditFormSubmit);
+};
+
+// === FIN LOGICA EDICIÓN ===
 
 const loadSearchHistory = () => {
   const saved = localStorage.getItem("searchHistory");
@@ -372,6 +551,9 @@ const initializeIndexPage = async () => {
 
   await initializeArticleFeed(authData.data);
 
+  // Inicializar listeners del modal de edición
+  setupEditModalListeners();
+
   // Cargar e inicializar el podio + lista
   fetchTopContributors()
     .then((contributors) => renderContributors(contributors))
@@ -456,6 +638,18 @@ const initializeIndexPage = async () => {
       dropdown?.classList.toggle("visible");
       return;
     }
+
+    // --- NUEVO: Botón Editar ---
+    const editBtn = event.target.closest(".edit-btn");
+    if (editBtn) {
+      const articleId = editBtn.dataset.id;
+      // Cerramos el dropdown antes de abrir el modal
+      editBtn.closest(".options-dropdown")?.classList.remove("visible");
+      openEditModal(articleId);
+      return;
+    }
+    // ---------------------------
+
     // Delete
     const deleteBtn = event.target.closest(".delete-btn");
     if (deleteBtn) {
@@ -478,7 +672,19 @@ const initializeIndexPage = async () => {
         card.querySelector(".like-count").textContent = updatedVotes.likes;
         card.querySelector(".dislike-count").textContent =
           updatedVotes.dislikes;
-        // Toggle clases active...
+
+        const likeBtn = card.querySelector(".vote-btn.like");
+        const dislikeBtn = card.querySelector(".vote-btn.dislike");
+        const userId = authData.data.id;
+
+        likeBtn.classList.toggle(
+          "active",
+          updatedVotes.votedUp.includes(userId)
+        );
+        dislikeBtn.classList.toggle(
+          "active",
+          updatedVotes.votedDown.includes(userId)
+        );
       } catch (e) {
         showErrorToast(e.message);
       }
@@ -491,7 +697,13 @@ const initializeIndexPage = async () => {
         const res = await toggleFavoriteArticle(favBtn.dataset.id);
         showSuccessToast(res.message);
         currentUserFavorites = res.favorites;
-        // Actualizar texto btn...
+
+        const isFavorite = res.favorites.includes(favBtn.dataset.id);
+        favBtn.dataset.isFavorite = isFavorite;
+        favBtn.innerHTML = `
+            <i class="${isFavorite ? "fas fa-star" : "far fa-star"}"></i> 
+            ${isFavorite ? "Quitar de favoritos" : "Añadir a favoritos"}
+        `;
       } catch (e) {
         showErrorToast(e.message);
       }
