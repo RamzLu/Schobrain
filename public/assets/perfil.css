@@ -1,0 +1,897 @@
+/* public/assets/perfil.css */
+
+/* Limpiamos el fondo del body, ya que lo hereda del style.css principal */
+body {
+  background-color: #f0f2f5;
+}
+
+/* Área principal del perfil (layout de 2 columnas) */
+.profile-main-area {
+  display: flex;
+  gap: 2rem;
+  padding: 2rem;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Barra lateral izquierda */
+.profile-sidebar {
+  flex: 0 0 250px; /* No crece, no se encoge, base de 250px */
+}
+
+.profile-sidebar h2 {
+  font-size: 1.8rem;
+  color: #12121c;
+  margin-bottom: 1.5rem;
+}
+
+/* --- Estilos para la navegación de secciones --- */
+.profile-nav .nav-link {
+  display: block;
+  padding: 0.8rem 1rem;
+  text-decoration: none;
+  color: #495057;
+  font-weight: 600;
+  border-radius: 8px;
+  margin-bottom: 0.5rem;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.profile-nav .nav-link:hover {
+  background-color: #e9ecef;
+}
+
+.profile-nav .nav-link.active {
+  background-color: #e0e7ff;
+  color: #4338ca;
+}
+
+/* --- Ocultar secciones no activas --- */
+.profile-content {
+  display: none; /* Oculto por defecto */
+  flex-grow: 1;
+  max-height: 85vh;
+  overflow-y: auto;
+  padding-right: 1rem;
+}
+
+.profile-content.active-section {
+  display: block; /* Mostrar solo la activa */
+}
+
+/* --- Estilos Tarjeta de Perfil --- */
+.profile-card {
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+}
+
+/* === ESTILOS PARA BANNER === */
+.profile-banner-container {
+  width: 100%;
+  height: 220px; /* Altura del banner */
+  position: relative;
+  background-color: #e0e7ff;
+  overflow: hidden;
+}
+
+.profile-banner-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.edit-banner-btn {
+  position: absolute;
+  bottom: 15px;
+  right: 15px;
+  background-color: rgba(0, 0, 0, 0.6);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  z-index: 2;
+}
+
+.edit-banner-btn:hover {
+  background-color: rgba(0, 0, 0, 0.8);
+}
+
+.edit-banner-btn i {
+  font-size: 1.1rem;
+}
+
+/* === CABECERA DEL PERFIL (CORREGIDA) === */
+.profile-card-header {
+  display: flex;
+  align-items: flex-end; /* Alinea los elementos al fondo del contenedor */
+  gap: 1.5rem;
+  padding: 0 2rem 1.5rem 2rem; /* Padding normal */
+  border-bottom: 1px solid #e9ecef;
+  position: relative;
+  /* ELIMINADO: margin-top negativo. Ahora el header empieza debajo del banner */
+  background-color: #fff; /* Asegura fondo blanco para el texto */
+}
+
+.avatar-container {
+  position: relative;
+  flex-shrink: 0;
+  /* CLAVE: Solo el avatar tiene margen negativo para subir sobre el banner */
+  margin-top: -75px;
+  z-index: 5; /* Asegura que quede por encima del banner */
+}
+
+.profile-avatar {
+  width: 140px; /* Tamaño generoso */
+  height: 140px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 5px solid #ffffff; /* Borde grueso para separar del banner */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  background-color: #fff;
+}
+
+.clickable-avatar {
+  cursor: pointer;
+  border-radius: 50%;
+}
+
+.avatar-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%; /* Mantiene la forma circular */
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  font-size: 0.9rem;
+  text-align: center;
+
+  /* Corrección para que el overlay respete el borde blanco */
+  width: 130px; /* 140px - 10px de borde total (5px cada lado) */
+  height: 130px;
+  top: 5px;
+  left: 5px;
+}
+
+.avatar-overlay i {
+  font-size: 1.5rem;
+  margin-bottom: 0.3rem;
+}
+
+.clickable-avatar:hover .avatar-overlay {
+  opacity: 1;
+}
+/* --- Estilos para el menú de usuario desplegable (GLASSMORPHISM) --- */
+.user-menu {
+  display: none; /* Oculto por defecto */
+  position: absolute;
+  top: calc(100% + 15px); /* Un poco más separado del header */
+  right: 0;
+
+  /* FONDO BLANCO SEMI-TRANSPARENTE */
+  background-color: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(10px); /* Efecto borroso detrás */
+  -webkit-backdrop-filter: blur(10px);
+
+  border-radius: 12px; /* Bordes más redondeados */
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1); /* Sombra suave y moderna */
+  border: 1px solid rgba(255, 255, 255, 0.5); /* Borde sutil */
+
+  width: 220px; /* Un poco más ancho para que respire */
+  overflow: hidden;
+  z-index: 1000;
+
+  /* Animación de entrada suave */
+  transform-origin: top right;
+  animation: menuSlideIn 0.2s ease forwards;
+}
+
+@keyframes menuSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.user-menu.visible {
+  display: block;
+}
+
+.user-menu a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 1rem 1.5rem; /* Más espacio interno */
+
+  /* TEXTO OSCURO PARA EL FONDO BLANCO */
+  color: #333;
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.2s ease-in-out;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.user-menu a:last-child {
+  border-bottom: none;
+}
+
+.user-menu a:hover {
+  background-color: rgba(
+    106,
+    17,
+    203,
+    0.05
+  ); /* Fondo morado muy tenue al pasar el mouse */
+  color: #6a11cb; /* Texto morado */
+  padding-left: 1.8rem; /* Pequeño movimiento a la derecha */
+}
+
+.user-details {
+  flex-grow: 1;
+  /* Padding normal, ya no necesitamos empujarlo hacia abajo */
+  padding-bottom: 5px;
+}
+
+.user-details .username-display {
+  font-size: 1.6rem;
+  color: #111827;
+  font-weight: 800;
+  margin: 0;
+  line-height: 1.2;
+  margin-top: 4px;
+}
+
+.user-details .full-name {
+  font-size: 1.1rem;
+  color: #4b5563;
+  margin: 0.2rem 0 0.6rem 0;
+  font-weight: 500;
+}
+
+.user-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.user-details .role-badge {
+  background-color: #e0e7ff;
+  color: #4338ca;
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.profile-card-body {
+  padding: 2rem;
+}
+
+/* Menú de opciones */
+.profile-options-menu,
+.account-options-menu {
+  position: relative;
+  margin-bottom: 10px;
+  align-self: flex-start; /* Alineado arriba dentro del flex container */
+  margin-top: 1rem;
+}
+
+/* Resto de estilos (Account Card, Info Groups, Modals, etc.) MANTENER IGUAL */
+.account-card {
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+}
+
+.account-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem 2rem;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.account-card-header h2 {
+  font-size: 1.3rem;
+  color: #111827;
+  margin: 0;
+}
+
+.account-card-body {
+  padding: 2rem;
+}
+
+.password-display {
+  font-family: monospace;
+}
+
+.options-toggle-btn {
+  background: none;
+  border: none;
+  font-size: 1.1rem;
+  cursor: pointer;
+  color: #6b7280;
+  padding: 0.5rem;
+  border-radius: 50%;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.options-toggle-btn:hover {
+  background-color: #f3f4f6;
+  color: #111827;
+}
+
+.options-dropdown {
+  display: none;
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+  width: 160px;
+  overflow: hidden;
+}
+
+.options-dropdown.visible {
+  display: block;
+}
+
+.dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  background: none;
+  border: none;
+  width: 100%;
+  text-align: left;
+  padding: 0.8rem 1rem;
+  font-size: 0.9rem;
+  color: #374151;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.dropdown-item i {
+  color: #6b7280;
+  width: 16px;
+  text-align: center;
+}
+
+.dropdown-item:hover {
+  background-color: #f9fafb;
+}
+
+.dropdown-item#logout-btn-perfil {
+  color: #e05d5d;
+}
+
+.dropdown-item#logout-btn-perfil i {
+  color: #e05d5d;
+}
+
+.info-group {
+  margin-bottom: 1.2rem;
+}
+
+.info-group label {
+  display: block;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.info-group input,
+.info-group textarea {
+  width: 100%;
+  padding: 0.7rem 0.9rem;
+  border-radius: 6px;
+  border: 1px solid #d1d5db;
+  font-size: 0.95rem;
+  background: #f9fafb;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  font-family: "Outfit", sans-serif;
+}
+
+.info-group input:focus,
+.info-group textarea:focus {
+  border-color: #4f46e5;
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+  outline: none;
+}
+
+.info-group textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+
+.info-group small {
+  display: block;
+  font-size: 0.8rem;
+  color: #6b7280;
+  margin-top: 0.3rem;
+}
+
+.profile-text {
+  color: #4b5563;
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+/* Modales Generales */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(5px);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  padding: 1rem;
+}
+
+.modal-overlay.visible {
+  display: flex;
+}
+
+.modal-content {
+  background: #fff;
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+  width: 100%;
+  max-width: 500px;
+  text-align: left;
+}
+
+.modal-content h2 {
+  color: #111827;
+  margin-bottom: 1.5rem;
+  font-size: 1.4rem;
+  text-align: center;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.8rem;
+  margin-top: 1.5rem;
+}
+
+.modal-button {
+  background-color: #4f46e5;
+  color: white;
+  border: none;
+  padding: 0.7rem 1.4rem;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s, transform 0.1s;
+}
+
+.modal-button:hover {
+  background-color: #4338ca;
+}
+.modal-button:active {
+  transform: scale(0.98);
+}
+
+.modal-button.secondary {
+  background-color: #e5e7eb;
+  color: #374151;
+}
+
+.modal-button.secondary:hover {
+  background-color: #d1d5db;
+}
+
+.modal-button.danger {
+  background-color: #ef4444;
+}
+.modal-button.danger:hover {
+  background-color: #dc2626;
+}
+
+/* Estilos específicos modales */
+.rectangular-modal {
+  max-width: 550px;
+}
+
+.modal-divider {
+  border: none;
+  border-top: 1px solid #e5e7eb;
+  margin: 1.5rem 0;
+}
+
+.password-change-info {
+  font-size: 0.9rem;
+  color: #6b7280;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+/* Danger Zone */
+.danger-zone {
+  margin-top: 2rem;
+  border: 1px solid #fecaca;
+  border-radius: 12px;
+  background-color: #fff1f2;
+}
+
+.danger-zone h2 {
+  font-size: 1.3rem;
+  color: #b91c1c;
+  padding: 1rem 2rem;
+  border-bottom: 1px solid #fecaca;
+  margin: 0;
+}
+
+.danger-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem 2rem;
+}
+
+.danger-item div {
+  flex-grow: 1;
+  margin-right: 1.5rem;
+}
+
+.danger-item h3 {
+  font-size: 1.1rem;
+  color: #dc2626;
+  margin: 0 0 0.3rem 0;
+}
+
+.danger-item p {
+  font-size: 0.9rem;
+  color: #7f1d1d;
+  line-height: 1.5;
+}
+
+.danger-zone-button {
+  padding: 0.6rem 1.2rem;
+  font-size: 0.9rem;
+  flex-shrink: 0;
+}
+
+/* Delete Modal */
+#delete-account-modal .modal-content {
+  max-width: 450px;
+}
+
+.warning-text {
+  color: #b91c1c;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  margin-bottom: 1rem;
+}
+
+.delete-password-group {
+  margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.delete-password-group label {
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 0.5rem;
+  display: block;
+}
+
+.delete-password-group input {
+  width: 100%;
+  padding: 0.7rem 0.9rem;
+  border-radius: 6px;
+  border: 1px solid #d1d5db;
+  font-size: 0.95rem;
+  background: #f9fafb;
+}
+
+.delete-password-group input:focus {
+  border-color: #ef4444;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.15);
+  outline: none;
+}
+
+#delete-account-modal .modal-actions {
+  justify-content: space-between;
+}
+
+/* Favoritos */
+#favorites-section h2 {
+  font-size: 1.8rem;
+  color: #12121c;
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.favorites-toolbar {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.favorites-filter-btn {
+  padding: 0.6rem 1.2rem;
+  font-size: 0.95rem;
+  border-radius: 6px;
+  background-color: #f3f4f6;
+  color: #4b5563;
+  border: 1px solid #d1d5db;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.favorites-filter-btn:hover {
+  background-color: #e5e7eb;
+}
+
+.favorites-filter-btn.active {
+  background-color: #e0e7ff;
+  color: #4338ca;
+  border-color: #4338ca;
+  font-weight: 700;
+}
+
+.favorites-list-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.favorites-list-container .article-card {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  border-left: 4px solid #fdc500;
+  margin-bottom: 0;
+}
+
+.favorites-list-container .article-card .article-actions a {
+  color: #4739ff;
+}
+
+.favorites-list-container .article-card .favorite-btn i {
+  color: #fdc500;
+}
+
+/* Comentarios Favoritos */
+.favorites-list-container .comment-favorite-card {
+  background-color: #ffffff;
+  padding: 1.5rem;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  border-left: 4px solid #6a11cb;
+  color: #333;
+  position: relative;
+}
+
+.comment-favorite-card .comment-header {
+  margin-bottom: 0.8rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.comment-favorite-card .comment-author-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.comment-favorite-card .author-text-group {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.5rem;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.comment-favorite-card .author-avatar {
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+}
+
+.comment-favorite-card .comment-author {
+  font-weight: 700;
+  color: #2575fc;
+  font-size: 1.1rem;
+}
+
+.comment-favorite-card .comment-date {
+  font-size: 0.85rem;
+  color: #6c757d;
+  margin-left: 0;
+}
+
+.comment-favorite-card .comment-content p {
+  line-height: 1.6;
+  margin-bottom: 1rem;
+  color: #212529;
+}
+
+.comment-favorite-card .comment-metadata {
+  font-size: 0.85rem;
+  color: #6c757d;
+  border-top: 1px dashed #e9ecef;
+  padding-top: 0.8rem;
+}
+
+.comment-favorite-card .metadata-link {
+  color: #4338ca;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.comment-favorite-card .favorite-remove-btn {
+  background: none;
+  border: none;
+  color: #808080;
+  cursor: pointer;
+  font-size: 1.2rem;
+  padding: 5px;
+  border-radius: 50%;
+  transition: color 0.2s, background-color 0.2s;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 2;
+}
+
+.comment-favorite-card .favorite-remove-btn:hover {
+  color: #e63946;
+  background-color: #fcebeb;
+}
+
+.favorite-remove-star {
+  display: block;
+  font-size: 1.4rem;
+  color: #808080;
+  cursor: pointer;
+  padding: 0.3rem 0.5rem;
+  transition: color 0.2s, transform 0.2s;
+  border-radius: 50%;
+}
+.favorite-remove-star:hover {
+  color: #12121c;
+  transform: scale(1.1);
+}
+
+/* Mis Contenidos */
+.h2CONTENT {
+  font-size: 1.8rem;
+  color: #12121c;
+  margin-bottom: 1.5rem;
+}
+
+.profile-stats-card {
+  background-color: #f7f9fc;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-top: 2rem;
+  display: flex;
+  justify-content: space-around;
+  gap: 1rem;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+  margin-bottom: 2rem;
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 0 1rem;
+}
+.profile-stats-card .stat-item:last-child {
+  border-right: none;
+}
+
+.stat-item i {
+  font-size: 1.5rem;
+  color: #6a11cb;
+  margin-bottom: 0.5rem;
+}
+
+.stat-label {
+  font-size: 0.9rem;
+  color: #666;
+  font-weight: 500;
+  margin-bottom: 0.3rem;
+  white-space: nowrap;
+}
+
+.stat-value {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #111827;
+}
+
+#my-content-list .article-card {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  border-left: 4px solid #2575fc;
+  margin-bottom: 1.5rem;
+  padding: 1.5rem;
+  position: relative;
+}
+
+#my-content-list .article-card .header-right-controls .edit-btn,
+#my-content-list .article-card .header-right-controls .delete-btn {
+  display: none;
+}
+
+.comment-favorite-card.my-comment-card {
+  background-color: #fcfcfc;
+  border-left: 4px solid #6a11cb;
+  padding: 1.5rem;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+  margin-bottom: 1.5rem;
+  position: relative;
+}
+
+.comment-favorite-card.my-comment-card .comment-header {
+  align-items: center;
+  margin-bottom: 0.5rem;
+  position: relative;
+}
+
+.delete-my-comment-icon {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  color: #dc3545;
+  cursor: pointer;
+  font-size: 1.1rem;
+  padding: 8px;
+  border-radius: 50%;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+  width: 35px;
+  height: 35px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.delete-my-comment-icon:hover {
+  background-color: #ffebeb;
+  transform: scale(1.1);
+}

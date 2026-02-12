@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin | Schobrain</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css"
+    />
+    <script
+      type="text/javascript"
+      src="https://cdn.jsdelivr.net/npm/toastify-js"
+    ></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+    <link rel="icon" type="image/png" href="assets/img/logoSchobrain.png" />
+    <link rel="stylesheet" href="assets/style.css" />
+    <style>
+      .admin-container {
+        padding: 3rem 2rem;
+        color: #333;
+        background-color: #f8f9fa;
+        min-height: 100vh;
+      }
+      .admin-container h1 {
+        color: #12121c;
+        margin-bottom: 2.5rem;
+        border-bottom: 2px solid #2575fc;
+        padding-bottom: 0.5rem;
+      }
+      .admin-section {
+        background-color: #ffffff;
+        padding: 2rem;
+        border-radius: 10px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        margin-bottom: 2rem;
+      }
+      .admin-section h2 {
+        color: #6a11cb;
+        margin-bottom: 1.5rem;
+        border-bottom: 1px solid #eee;
+        padding-bottom: 10px;
+      }
+
+      /* --- ESTILOS ESPECÍFICOS PARA SOLICITUDES --- */
+      .filters-bar {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 2rem;
+        flex-wrap: wrap;
+      }
+      .filter-btn {
+        padding: 0.5rem 1.2rem;
+        border: 1px solid #ddd;
+        background: #fff;
+        border-radius: 20px;
+        cursor: pointer;
+        font-weight: 500;
+        transition: all 0.2s;
+        color: #555;
+      }
+      .filter-btn:hover {
+        background: #f0f0f0;
+      }
+      .filter-btn.active {
+        background: #6a11cb;
+        color: white;
+        border-color: #6a11cb;
+      }
+      .filter-btn.pending.active {
+        background: #f39c12;
+        border-color: #f39c12;
+      }
+      .filter-btn.review.active {
+        background: #3498db;
+        border-color: #3498db;
+      }
+      .filter-btn.verified.active {
+        background: #27ae60;
+        border-color: #27ae60;
+      }
+      .filter-btn.rejected.active {
+        background: #e74c3c;
+        border-color: #e74c3c;
+      }
+
+      .requests-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 1.5rem;
+      }
+      .request-card {
+        border: 1px solid #eee;
+        border-radius: 10px;
+        padding: 1.5rem;
+        background: #fff;
+        transition: transform 0.2s;
+        display: flex;
+        flex-direction: column;
+      }
+      .request-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+      }
+      .req-header {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 1rem;
+      }
+      .req-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        object-fit: cover;
+      }
+      .req-info h3 {
+        margin: 0;
+        font-size: 1rem;
+        color: #333;
+      }
+      .req-info span {
+        font-size: 0.8rem;
+        color: #777;
+      }
+      .req-details {
+        margin-bottom: 1rem;
+        font-size: 0.9rem;
+        color: #555;
+        flex-grow: 1;
+      }
+      .req-details p {
+        margin: 5px 0;
+      }
+      .req-details strong {
+        color: #333;
+      }
+
+      .req-docs {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 1rem;
+        flex-wrap: wrap;
+      }
+      .doc-link {
+        font-size: 0.8rem;
+        color: #2575fc;
+        text-decoration: none;
+        border: 1px solid #2575fc;
+        padding: 4px 8px;
+        border-radius: 5px;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+      }
+      .doc-link:hover {
+        background: #eef4ff;
+      }
+
+      .req-actions {
+        display: flex;
+        gap: 10px;
+        margin-top: auto;
+      }
+      .action-btn {
+        flex: 1;
+        padding: 8px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-weight: bold;
+        font-size: 0.9rem;
+        transition: 0.2s;
+      }
+      .btn-review {
+        background: #3498db;
+        color: white;
+      }
+      .btn-accept {
+        background: #27ae60;
+        color: white;
+      }
+      .btn-reject {
+        background: #e74c3c;
+        color: white;
+      }
+      .btn-review:hover {
+        background: #2980b9;
+      }
+      .btn-accept:hover {
+        background: #219150;
+      }
+      .btn-reject:hover {
+        background: #c0392b;
+      }
+
+      .status-badge {
+        display: inline-block;
+        padding: 4px 8px;
+        border-radius: 12px;
+        font-size: 0.75rem;
+        font-weight: bold;
+        color: white;
+        margin-bottom: 10px;
+      }
+      .status-pending {
+        background: #f39c12;
+      }
+      .status-review {
+        background: #3498db;
+      }
+      .status-verified {
+        background: #27ae60;
+      }
+      .status-rejected {
+        background: #e74c3c;
+      }
+
+      /* Doc Preview Modal */
+      #doc-preview-modal .modal-content {
+        width: 90%;
+        height: 90%;
+        max-width: 1000px;
+        display: flex;
+        flex-direction: column;
+        padding: 0;
+        background: #333;
+      }
+      #doc-preview-frame {
+        width: 100%;
+        height: 100%;
+        border: none;
+        background: white;
+      }
+      .preview-header {
+        padding: 10px 20px;
+        background: #222;
+        color: white;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .close-preview {
+        background: none;
+        border: none;
+        color: white;
+        font-size: 1.5rem;
+        cursor: pointer;
+      }
+
+      /* Reject Modal Specific Styles */
+      .reject-reason-group {
+        margin-bottom: 1.5rem;
+      }
+      .reject-reason-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: bold;
+        color: #333;
+      }
+      .reject-select {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        font-size: 1rem;
+        margin-bottom: 1rem;
+        background-color: #fff;
+      }
+      .reject-textarea {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        font-size: 1rem;
+        min-height: 100px;
+        resize: vertical;
+        font-family: inherit;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="main-container">
+      <header class="main-header">
+        <div class="header-left">
+          <img
+            src="assets/img/logoSchobrain.png"
+            alt="Logo Schobrain"
+            class="header-logo"
+          />
+        </div>
+        <div class="header-center">
+          <h1 style="color: #6a11cb; font-size: 1.8rem; margin: 0">
+            Panel de Administración
+          </h1>
+        </div>
+        <div class="header-right">
+          <span class="welcome-user" style="color: #333"
+            >Bienvenido, <span id="logged-in-username">Admin</span></span
+          >
+          <a
+            href="/index.html"
+            class="modal-button secondary"
+            style="text-decoration: none; padding: 0.5rem 1rem"
+            >Volver al Feed</a
+          >
+        </div>
+      </header>
+
+      <div class="admin-container">
+        <h1>Configuración de Administrador</h1>
+
+        <div class="admin-section">
+          <h2>Solicitudes de Verificación Docente</h2>
+
+          <div class="filters-bar">
+            <button class="filter-btn pending active" data-status="pending">
+              <i class="fas fa-clock"></i> Pendientes
+            </button>
+            <button class="filter-btn review" data-status="review">
+              <i class="fas fa-search"></i> En Curso (Revisión)
+            </button>
+            <button class="filter-btn verified" data-status="verified">
+              <i class="fas fa-check-circle"></i> Verificadas
+            </button>
+            <button class="filter-btn rejected" data-status="rejected">
+              <i class="fas fa-times-circle"></i> Rechazadas
+            </button>
+            <button class="filter-btn" data-status="">Todos</button>
+          </div>
+
+          <div id="teacher-requests-list" class="requests-grid">
+            <p style="color: #777">Cargando solicitudes...</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="doc-preview-modal" class="modal-overlay">
+      <div class="modal-content">
+        <div class="preview-header">
+          <span>Vista Previa del Documento</span>
+          <button class="close-preview" id="close-doc-preview">&times;</button>
+        </div>
+        <iframe id="doc-preview-frame" src=""></iframe>
+      </div>
+    </div>
+
+    <div id="reject-request-modal" class="modal-overlay">
+      <div class="modal-content">
+        <h2 style="color: #e74c3c">Rechazar Solicitud</h2>
+        <p style="margin-bottom: 1rem; color: #555">
+          Por favor, indica el motivo del rechazo. Esta información será visible
+          para el usuario.
+        </p>
+
+        <form id="reject-form">
+          <div class="reject-reason-group">
+            <label for="reject-reason-select">Motivo predeterminado:</label>
+            <select id="reject-reason-select" class="reject-select">
+              <option value="">-- Selecciona un motivo (Opcional) --</option>
+              <option value="Documentación borrosa o ilegible.">
+                Documentación borrosa o ilegible
+              </option>
+              <option
+                value="El documento no acredita claramente la condición de docente."
+              >
+                El documento no acredita condición de docente
+              </option>
+              <option
+                value="Los datos del documento no coinciden con el perfil del usuario."
+              >
+                Datos no coinciden con el perfil
+              </option>
+              <option
+                value="El documento parece estar vencido o no actualizado."
+              >
+                Documento vencido o no actualizado
+              </option>
+              <option value="Falta el reverso del documento.">
+                Falta el reverso del documento
+              </option>
+            </select>
+          </div>
+
+          <div class="reject-reason-group">
+            <label for="reject-comment"
+              >Justificación manual / Detalles adicionales:</label
+            >
+            <textarea
+              id="reject-comment"
+              class="reject-textarea"
+              placeholder="Escribe aquí los detalles del rechazo..."
+              required
+            ></textarea>
+          </div>
+
+          <div class="modal-actions">
+            <button
+              type="button"
+              id="cancel-reject-btn"
+              class="modal-button secondary"
+            >
+              Cancelar
+            </button>
+            <button type="submit" class="modal-button danger">
+              Confirmar Rechazo
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <script type="module" src="./js/admin.js"></script>
+  </body>
+</html>

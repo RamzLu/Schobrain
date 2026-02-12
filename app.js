@@ -9,15 +9,23 @@ import { routeUser } from "./src/routes/user.route.js";
 import { tagRouter } from "./src/routes/tag.route.js";
 import { routeArticle } from "./src/routes/article.route.js";
 import { routeComment } from "./src/routes/comment.route.js";
+import profileRouter from "./src/routes/profile.route.js";
+import { teacherRequestRouter } from "./src/routes/teacherRequest.route.js"; // Importar nueva ruta
 
 app.use(express.json());
 app.use(cookieParser());
+// Esta línea le dice a Express que la carpeta public contiene archivos que se deben enviar directamente al navegador.
+app.use(express.static("public"));
 
 app.use("/auth", authRouter);
 app.use("/api", routeUser);
 app.use("/api", tagRouter);
 app.use("/api", routeArticle);
 app.use("/api", routeComment);
+app.use("/api/profile", profileRouter);
+// Registrar la ruta de solicitudes docentes
+app.use("/api/teacher-requests", teacherRequestRouter);
+
 app.listen(PORT, async () => {
   await conectDB();
   console.log(`Servidor corriendo en http://localhost:${PORT}`);

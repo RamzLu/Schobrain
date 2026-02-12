@@ -38,11 +38,51 @@ const commentSchema = new Schema(
         message: "El articulo referenciado no existe.",
       },
     },
+    imageUrls: {
+      type: [String],
+      required: false,
+    },
+    //CAMPOS PARA VOTACIÓN
+    likes: {
+      type: Number,
+      default: 0,
+    },
+    dislikes: {
+      type: Number,
+      default: 0,
+    },
+    votedUp: [
+      {
+        type: Types.ObjectId,
+        ref: "User",
+      },
+    ],
+    votedDown: [
+      {
+        type: Types.ObjectId,
+        ref: "User",
+      },
+    ],
+
+    parentComment: {
+      type: Types.ObjectId,
+      ref: "Comment",
+      default: null,
+    },
   },
   {
     versionKey: false,
     timestamps: true,
+    toJSON: { virtuals: true },
   }
 );
+
+// Popular virtualmente las respuestas anidadas
+commentSchema.virtual("replies", {
+  ref: "Comment",
+  localField: "_id",
+  foreignField: "parentComment",
+  options: { sort: { createdAt: 1 } }, // Opcional: ordenar respuestas
+});
 
 export const CommentModel = model("Comment", commentSchema);

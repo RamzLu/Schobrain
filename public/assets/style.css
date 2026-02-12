@@ -1,0 +1,2995 @@
+/* ==========================================================================
+   1. RESET Y ESTILOS GLOBALES
+   ========================================================================== */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: "Outfit", sans-serif;
+  background-color: #f0f2f5;
+  color: #e0e0e0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  /* padding: 2rem; */
+}
+
+/* ==========================================================================
+   2. CONTENEDOR PRINCIPAL
+   ========================================================================== */
+.login-container {
+  display: flex;
+  width: 100%;
+  max-width: 900px;
+  background-color: #1a1a2e;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  padding: 2rem;
+}
+
+/* ==========================================================================
+   3. SECCIÓN DE INFORMACIÓN (LOGO Y TEXTOS)
+   ========================================================================== */
+.login-info {
+  flex-basis: 50%;
+  padding: 0 2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.login-info h1 {
+  font-size: 4rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  color: #ffffff;
+  line-height: 1.1;
+}
+
+.login-logo {
+  width: 100px;
+  height: auto;
+  margin-bottom: 1.5rem;
+}
+
+/* --- Estilos específicos para Login --- */
+.login-info.login-page {
+  align-items: center;
+  text-align: center;
+}
+
+.login-info.login-page .login-logo {
+  margin-bottom: 2rem;
+}
+
+.login-subheading {
+  font-size: 1.5rem;
+  line-height: 1.4;
+  color: #a0a0b0;
+  margin-top: 1rem;
+}
+
+/* --- Estilos específicos para Register --- */
+.login-info.register-info {
+  align-items: center !important;
+  text-align: center !important;
+}
+
+.login-info.register-info .login-logo {
+  align-self: center;
+}
+
+.register-info .welcome-message {
+  font-size: 0.95rem;
+  line-height: 1.5;
+  margin-top: 1.5rem;
+}
+
+.gradient-text {
+  background-image: linear-gradient(to right, #6a11cb 0%, #2575fc 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* ==========================================================================
+   4. SECCIÓN DE FORMULARIO
+   ========================================================================== */
+.login-form-wrapper {
+  flex-basis: 50%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.form-container {
+  width: 27rem;
+  padding: 2.5rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 15px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+.input-group {
+  margin-bottom: 1.2rem;
+}
+
+.input-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+  color: #c0c0d0;
+}
+
+.input-group input,
+.role-select {
+  width: 100%;
+  padding: 0.8rem 1rem;
+  background: linear-gradient(#1a1a2e, #1a1a2e) padding-box,
+    linear-gradient(to right, #2575fc, #6a11cb) border-box;
+  border: 2px solid transparent;
+  border-radius: 8px;
+  color: #ffffff;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.input-group input::placeholder {
+  color: #808090;
+}
+
+.input-group input:focus,
+.role-select:focus {
+  outline: none;
+  box-shadow: 0 0 15px rgba(37, 117, 252, 0.5);
+  background: linear-gradient(#12121c, #12121c) padding-box,
+    linear-gradient(to right, #2575fc, #6a11cb) border-box;
+}
+
+/* --- Fila horizontal para campos --- */
+.form-row {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-end; /* Alinea los campos por la base */
+}
+
+.form-row .input-group {
+  flex: 1;
+}
+
+.form-row .input-group input,
+.form-row .input-group .role-select {
+  min-height: 51px; /* Altura consistente para alinear correctamente */
+}
+
+/* ==========================================================================
+   5. BOTONES Y ENLACES
+   ========================================================================== */
+.login-button {
+  width: 100%;
+  padding: 1rem;
+  border: none;
+  border-radius: 8px;
+  background-image: linear-gradient(to right, #6a11cb 0%, #2575fc 100%);
+  color: white;
+  font-size: 1.1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.login-button:hover {
+  box-shadow: 0 5px 15px rgba(37, 117, 252, 0.4);
+  transform: translateY(-2px);
+}
+
+.form-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 1.5rem;
+}
+
+.form-actions .login-button {
+  width: auto;
+  padding: 0.8rem 2rem;
+  font-size: 1rem;
+}
+
+.signup-link {
+  margin-top: 1.5rem;
+  text-align: center;
+  color: #a0a0b0;
+}
+
+.form-actions .signup-link {
+  margin: 0;
+}
+
+.signup-link a {
+  color: #2575fc;
+  font-weight: 700;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.signup-link a:hover {
+  color: #6a11cb;
+}
+
+/* --- Mensajes de error --- */
+.error-text {
+  color: #ff5c5c;
+  font-size: 0.9rem;
+  text-align: center;
+  min-height: 1.2rem; /* Reserva espacio para el error */
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.error-text.visible {
+  opacity: 1;
+}
+
+/* ==========================================================================
+   6. FOOTER Y DISEÑO RESPONSIVE
+   ========================================================================== */
+.copyright {
+  position: absolute;
+  bottom: 1rem;
+  color: #505060;
+  font-size: 0.8rem;
+}
+
+@media (max-width: 768px) {
+  body {
+    padding: 1rem;
+    overflow: auto; /* Esta línea estaba bien para móviles */
+    min-height: 100%;
+    align-items: flex-start;
+  }
+  .login-container {
+    flex-direction: column;
+    padding: 1rem;
+    margin-top: 2rem;
+  }
+  .login-info {
+    padding: 2rem 1rem;
+    align-items: center;
+    text-align: center;
+  }
+  .login-info.register-info {
+    align-items: center;
+    text-align: center;
+  }
+
+  .login-info.register-info .login-logo {
+    align-self: center;
+  }
+}
+/* ==========================================================================
+   7. ESTILOS PARA LA PÁGINA PRINCIPAL (INDEX.HTML)
+   ========================================================================== */
+
+/* --- Contenedor principal para el layout --- */
+.main-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  width: 100%;
+  padding: 0; /* Elimina el padding del body si lo tienes aquí */
+  background-color: #f3f3ff;
+}
+
+/* --- HEADER --- */
+.main-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.8rem 2rem;
+  /* Fondo semitransparente blanco */
+  background-color: rgba(255, 255, 255, 0.85);
+  /* Efecto de desenfoque (Glass) */
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  /* Borde inferior sutil y sombra suave */
+  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.03);
+  color: #333;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  transition: all 0.3s ease;
+}
+.header-left {
+  display: flex;
+  align-items: center;
+  min-width: 220px; /* Espacio reservado para mantener balance */
+}
+.logo-link {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  gap: 10px; /* Espacio entre imagen y texto */
+  transition: opacity 0.2s;
+}
+.logo-link:hover {
+  opacity: 0.9;
+}
+.header-logo {
+  width: 42px; /* Tamaño optimizado */
+  height: auto;
+  display: block;
+}
+.brand-name {
+  font-family: "Outfit", sans-serif;
+  font-size: 1.5rem;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  /* Texto con Gradiente */
+  background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.header-center {
+  flex-grow: 1;
+  display: flex;
+  justify-content: center; /* Centrado perfecto */
+  padding: 0 1rem;
+}
+
+.search-bar {
+  display: flex;
+  align-items: center;
+  background-color: #b6b6b6; /* Un gris más neutro y profesional */
+  border-radius: 25px;
+  padding: 0.5rem 1rem;
+  max-width: 500px;
+  width: 100%;
+  border: 1px solid transparent; /* Borde inicial sutil */
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Efecto visual cuando haces clic dentro de la barra */
+.search-bar:focus-within {
+  border-color: #c1c9d2;
+  box-shadow: 0 0 8px rgba(37, 117, 252, 0.2);
+}
+
+.search-bar input {
+  border: none;
+  background: transparent;
+  color: #000000; /* Texto oscuro para mejor legibilidad */
+  font-size: 1rem;
+  padding: 0.3rem;
+  flex-grow: 1;
+  outline: none; /* Quitamos el outline por defecto */
+}
+.search-bar input::placeholder {
+  color: #6c757d; /* Placeholder un poco más oscuro */
+}
+
+.search-button {
+  background: transparent;
+  border: none;
+  color: #6c757d; /* Icono de lupa gris */
+  cursor: pointer;
+  font-size: 1rem;
+  margin-left: 0.5rem;
+  transition: color 0.3s ease;
+}
+
+.search-button:hover {
+  color: #2575fc; /* Color azul al pasar el ratón */
+}
+
+.header-right {
+  position: relative; /* Clave para posicionar el menú desplegable */
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.welcome-user {
+  font-size: 1rem;
+  font: normal bold 1rem/1.5rem "Outfit", sans-serif;
+  color: #5b5bf0 !important;
+}
+
+.menu-toggle {
+  color: #374151;
+  background: transparent;
+  border: none;
+  font-size: 1.4rem;
+  cursor: pointer;
+  padding: 5px;
+  border-radius: 6px;
+  transition: background 0.2s;
+}
+
+.menu-toggle:hover {
+  background-color: #f3f4f6;
+  color: #2575fc;
+}
+@media (max-width: 768px) {
+  .main-header {
+    padding: 0.8rem 1rem;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .header-left {
+    min-width: auto;
+  }
+  .header-center {
+    order: 3; /* Bajar barra en móviles */
+    width: 100%;
+    padding: 0;
+    margin-top: 0.5rem;
+  }
+  .header-right {
+    min-width: auto;
+  }
+  .welcome-user {
+    display: none; /* Ocultar nombre en móvil para ahorrar espacio */
+  }
+}
+
+/* --- ÁREA DE CONTENIDO PRINCIPAL (sidebar + feed) --- */
+.content-area {
+  display: flex;
+  flex-grow: 1;
+  padding: 1.5rem 2rem;
+  gap: 2rem;
+  /* ---> NUEVO COLOR DE FONDO PARA EL ÁREA DE CONTENIDO <--- */
+  background-color: #f0f2f5;
+}
+
+/* --- SIDEBARS (IZQUIERDA Y DERECHA) --- */
+.sidebar {
+  flex-basis: 250px; /* Ancho fijo para el sidebar */
+  flex-shrink: 0;
+  background-color: #ffffff; /* Fondo blanco para las barras laterales */
+  border-radius: 10px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  color: #333; /* Texto oscuro para contraste */
+  height: 80vh;
+  overflow-y: scroll;
+  position: sticky;
+  top: 110px;
+
+  /* Estilos de scrollbar para Firefox */
+  scrollbar-width: thin; /* Barra delgada */
+
+  scrollbar-color: #cccccc transparent; /* "Thumb" blanco, "Track" transparente */
+}
+.sidebar::-webkit-scrollbar {
+  display: none;
+}
+
+.sidebar h2 {
+  color: #111; /* Títulos más oscuros */
+}
+
+.filter-list {
+  list-style: none;
+}
+
+.filter-list li {
+  margin-bottom: 0.8rem;
+}
+
+.filter-list a {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  text-decoration: none;
+  color: #555; /* Enlaces más oscuros */
+  font-size: 1rem;
+  padding: 0.6rem 0.8rem;
+  border-radius: 8px;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.filter-list a i {
+  font-size: 1.1rem;
+  color: #888;
+}
+
+.filter-list a:hover {
+  background-color: #e9ecef;
+  color: #007bff;
+}
+
+.filter-list a:hover i {
+  color: #007bff;
+}
+
+/* --- Estilos para la nueva barra de contribuyentes --- */
+
+.contributors-list p {
+  color: #888;
+  font-style: italic;
+}
+
+/* --- SECCIÓN DE PREGUNTAS (Contenido central) --- */
+.question-feed {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.hero-section {
+  background-image: linear-gradient(
+    to right,
+    #2575fc 0%,
+    #0056b3 100%
+  ); /* Degradado azul */
+  border-radius: 15px;
+  padding: 2.5rem 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+}
+.gradient-card {
+  background: linear-gradient(-45deg, #001f3f, #0074d9, #7fdbff, #c6cffa);
+  background-size: 400% 400%;
+  animation: gradientBG 15s ease infinite;
+  border: none; /* opcional, para que se vea más limpio */
+  border-radius: 15px;
+  color: white; /* asegura contraste */
+  width: 40rem;
+}
+
+@keyframes gradientBG {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.hero-content {
+  text-align: center;
+}
+
+.hero-content h2 {
+  font-size: 3rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 1.5rem;
+  line-height: 1.2;
+}
+
+.ask-question-button {
+  background-color: #007bff; /* Un azul más brillante para el botón */
+  border: none;
+  border-radius: 8px;
+  padding: 1rem 2rem;
+  color: #ffffff;
+  font-size: 1.1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.ask-question-button:hover {
+  background-color: #0056b3; /* Azul más oscuro al pasar el ratón */
+  transform: translateY(-2px);
+}
+
+/* --- ESTILOS PARA EL MENÚ DE USUARIO DESPLEGABLE --- */
+
+/* --- MENÚ DESPLEGABLE DE USUARIO (GLASSMORPHISM BLANCO) --- */
+.user-menu {
+  display: none; /* Oculto por defecto */
+  position: absolute;
+  top: calc(100% + 15px); /* Un poco más separado del borde */
+  right: 0;
+
+  /* Fondo Blanco Transparente */
+  background-color: rgba(255, 255, 255, 0.952);
+  backdrop-filter: blur(10px); /* Efecto de desenfoque detrás */
+  -webkit-backdrop-filter: blur(10px); /* Compatibilidad Safari */
+
+  border-radius: 12px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1); /* Sombra suave */
+  border: 1px solid rgba(255, 255, 255, 0.932); /* Borde sutil */
+
+  width: 240px;
+  overflow: hidden;
+  z-index: 1000;
+
+  /* Animación de entrada */
+  transform-origin: top right;
+  animation: menuSlideIn 0.2s ease forwards;
+}
+
+@keyframes menuSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.user-menu.visible {
+  display: block;
+}
+
+.user-menu a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 1rem 1.5rem;
+
+  /* Texto oscuro para contrastar con el fondo blanco */
+  color: #333;
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.2s ease-in-out;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05); /* Línea separadora sutil */
+}
+
+.user-menu a:last-child {
+  border-bottom: none;
+}
+
+.user-menu a:hover {
+  background-color: rgba(106, 17, 203, 0.05); /* Fondo morado muy suave */
+  color: #6a11cb; /* Texto morado */
+  padding-left: 1.8rem; /* Pequeño desplazamiento a la derecha */
+}
+
+.user-menu a i {
+  color: #6a11cb; /* Iconos morados */
+  width: 20px;
+  text-align: center;
+}
+/* ==========================================================================
+   8. MEDIA QUERIES (RESPONSIVE DESIGN) para INDEX
+   ========================================================================== */
+@media (max-width: 1024px) {
+  .header-center {
+    padding: 0 1rem;
+  }
+  .welcome-user {
+    display: none; /* Oculta el saludo en pantallas más pequeñas */
+  }
+  .content-area {
+    padding: 1rem;
+    gap: 1rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .main-header {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1rem;
+  }
+  .header-left,
+  .header-right {
+    flex-basis: 100%;
+    display: flex;
+    justify-content: center;
+    order: -1; /* Mueve el logo arriba */
+  }
+  .header-center {
+    order: 0;
+    padding: 0;
+  }
+  .search-bar {
+    max-width: 100%;
+  }
+  .content-area {
+    flex-direction: column;
+  }
+  .sidebar {
+    flex-basis: auto;
+    width: 100%;
+  }
+  .hero-content h2 {
+    font-size: 2.5rem;
+  }
+  .ask-question-button {
+    padding: 0.8rem 1.5rem;
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .main-header {
+    padding: 0.8rem 1rem;
+  }
+  .hero-content h2 {
+    font-size: 2rem;
+  }
+}
+/* ==========================================================================
+   9. ESTILOS PARA MODAL Y ARTICLE CARD
+   ========================================================================== */
+.modal-overlay {
+  position: fixed; /* Se superpone a todo */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(18, 18, 28, 0.7); /* Fondo oscuro semitransparente */
+  backdrop-filter: blur(5px); /* Efecto de desenfoque */
+  -webkit-backdrop-filter: blur(5px);
+  display: none; /* Oculto por defecto */
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+}
+
+.modal-overlay.visible {
+  display: flex; /* Se muestra con JS */
+}
+
+.modal-content {
+  background-color: #ffffff;
+  padding: 2.5rem;
+  border-radius: 15px;
+  box-shadow: 0 5px 25px rgba(0, 0, 0, 0.5);
+  text-align: center;
+  max-width: 450px;
+  width: 90%;
+}
+
+.modal-content h2 {
+  font-size: 1.5rem;
+  margin-bottom: 2rem;
+  color: #000000;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.modal-button {
+  border: none;
+  border-radius: 8px;
+  padding: 0.8rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.modal-button.secondary {
+  background-color: #4a4a6a;
+  color: #e0e0e0;
+}
+
+.modal-button.secondary:hover {
+  background-color: #6a6a8a;
+}
+
+.modal-button.danger {
+  background-color: #e63946;
+  color: #ffffff;
+}
+
+.modal-button.danger:hover {
+  background-color: #c62834;
+}
+
+/* --- Estilos para el nuevo modal --- */
+.modal-content.question-modal-content {
+  max-width: 600px;
+}
+
+.modal-content.question-modal-content h2 {
+  color: #1a1a2e;
+}
+
+/* Estilos específicos para el textarea en el modal */
+.question-modal-content textarea {
+  width: 100%;
+  padding: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 1rem;
+  resize: vertical;
+}
+
+.question-modal-content textarea:focus {
+  outline: 2px solid #2575fc;
+  border-color: #2575fc;
+}
+
+.question-modal-content .input-group input,
+.question-modal-content .input-group textarea,
+.question-modal-content .input-group select {
+  /* ⬅️ AÑADIDO SELECT */
+  background: #f8f8f8;
+  color: #333;
+  border: 1px solid #ccc;
+  padding: 0.8rem 1rem;
+  width: 100%;
+  background: linear-gradient(to right, #ffffff, #ffffff) padding-box,
+    none border-box;
+  border: 1px solid #ccc;
+  min-height: 51px; /* Consistencia con otros inputs */
+}
+
+.question-modal-content .input-group input:focus,
+.question-modal-content .input-group textarea:focus,
+.question-modal-content .input-group select:focus {
+  /* ⬅️ AÑADIDO SELECT */
+  outline: none;
+  box-shadow: 0 0 5px rgba(37, 117, 252, 0.5);
+  border: 1px solid #2575fc;
+}
+
+/* Modificación del botón de publicar pregunta */
+.question-modal-content .modal-button:last-child {
+  background-image: linear-gradient(to right, #2575fc 0%, #6a11cb 100%);
+  color: white;
+}
+
+/* --- Estilos para las Tarjetas de Pregunta (Article Card) --- */
+.article-card {
+  background-color: #ffffff;
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  color: #333;
+  border-left: none !important;
+  margin-bottom: 1.5rem;
+}
+
+.article-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid #f0f0f0;
+  padding-bottom: 0.5rem;
+}
+
+.article-author {
+  font-weight: 700;
+  color: #6a11cb;
+}
+
+.article-date {
+  font-size: 0.85rem;
+  color: #888;
+}
+
+.article-content {
+  font-size: 1rem;
+  line-height: 1.6;
+  margin-bottom: 0.5rem; /* Ajustado para dejar espacio al footer */
+  /* white-space: pre-wrap; */
+}
+
+.article-actions a {
+  color: #2575fc;
+  text-decoration: none;
+  font-weight: 700;
+  transition: color 0.2s ease;
+}
+
+.article-actions a:hover {
+  color: #6a11cb;
+}
+
+/* --- Footer de Tarjeta y Tags --- */
+
+.article-footer-actions {
+  display: flex;
+  flex-direction: column; /* Apila los elementos verticalmente */
+  gap: 1rem; /* Espacio entre la fila de tags/links y la fila de votos */
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+}
+
+.footer-top-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.article-tags-container {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.article-tags-container {
+  /* Posición abajo a la izquierda dentro del footer */
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.article-tag {
+  display: inline-block;
+  padding: 0.3rem 0.8rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: capitalize;
+  color: white;
+}
+
+/* --- Colores de Tags --- */
+
+.tag-blue {
+  background-color: #2575fc; /* Matemáticas */
+}
+.tag-green {
+  background-color: #28a745; /* Lengua */
+}
+.tag-red {
+  background-color: #dc3545; /* Ciencias */
+}
+.tag-purple {
+  background-color: #6a11cb; /* Programación */
+}
+.tag-orange {
+  background-color: #ff8c00; /* Historia */
+}
+.tag-teal {
+  background-color: #008080; /* Inglés */
+}
+.tag-violet {
+  background-color: #8f00ff; /* Castellano */
+}
+.tag-cyan {
+  background-color: #00bcd4; /* Estadísticas */
+}
+.tag-brown {
+  background-color: #a52a2a;
+}
+.tag-earth {
+  background-color: #8b4513;
+}
+.tag-navy {
+  background-color: #000080;
+}
+.tag-olive {
+  background-color: #808000;
+}
+.tag-sky {
+  background-color: #87ceeb;
+}
+.tag-lime {
+  background-color: #00ff00;
+}
+.tag-pink {
+  background-color: #ffc0cb;
+}
+.tag-leaf {
+  background-color: #228b22;
+}
+.tag-steel {
+  background-color: #4682b4;
+}
+.tag-electric {
+  background-color: #00ffff;
+  color: #333;
+} /* Color claro, texto oscuro */
+.tag-gold {
+  background-color: #ffd700;
+  color: #333;
+} /* Color claro, texto oscuro */
+.tag-indigo {
+  background-color: #4b0082;
+}
+.tag-salmon {
+  background-color: #fa8072;
+}
+.tag-grass {
+  background-color: #7cfc00;
+  color: #333;
+} /* Color claro, texto oscuro */
+.tag-maroon {
+  background-color: #800000;
+}
+.tag-coral {
+  background-color: #ff7f50;
+}
+.tag-lightblue {
+  background-color: #add8e6;
+  color: #333;
+} /* Color claro, texto oscuro */
+.tag-darkred {
+  background-color: #8b0000;
+}
+.tag-sand {
+  background-color: #f4a460;
+}
+.tag-fire {
+  background-color: #ff4500;
+}
+.tag-night {
+  background-color: #191970;
+}
+.tag-gray {
+  background-color: #6c757d; /* Default/Otros */
+}
+
+/* ==========================================================================
+   10. ESTILOS ESPECÍFICOS PARA EL PANEL DE ADMINISTRACIÓN
+   ========================================================================== */
+
+/* Ajustes para el contenedor principal a ancho completo y fondo oscuro */
+.admin-container {
+  flex-grow: 1;
+  padding: 3rem 2rem;
+  max-width: none !important; /* Elimina la restricción de ancho */
+  margin: 0 !important; /* Elimina los márgenes laterales */
+  background-color: #12121c; /* Fondo que coincide con el body */
+  color: #e0e0e0;
+}
+#existing-tags-list {
+  max-height: 400px; /* Define la altura máxima antes de que aparezca el scroll */
+  overflow-y: auto; /* Habilita la barra de desplazamiento vertical si el contenido excede el max-height */
+  padding-right: 15px; /* Añade un pequeño padding para que el scroll no se pegue al borde de la tarjeta */
+}
+/* ⬅️ INICIO ESTILOS DE BARRA DE SCROLL (WebKit) ⬅️ */
+
+#existing-tags-list::-webkit-scrollbar {
+  width: 8px; /* Ancho total de la barra */
+}
+
+#existing-tags-list::-webkit-scrollbar-track {
+  background: #f1f1f1; /* Color de fondo de la pista de scroll */
+  border-radius: 10px;
+}
+
+#existing-tags-list::-webkit-scrollbar-thumb {
+  background: #6a11cb; /* Color del deslizador (thumb) */
+  border-radius: 10px;
+}
+
+#existing-tags-list::-webkit-scrollbar-thumb:hover {
+  background: #2575fc; /* Color al pasar el ratón (un poco de azul para el hover) */
+}
+
+/* ⬅️ FIN ESTILOS DE BARRA DE SCROLL ⬅️ */
+
+.admin-container h1 {
+  color: #e0e0e0;
+  border-bottom-color: #2575fc;
+}
+
+/* Diseño de dos columnas para las secciones de tags */
+.tags-management-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* Dos columnas de igual ancho */
+  gap: 2rem; /* Espacio entre las columnas */
+  align-items: flex-start; /* Alinea las secciones en la parte superior */
+}
+
+/* Estilos de las secciones (card) en el panel de admin */
+.admin-section {
+  background-color: #ffffff; /* Fondo blanco para las secciones (como en el Login) */
+  color: #333; /* Texto oscuro para el interior de la sección */
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  margin-bottom: 2rem;
+}
+
+.admin-section h2 {
+  color: #6a11cb; /* Título morado */
+  margin-bottom: 1.5rem;
+}
+
+/* Estilos de formulario e inputs dentro de la sección Admin */
+.form-admin .input-group label {
+  color: #333; /* Etiquetas oscuras */
+}
+
+.form-admin .input-group input,
+.form-admin .input-group textarea {
+  background: #f8f8f8;
+  color: #333;
+  border: 1px solid #ccc;
+  padding: 0.8rem 1rem;
+  width: 100%;
+  margin-top: 0.5rem;
+  border-radius: 6px;
+}
+
+.form-admin button {
+  background-color: #6a11cb; /* Botón con el color morado principal */
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.form-admin button:hover {
+  background-color: #8c42ed;
+}
+
+/* --- Estilos de las Tarjetas de Tags existentes --- */
+
+.admin-section .tag-card {
+  display: flex;
+  justify-content: space-between; /* Añadido para espaciar el texto del botón */
+  align-items: center;
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid #eee;
+  background-color: #f8f8f8;
+  border-radius: 8px;
+  margin-bottom: 0.8rem;
+  transition: background-color 0.2s ease;
+}
+
+.admin-section .tag-card:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+}
+
+.admin-section .tag-card:hover {
+  background-color: #e9ecef; /* Hover en tarjetas de tag */
+}
+
+.tag-name {
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: #1a1a2e; /* Nombre de tag oscuro */
+}
+
+.tag-description {
+  font-size: 0.9rem;
+  color: #6c757d; /* Descripción de tag gris */
+  margin-top: 0.2rem;
+}
+
+/* Media query para hacer el diseño responsivo en pantallas más pequeñas */
+@media (max-width: 992px) {
+  .tags-management-grid {
+    grid-template-columns: 1fr; /* Una sola columna en pantallas pequeñas */
+  }
+}
+.tag-actions {
+  /* Contenedor de botones (si agregamos más) */
+  display: flex;
+  gap: 10px;
+}
+
+.delete-tag-btn {
+  background: none;
+  border: none;
+  color: #dc3545; /* Rojo de peligro */
+  cursor: pointer;
+  font-size: 1.1rem;
+  padding: 5px;
+  border-radius: 5px;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.delete-tag-btn:hover {
+  background-color: rgba(220, 53, 69, 0.1);
+  color: #c82333;
+}
+/* ... (omitted existing styles) */
+
+/* --- Estilos para las Tarjetas de Pregunta (Article Card) --- */
+.article-card {
+  background-color: #ffffff;
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  color: #333;
+  border-left: 5px solid #2575fc;
+  margin-bottom: 1.5rem;
+}
+
+/* ⬅️ NUEVO: Estilos para la imagen adjunta */
+.article-image-container {
+  margin: 1rem 0;
+  max-height: 400px; /* Limitar altura del contenedor */
+  overflow: hidden; /* Ocultar partes de la imagen si excede el max-height */
+  border-radius: 8px;
+}
+
+.article-image {
+  width: 100%; /* La imagen ocupa todo el ancho del contenedor */
+  height: auto;
+  object-fit: cover; /* Asegura que la imagen cubra el área sin distorsionarse */
+  display: block;
+}
+
+/* NUEVOS ESTILOS PARA LA IMAGEN ADJUNTA EN LA TARJETA DE ARTÍCULO  */
+
+.article-image-container {
+  /* Contenedor que limita el espacio de la imagen */
+  margin: 1.5rem 0;
+  width: 100%;
+  max-height: 450px; /* Altura máxima razonable para el feed */
+  overflow: hidden; /* Asegura que no se desborde si la imagen es muy grande */
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  display: flex;
+  justify-content: center; /* Centra la imagen si es más pequeña que el contenedor */
+  align-items: center;
+  background-color: #f0f2f5; /* Fondo ligero para la zona de la imagen */
+}
+
+.article-image {
+  /* La imagen real se adapta */
+  max-width: 100%; /* CRÍTICO: Asegura que nunca exceda el ancho de la tarjeta */
+  height: auto; /* Mantiene la proporción */
+  max-height: 450px; /* La imagen no superará la altura máxima del contenedor */
+  display: block;
+  /* CRÍTICO: Ajusta la imagen dentro del contenedor sin recortarla, manteniendo su relación de aspecto */
+  object-fit: contain;
+  border-radius: 8px;
+}
+/* ==========================================================================
+   11. ESTILOS PARA EL MODAL DE PREGUNTA PERSONALIZADO (AÑADIDOS)
+   ========================================================================== */
+
+/* Se usa .custom-modal para que estos estilos solo apliquen al nuevo modal */
+.question-modal-content.custom-modal {
+  width: 650px;
+  max-width: 90%;
+  padding: 0;
+  border-radius: 15px;
+  overflow: hidden;
+
+  /* ✅ NUEVOS ESTILOS PARA EL SCROLL */
+  max-height: 90vh; /* Limita la altura máxima al 90% del viewport */
+  /* NO USAR overflow-y: auto AQUÍ, USARLO EN EL CONTENIDO DEL FORMULARIO */
+  /* Si aplicas overflow al .custom-modal, el header y footer se desplazarán. */
+
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  text-align: left;
+  display: flex; /* Asegura que el header/body/footer se organicen correctamente */
+  flex-direction: column; /* Apila los elementos */
+}
+
+.custom-modal .modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+  padding: 1.2rem 2rem;
+  color: white;
+}
+
+.custom-modal .modal-header h2 {
+  margin: 0;
+  color: white;
+  font-size: 1.3em;
+  font-weight: 700;
+}
+
+.close-modal-button {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 1.5em;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.close-modal-button:hover {
+  transform: rotate(90deg);
+}
+
+.custom-modal form {
+  /* ... (estilos existentes) ... */
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+
+  /* ✅ NUEVOS ESTILOS PARA EL SCROLL DEL CONTENIDO */
+  overflow-y: auto; /* Permite el scroll vertical en el contenido del formulario */
+  flex-grow: 1; /* Permite que el formulario ocupe el espacio restante */
+  padding-bottom: 0; /* Lo movemos al footer */
+}
+
+/* Anulamos el margin-bottom del .input-group general dentro de nuestro form */
+.custom-modal form .input-group {
+  position: relative;
+  margin-bottom: 0;
+}
+
+.custom-modal .input-group label {
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 0.6rem;
+  display: block;
+  font-size: 0.95em;
+}
+
+.custom-modal textarea#question-content {
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 1rem 1.2rem;
+  font-size: 1em;
+  color: #333;
+  background-color: #f8faff;
+  resize: vertical;
+  min-height: 120px;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.custom-modal textarea#question-content:focus {
+  border-color: #6a11cb;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.08),
+    0 0 0 3px rgba(106, 17, 203, 0.2);
+  outline: none;
+}
+
+.custom-modal .custom-select {
+  width: 100%;
+  padding: 0.8rem 1.2rem;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  background-color: #f8faff;
+  font-size: 1em;
+  color: #333;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%236a11cb'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  background-size: 1.2em;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.custom-modal .custom-select:focus {
+  border-color: #6a11cb;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.08),
+    0 0 0 3px rgba(106, 17, 203, 0.2);
+  outline: none;
+}
+
+.file-input-group {
+  display: flex;
+  align-items: center;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  background-color: #f8faff;
+  padding: 0.5rem;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.file-input-group:focus-within {
+  border-color: #6a11cb;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.08),
+    0 0 0 3px rgba(106, 17, 203, 0.2);
+}
+
+.file-input-label {
+  background-color: #e9ecef;
+  color: #495057;
+  padding: 0.7rem 1.2rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s, color 0.2s;
+  white-space: nowrap;
+  margin-right: 1rem;
+  font-weight: 600;
+}
+
+.file-input-label:hover {
+  background-color: #d8dee3;
+  color: #212529;
+}
+
+.file-name-display {
+  flex-grow: 1;
+  color: #6c757d;
+  font-size: 0.95em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.hidden-file-input {
+  display: none;
+}
+
+.file-size-info {
+  font-size: 0.8em;
+  color: #999;
+  text-align: right;
+  margin-top: -0.8rem;
+  padding-right: 0.5rem;
+}
+
+.custom-modal .modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 1rem;
+  padding: 1rem 2rem 2rem; /* Agrega padding inferior y lateral para separar de la scrollbar */
+  background-color: #ffffff; /* Fondo blanco para el footer */
+  border-top: 1px solid #e0e0e0; /* Separador */
+  flex-shrink: 0; /* Evita que el footer se encoja cuando aparece el scroll */
+}
+
+.custom-cancel-button {
+  background-color: #e9ecef;
+  color: #495057;
+  border: none;
+  padding: 0.8rem 1.5rem;
+  border-radius: 8px;
+  font-size: 1em;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.custom-cancel-button:hover {
+  background-color: #d8dee3;
+  color: #212529;
+}
+
+.custom-submit-button {
+  background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+  color: white;
+  border: none;
+  padding: 0.8rem 1.5rem;
+  border-radius: 8px;
+  font-size: 1em;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s, transform 0.2s;
+}
+
+.custom-submit-button:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+.custom-submit-button:active {
+  opacity: 0.8;
+  transform: translateY(0);
+}
+/* Reduce la altura mínima y el padding del área de texto */
+.custom-modal textarea#question-content {
+  min-height: 90px; /* Antes era 120px */
+}
+
+/* Reduce el espaciado general dentro del formulario */
+.custom-modal form {
+  padding-top: 1.5rem;
+  padding-left: 2rem;
+  padding-right: 2rem;
+  padding-bottom: 0; /* Importante: quitamos el padding inferior del form */
+  gap: 1.2rem;
+}
+
+/* Reduce un poco el padding del header del modal */
+.custom-modal .modal-header {
+  padding-top: 1rem; /* Antes era 1.2rem */
+  padding-bottom: 1rem; /* Antes era 1.2rem */
+}
+
+/* Reduce el padding de los botones de acción */
+.custom-cancel-button,
+.custom-submit-button {
+  padding-top: 0.7rem; /* Antes era 0.8rem */
+  padding-bottom: 0.7rem; /* Antes era 0.8rem */
+}
+
+/* Reduce el espaciado sobre los botones */
+.custom-modal .modal-actions {
+  margin-top: 0.5rem; /* Antes era 1rem */
+}
+/* ==========================================================================
+   13. ESTILOS PARA LA ETIQUETA DE ADMINISTRADOR
+   ========================================================================== */
+
+.author-info {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem; /* Espacio entre el nombre y la etiqueta */
+}
+
+.admin-badge {
+  background-color: #6a11cb; /* Un color morado que combine con tu paleta */
+  color: #ffffff;
+  padding: 0.2rem 0.6rem;
+  border-radius: 12px; /* Bordes redondeados */
+  font-size: 0.6rem; /* Tamaño de letra pequeño */
+  font-weight: 600;
+  text-transform: uppercase; /* Opcional: para que se vea más como una etiqueta */
+  letter-spacing: 0.5px; /* Opcional: ligero espaciado de letras */
+}
+/* ==========================================================================
+   15. ESTILOS PARA LA ETIQUETA DE AUTOR ("TÚ")
+   ========================================================================== */
+
+.author-badge {
+  background-color: #2575fc; /* Un color azul para diferenciarlo del admin */
+  color: #ffffff;
+  padding: 0.2rem 0.6rem;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+/* ==========================================================================
+   14. ESTILOS PARA MENÚ DE OPCIONES DE LA PREGUNTA
+   ========================================================================== */
+.article-card-header {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.header-right-controls {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.article-options-menu {
+  position: relative;
+}
+
+.options-toggle-btn {
+  background: none;
+  border: none;
+  color: #808090;
+  cursor: pointer;
+  padding: 0.3rem 0.5rem;
+  border-radius: 50%;
+  font-size: 1rem;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.options-toggle-btn:hover {
+  background-color: #f0f2f5;
+  color: #333;
+}
+
+.options-dropdown {
+  /* Cambios clave: box-shadow, border-radius y animación */
+  display: none;
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background-color: #ffffff;
+  border-radius: 12px; /* Más redondeado para un look suave */
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(0, 0, 0, 0.05); /* Sombra suave y borde sutil */
+  z-index: 5;
+  overflow: hidden;
+  width: 170px; /* Ligeramente más ancho */
+  padding: 0.5rem 0;
+  transform-origin: top right;
+  animation: fadeInScale 0.2s ease-out; /* Aplicar animación */
+}
+
+@keyframes fadeInScale {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.options-dropdown.visible {
+  display: block;
+}
+
+/* Estilos de los ítems del menú */
+.options-dropdown .dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  background: none;
+  border: none;
+  width: 100%;
+  text-align: left;
+  padding: 0.7rem 1.2rem; /* Mayor padding para espacio */
+  font-size: 0.95rem;
+  color: #333;
+  cursor: pointer;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.options-dropdown .dropdown-item:hover {
+  background-color: #f0f4ff; /* Fondo muy claro y suave al pasar el ratón */
+  color: #4338ca; /* Color morado/azul para el texto al pasar el ratón */
+}
+
+/* Íconos */
+.options-dropdown .dropdown-item i {
+  width: 18px;
+  text-align: center;
+  color: #6c757d; /* Color gris suave por defecto */
+  transition: color 0.2s;
+}
+
+/* Ícono de Eliminar (color rojo) */
+.options-dropdown .dropdown-item.delete-btn {
+  color: #dc3545; /* Rojo para el texto de eliminar */
+}
+.options-dropdown .dropdown-item.delete-btn i {
+  color: #dc3545; /* Rojo para el ícono de eliminar */
+}
+
+/* Ícono de Favoritos (color dorado si está activo) */
+.options-dropdown .dropdown-item[data-is-favorite="true"] i.fas.fa-star {
+  color: #fdc500; /* Dorado para el ícono de quitar favorito */
+}
+
+/* Restaurar color del ícono al pasar el ratón (si no es delete/favorite) */
+.options-dropdown .dropdown-item:hover i {
+  color: inherit;
+}
+
+.warning-text-deleteQuestion {
+  color: #dc3545;
+  font-size: 0.9rem;
+  margin-top: 0.4rem;
+  margin-bottom: 0.5rem;
+}
+/* ==========================================================================
+   16. ESTILOS PARA LA GALERÍA DE IMÁGENES (EN CUADRÍCULA)
+   ========================================================================== */
+
+.article-images-gallery {
+  display: grid;
+  /* Crea columnas automáticas de un tamaño mínimo de 150px */
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 10px; /* Espacio entre las imágenes */
+  margin-top: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.article-image-link {
+  display: block;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.article-image-link:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+}
+
+.article-image {
+  width: 100%;
+  height: 120px; /* Altura fija para todas las miniaturas */
+  object-fit: cover; /* Asegura que la imagen cubra el espacio sin deformarse */
+  display: block;
+}
+
+/* ==========================================================================
+   17. ESTILOS PARA EL PANEL DE SÍMBOLOS MATEMÁTICOS
+   ========================================================================== */
+
+.textarea-toolbar {
+  display: flex;
+  justify-content: flex-start;
+  margin-top: 0.5rem;
+}
+
+.toolbar-btn {
+  background: none;
+  border: 1px solid transparent;
+  border-radius: 5px;
+  padding: 0.2rem 0.5rem;
+  font-size: 1rem;
+  color: #888;
+  cursor: pointer;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.toolbar-btn:hover {
+  background-color: #e9ecef;
+  color: #333;
+}
+
+.symbols-panel {
+  display: none;
+
+  /* ✅ CAMBIO CLAVE: Posicionamiento absoluto para que no afecte el layout */
+  position: absolute;
+  top: 100%; /* Se posiciona justo debajo de su contenedor padre (el input-group) */
+  left: 0;
+  width: 100%;
+  z-index: 10; /* Se asegura de que esté por encima de otros elementos */
+
+  grid-template-columns: repeat(auto-fill, minmax(38px, 1fr));
+  gap: 6px;
+  background-color: #f8faff;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 0.8rem;
+  margin-top: 0.5rem;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Sombra para que destaque */
+
+  max-height: 150px;
+  overflow-y: auto;
+}
+
+.symbols-panel.visible {
+  display: grid;
+}
+
+.symbol-char {
+  background-color: #fff;
+  border: 1px solid #dcdfe6;
+  color: #000;
+  border-radius: 5px;
+  padding: 0.5rem 0;
+  text-align: center;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s, transform 0.1s;
+}
+
+.symbol-char:hover {
+  background-color: #e9ecef;
+  border-color: #b0b6be;
+}
+
+.symbol-char:active {
+  transform: scale(0.95);
+}
+/* ... (todo tu CSS existente va aquí arriba) ... */
+
+/* ==========================================================================
+   18. ESTILOS PARA EL VISOR DE IMÁGENES (LIGHTBOX)
+   ========================================================================== */
+
+/* Mejora el overlay existente para añadir el desenfoque */
+.modal-overlay.visible {
+  display: flex;
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+}
+
+/* Contenedor de la imagen previsualizada */
+#image-preview-modal .preview-image {
+  max-width: 90vw; /* Ancho máximo del 90% de la ventana */
+  max-height: 90vh; /* Altura máxima del 90% de la ventana */
+  border-radius: 10px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  object-fit: contain; /* Asegura que la imagen completa sea visible */
+}
+
+/* Botón para cerrar el visor */
+#image-preview-modal .close-preview-btn {
+  position: absolute;
+  top: 20px;
+  right: 30px;
+  font-size: 3rem;
+  font-weight: bold;
+  color: white;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+  text-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+}
+
+#image-preview-modal .close-preview-btn:hover {
+  transform: scale(1.1);
+}
+/* ... (todo tu CSS existente va aquí arriba) ... */
+
+/* ==========================================================================
+   19. ESTILOS PARA EL SISTEMA DE VOTACIÓN
+   ========================================================================== */
+
+.vote-controls {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem; /* Espacio entre los grupos de like y dislike */
+}
+
+.vote-group {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.vote-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #888; /* Color por defecto */
+  font-size: 1.2rem;
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.vote-btn:hover {
+  color: #555;
+  transform: scale(1.1);
+}
+
+.vote-btn.active.like {
+  color: #2575fc; /* Color azul para like activado */
+}
+
+.vote-btn.active.dislike {
+  color: #e63946; /* Color rojo para dislike activado */
+}
+
+.vote-count {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #555;
+}
+/* ==========================================================================
+   NUEVOS ESTILOS PARA AVATAR DE AUTOR Y AJUSTE DE LAYOUTS
+   ========================================================================== */
+
+/* Contenedor del autor de la pregunta (article.ui.js) */
+.article-card .author-info {
+  display: flex;
+  align-items: center;
+  gap: 10px; /* Espacio entre el avatar y el texto */
+}
+
+/* Avatar base para preguntas y respuestas */
+.author-avatar {
+  width: 36px; /* Tamaño pequeño/mediano para el avatar */
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0; /* Asegura que no se encoja */
+  border: 1px solid #e0e0e0;
+}
+
+/* Grupo de texto que contiene el username y las badges (para usar flexbox) */
+.author-text-group {
+  display: flex;
+  flex-direction: row; /* Coloca el username y las badges en la misma línea */
+  align-items: center;
+  flex-wrap: wrap; /* Permite que las badges bajen si no hay espacio */
+  gap: 0.5rem; /* Espacio entre username y badges */
+  line-height: 1.2;
+}
+
+.article-author {
+  font-weight: 700;
+  color: #6a11cb;
+  margin-right: 0; /* Anula cualquier margen anterior */
+}
+
+/* Ajuste específico para las badges en el artículo */
+.author-info .author-badge,
+.author-info .admin-badge {
+  font-size: 0.7rem;
+  line-height: 1; /* Alinea el texto de la badge */
+}
+
+/* --- ESTILOS PARA COMENTARIOS (pregunta.html) --- */
+
+.comment-author-date {
+  /* Estilos existentes + flexbox para el avatar */
+  display: flex;
+  align-items: center;
+  gap: 10px; /* Espacio entre avatar, username y badges */
+}
+
+.comment-author-date .author-text-group {
+  /* En comentarios, queremos el username y las badges juntos, y la fecha separada */
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* Ajuste específico para el avatar en el comentario (puede ser ligeramente más pequeño) */
+.comment-avatar {
+  width: 32px;
+  height: 32px;
+}
+
+/* Para que la fecha del comentario (que no está dentro de author-text-group en pregunta.js) 
+   se posicione correctamente, usamos el espacio generado por el gap y flexbox.
+   La estructura HTML de pregunta.js ya separa la fecha, así que con el `gap` en el contenedor principal es suficiente.
+*/
+
+/* Nuevo contenedor para el username y los badges */
+.comment-author-details {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem; /* Espacio entre username y badges */
+}
+
+.comment-author {
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: #2575fc;
+}
+
+/* Para que las badges se vean bien junto al username en comentarios */
+.comment-author-date .admin-badge,
+.comment-author-date .author-badge {
+  font-size: 0.75rem;
+  line-height: 1;
+}
+.author-link {
+  text-decoration: none;
+  color: inherit;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-radius: 8px; /* Redondeo para el hover */
+  padding: 4px; /* Pequeño padding para el hover */
+  transition: background-color 0.2s ease;
+}
+
+.author-link:hover {
+  background-color: #f0f2f5; /* Un fondo sutil al pasar el ratón */
+}
+
+/* El nombre del autor dentro del enlace SÍ debe tener color */
+.author-link .article-author {
+  color: #6a11cb;
+}
+.author-link .comment-author {
+  color: #2575fc;
+}
+/* ==========================================================================
+   (puedes añadir esto al final de tu archivo)
+   20. ESTILOS PARA VER/OCULTAR CONTRASEÑA
+   ========================================================================== */
+
+/* 1. Hacemos que el .input-group sea relativo para posicionar el ícono */
+.input-group {
+  position: relative;
+}
+
+/* 2. Estilo y posición del ícono */
+.password-toggle-icon {
+  position: absolute;
+  right: 1.2rem; /* Alinear con el padding derecho del input */
+
+  /* Calculamos el centro vertical del input:
+    El input tiene 0.8rem de padding vertical.
+    Lo posicionamos 0.8rem desde abajo y ajustamos 
+  */
+  bottom: 0.9rem; /* Ajuste manual para centrarlo verticalmente DENTRO del input */
+
+  color: #c0c0d0;
+  cursor: pointer;
+  transition: color 0.2s ease;
+  z-index: 2; /* Asegura que esté sobre el input */
+}
+
+.password-toggle-icon:hover {
+  color: #ffffff;
+}
+
+/* 3. Añadir padding-right al input de contraseña para que el texto no se solape con el ícono */
+/* Usamos !important para asegurarnos de que esta regla gane 
+  al selector genérico `.input-group input`
+*/
+.input-group input[name="password"],
+.input-group input[name="confirmPassword"] {
+  padding-right: 3rem !important;
+}
+/* ==========================================================================
+   20. ESTILOS PARA LA NUEVA BARRA DE BÚSQUEDA (ACTION SEARCH BAR)
+   ========================================================================== */
+
+/* 1. Contenedor principal */
+.action-search-bar-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 500px; /* Mantenemos el ancho de la barra original */
+}
+
+/* 2. Contenedor del Input (para posicionar el icono) */
+.action-search-input-container {
+  position: relative;
+  width: 100%;
+}
+
+#action-search-input {
+  width: 100%;
+  border: 2px solid transparent;
+  /* Fondo gris muy claro para contrastar con el header blanco */
+  background-color: #f0f2f5;
+  color: #1a1a2e;
+  font-size: 1rem;
+  border-radius: 50px; /* Redondeado completo */
+  padding: 0.7rem 3.2rem 0.7rem 1.5rem; /* Padding ajustado */
+  outline: none;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.03);
+}
+
+#action-search-input::placeholder {
+  color: #8898aa;
+  font-weight: 500;
+}
+
+#action-search-input:focus {
+  background-color: #ffffff;
+  border-color: #2575fc; /* Borde azul al enfocar */
+  box-shadow: 0 0 0 4px rgba(37, 117, 252, 0.15); /* Resplandor azul */
+}
+
+/* 4. Contenedor de Iconos (Search/Send) */
+.action-search-icon-container {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 34px;
+  width: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #6a11cb;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+.action-search-icon-container:hover {
+  background-color: rgba(106, 17, 203, 0.1);
+}
+#action-send-icon {
+  color: #2575fc; /* Color para el icono de "enviar" */
+}
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  min-width: 220px;
+  justify-content: flex-end;
+}
+.welcome-user {
+  color: #4b5563 !important;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+/* 5. Panel de Resultados/Historial */
+.action-search-panel {
+  position: absolute;
+  top: calc(100% + 8px); /* 8px debajo de la barra */
+  left: 0;
+  right: 0;
+  background-color: #ffffff;
+  border-radius: 12px;
+  border: 1px solid #e0e0e0;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  z-index: 100;
+  overflow: hidden;
+  max-height: 450px;
+  overflow-y: auto;
+
+  /* Animación de entrada/salida */
+  opacity: 0;
+  transform: scaleY(0.95) translateY(-10px);
+  transform-origin: top;
+  pointer-events: none;
+  transition: opacity 0.2s ease, transform 0.2s cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+
+.action-search-panel.visible {
+  opacity: 1;
+  transform: scaleY(1) translateY(0);
+  pointer-events: auto;
+}
+
+/* 6. Sección de Historial */
+.search-history-section {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid #f0f2f5;
+  display: none; /* Oculto por defecto, se muestra con JS */
+}
+
+.search-history-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+.search-history-title {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #555;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.search-history-clear-btn {
+  font-size: 0.75rem;
+  color: #888;
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.25rem;
+}
+.search-history-clear-btn:hover {
+  color: #dc3545;
+}
+
+.search-history-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.history-item-btn {
+  font-size: 0.8rem;
+  padding: 0.3rem 0.6rem;
+  border-radius: 6px;
+  background-color: #f0f2f5;
+  color: #333;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+.history-item-btn:hover {
+  background-color: #e0e0e0;
+}
+
+/* 7. Lista de Resultados */
+.search-results-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: none; /* Oculto por defecto */
+}
+
+.search-result-item {
+  padding: 0.8rem 1rem;
+  border-bottom: 1px solid #f0f2f5;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+.search-result-item:last-child {
+  border-bottom: none;
+}
+.search-result-item:hover {
+  background-color: #f8f9fa;
+}
+
+.result-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.25rem;
+}
+
+.result-subject {
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+/* Colores de Asignaturas (basados en el React) */
+.result-subject-math {
+  color: #3b82f6;
+} /* blue-500 */
+.result-subject-biologia {
+  color: #22c55e;
+} /* green-500 */
+.result-subject-historia {
+  color: #f59e0b;
+} /* amber-500 */
+.result-subject-literatura {
+  color: #a855f7;
+} /* purple-500 */
+.result-subject-default {
+  color: #6b7280;
+} /* gray-500 */
+
+.result-category {
+  font-size: 0.75rem;
+  color: #555;
+  background-color: #f0f2f5;
+  padding: 0.1rem 0.4rem;
+  border-radius: 4px;
+}
+
+.result-title {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #111;
+  margin-bottom: 0.25rem;
+  /* Acortar texto largo */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.result-author {
+  font-size: 0.75rem;
+  color: #888;
+}
+
+.no-results-item {
+  padding: 1rem;
+  text-align: center;
+  color: #888;
+  font-size: 0.9rem;
+}
+
+/* 8. Footer del Panel */
+.action-search-footer {
+  padding: 0.5rem 1rem;
+  border-top: 1px solid #f0f2f5;
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.75rem;
+  color: #aaa;
+  background-color: #fdfdfd;
+}
+/* ==========================================================================
+   21. ESTILOS PARA EL NUEVO FORMULARIO DE COMENTARIOS (chat-input)
+   ========================================================================== */
+
+/* --- Nuevos Estilos --- */
+
+/* Contenedor principal del formulario */
+form.new-comment-form {
+  position: relative; /* Para el panel de símbolos */
+  border: 2px solid #a5b4fc; /* Borde azul-indigo claro */
+  border-radius: 1rem; /* 16px */
+  padding: 1rem;
+  background-color: #ffffff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  margin-bottom: 2.5rem;
+}
+
+form.new-comment-form:focus-within {
+  border-color: #6366f1; /* Borde índigo más oscuro al enfocar */
+  box-shadow: 0 6px 16px rgba(99, 102, 241, 0.1);
+}
+
+/* Contenido del formulario (previsualizaciones + textarea) */
+.comment-form-content {
+  overflow: hidden; /* Contiene los elementos internos */
+}
+
+/* Contenedor de previsualización de archivos */
+.comment-file-previews {
+  display: none; /* Oculto por defecto */
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid #e0e6f7;
+}
+
+.file-preview-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: #eef2ff; /* Fondo azul-indigo muy claro */
+  border: 1px solid #c7d2fe;
+  border-radius: 6px;
+  padding: 0.25rem 0.6rem;
+  font-size: 0.85rem;
+  color: #4338ca; /* Texto índigo */
+}
+
+.file-preview-name {
+  max-width: 150px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.file-preview-remove {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #818cf8;
+  padding: 0;
+  line-height: 1;
+  transition: color 0.2s;
+}
+.file-preview-remove:hover {
+  color: #4f46e5;
+}
+.file-preview-remove i {
+  font-size: 0.9rem;
+}
+
+/* Textarea auto-ajustable */
+.comment-textarea {
+  width: 100%;
+  background-color: transparent;
+  color: #1e1b4b; /* Color de texto azul oscuro */
+  resize: none;
+  border: none;
+  outline: none;
+  font-family: "Outfit", sans-serif;
+  font-size: 1rem;
+  line-height: 1.6;
+  min-height: 24px;
+  max-height: 128px; /* 32 * 4 */
+  padding: 0.25rem 0;
+  transition: all 0.2s;
+}
+
+.comment-textarea::placeholder {
+  color: #818cf8; /* Placeholder azul-indigo claro */
+}
+
+/* Footer con botones */
+.comment-actions-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 0.75rem;
+}
+
+.comment-tool-buttons {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.comment-tool-btn {
+  background-color: transparent;
+  border: none;
+  height: 32px;
+  width: 32px;
+  padding: 0;
+  color: #6366f1;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: background-color 0.2s, color 0.2s, transform 0.2s;
+}
+
+.comment-tool-btn:hover {
+  background-color: #eef2ff;
+  color: #4f46e5;
+  transform: scale(1.1);
+}
+
+.comment-tool-btn i {
+  font-size: 1.1rem; /* Ajusta el tamaño del ícono */
+}
+
+/* Botón de envío */
+.comment-submit-btn {
+  background-color: #4f46e5; /* Color índigo */
+  color: white;
+  height: 32px;
+  width: 32px;
+  padding: 0;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s, transform 0.2s, opacity 0.2s;
+}
+
+.comment-submit-btn:hover {
+  background-color: #4338ca;
+  transform: scale(1.1);
+}
+
+.comment-submit-btn:disabled {
+  background-color: #c7d2fe;
+  color: #a5b4fc;
+  transform: scale(1);
+  cursor: not-allowed;
+}
+
+.comment-submit-btn i {
+  font-size: 1.1rem;
+}
+
+/* Panel de Símbolos (reutilizado) - Ajuste de posición */
+/* El panel de símbolos existente se posiciona de forma absoluta */
+/* Asegúrate de que .input-group (padre del panel) NO sea 'position: relative' */
+/* ...o ajusta esto según sea necesario */
+#comment-symbols-panel {
+  /* Ajusta el z-index para que aparezca sobre el formulario */
+  z-index: 10;
+  /* Posiciónalo relativo al formulario */
+  position: absolute;
+  bottom: calc(
+    100% + 5px
+  ); /* 5px encima del formulario (ajusta 'bottom' si los botones están arriba) */
+  left: 0.5rem;
+  /* (El resto de tus estilos para .symbols-panel.visible se aplicarán) */
+
+  /* Corrección: El botón de símbolos está ahora en el footer.
+     Vamos a posicionar el panel *encima* del footer.
+  */
+  bottom: 65px; /* Ajuste manual para ponerlo sobre el footer del formulario */
+  left: 1rem;
+  width: auto; /* Deja que el contenido defina el ancho */
+  max-width: 400px;
+  height: fit-content;
+}
+/* ==========================================================================
+   22. ESTILOS PARA RESPUESTAS ANIDADAS (PREGUNTA.HTML)
+   ========================================================================== */
+
+/* Contenedor de un solo comentario y sus respuestas */
+.comment-thread-item {
+  position: relative;
+  display: flex;
+  gap: 12px; /* Espacio entre la línea/avatar y el contenido */
+}
+
+/* El contenedor del avatar y la línea vertical */
+.comment-connector-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-shrink: 0;
+  width: 32px; /* Ancho fijo para el avatar (más pequeño) */
+  position: relative;
+}
+
+/* La línea vertical que conecta respuestas */
+.comment-connector-line {
+  width: 1px;
+  background-color: #e0e7ff; /* --border */
+  flex-grow: 1;
+  transition: background-color 0.2s;
+  order: 3;
+}
+.comment-connector-container:hover .comment-connector-line {
+  background-color: #0066cc; /* --primary */
+}
+
+/* La línea horizontal que va al avatar */
+.comment-connector-container::before {
+  content: "";
+  position: absolute;
+  background-color: #e0e7ff; /* Color de la línea */
+  transition: background-color 0.2s;
+  width: 16px;
+  height: 1px;
+  left: 0;
+  top: 24px; /* Centro vertical del avatar (margin-top 8px + avatar/2 16px) */
+  z-index: 0; /* Detrás del avatar y el botón */
+}
+
+/* Hover para la nueva línea horizontal */
+.comment-thread-item:hover .comment-connector-container::before {
+  background-color: #0066cc; /* Color primario al hacer hover */
+}
+
+/* El botón de colapsar */
+.comment-collapse-button {
+  background: white;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  margin: 0;
+  width: 16px;
+  height: 16px;
+  color: #a0a0b0;
+  flex-shrink: 0;
+  margin-top: 8px; /* Espacio entre el avatar y el botón */
+  z-index: 1;
+  order: 2; /* Segundo en orden */
+}
+.comment-collapse-button svg {
+  width: 16px;
+  height: 16px;
+}
+.comment-collapse-button:hover svg {
+  color: #111;
+}
+
+/* El avatar (reutiliza el estilo base .author-avatar) */
+.comment-connector-container .author-avatar {
+  width: 32px;
+  height: 32px;
+  margin-top: 8px; /* Espacio superior */
+  position: relative;
+  z-index: 1;
+  order: 1; /* Primero en orden */
+}
+
+/* Contenedor para el contenido del comentario (tarjeta) */
+.comment-content-container {
+  flex-grow: 1;
+  min-width: 0;
+  padding-top: 8px; /* Alinea con el avatar (que tiene 8px de margin-top) */
+}
+
+/* Modificación de la tarjeta de comentario existente */
+.comment-card {
+  border: none;
+  padding: 0;
+  margin-bottom: 1rem; /* Espacio antes del formulario de respuesta */
+}
+
+/* Contenedor para las respuestas anidadas */
+.comment-replies-container {
+  margin-top: 1rem;
+}
+
+/* * ============================================
+ * === ¡AQUÍ ESTÁ LA MODIFICACIÓN CLAVE! ===
+ * ============================================
+ *
+ * Ahora, solo ocultamos el '.comment-replies-container'
+ * y la línea vertical '.comment-connector-line'.
+ *
+ * Mantenemos visibles:
+ * - .comment-content (el texto del padre)
+ * - .comment-footer (los botones de like/reply del padre)
+ * - .comment-header (el nombre del autor padre)
+ * - .reply-form-container (el formulario de respuesta al padre)
+ */
+.comment-thread-item.is-collapsed .comment-replies-container {
+  display: none;
+}
+
+/* Ocultar línea conectora si está colapsado */
+.comment-thread-item.is-collapsed .comment-connector-line {
+  display: none;
+}
+/* Ocultar la línea horizontal cuando está colapsado */
+.comment-thread-item.is-collapsed .comment-connector-container::before {
+  display: none;
+}
+/*
+ * ============================================
+ * === FIN DE LA MODIFICACIÓN CLAVE ===
+ * ============================================
+ */
+
+/* --- Formulario de Respuesta Anidado --- */
+
+.reply-form-container {
+  margin-top: 1rem;
+}
+
+/* Adaptación del formulario de comentario para ser un formulario de respuesta */
+.reply-form {
+  position: relative;
+  border: 2px solid #a5b4fc;
+  border-radius: 1rem;
+  padding: 0.8rem;
+  background-color: #ffffff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.reply-form:focus-within {
+  border-color: #6366f1;
+  box-shadow: 0 6px 16px rgba(99, 102, 241, 0.1);
+}
+
+.reply-form .comment-form-content {
+  overflow: hidden;
+}
+
+/* Previsualizaciones de archivos en respuestas (más pequeñas) */
+.reply-form .comment-file-previews {
+  display: none;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-bottom: 0.5rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #e0e6f7;
+}
+
+.reply-form .file-preview-item {
+  gap: 0.4rem;
+  padding: 0.2rem 0.5rem;
+  font-size: 0.8rem;
+}
+.reply-form .file-preview-remove i {
+  font-size: 0.8rem;
+}
+
+/* Textarea de respuesta (más pequeño) */
+.reply-form .comment-textarea {
+  font-size: 0.95rem;
+  min-height: 22px;
+  max-height: 100px;
+}
+
+/* Footer de acciones de respuesta */
+.reply-form .comment-actions-footer {
+  margin-top: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.reply-form .comment-tool-buttons {
+  display: flex;
+  align-items: center;
+  gap: 0.1rem;
+}
+
+.reply-form .comment-tool-btn {
+  height: 28px;
+  width: 28px;
+}
+.reply-form .comment-tool-btn i {
+  font-size: 0.95rem;
+}
+
+/* Botones de acción del formulario de respuesta (Cancelar/Enviar) */
+.reply-form .reply-action-buttons {
+  display: flex;
+  gap: 0.5rem;
+}
+
+/* Reutilizamos modal-button pero lo hacemos más pequeño */
+.reply-form .modal-button {
+  padding: 0.4rem 0.8rem;
+  font-size: 0.85rem;
+  border-radius: 6px;
+}
+
+.reply-form .comment-submit-btn {
+  background-color: #4f46e5;
+  color: white;
+}
+.reply-form .comment-submit-btn:disabled {
+  background-color: #c7d2fe;
+  color: #a5b4fc;
+  cursor: not-allowed;
+}
+
+/* Panel de símbolos para el formulario de respuesta */
+.reply-form .symbols-panel {
+  bottom: calc(100% + 5px); /* Posicionarlo encima del formulario */
+  left: 0.5rem;
+  z-index: 1;
+  max-width: 350px;
+}
+/* ==========================================================================
+   23. ESTILOS PARA BOTÓN DE RESPUESTA
+   ========================================================================== */
+
+.reply-btn-ghost {
+  background: none;
+  border: none;
+  color: #6c757d; /* Color de texto "silenciado" */
+  cursor: pointer;
+  padding: 0.5rem 0.75rem;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  font-family: "Outfit", sans-serif;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem; /* Espacio entre icono y texto */
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.reply-btn-ghost:hover {
+  background-color: #eef2ff; /* Un fondo azulado/gris claro */
+  color: #1e1b4b; /* Texto oscuro */
+}
+
+.reply-btn-ghost i {
+  font-size: 0.9rem; /* Ajusta el icono */
+}
+/* ... (Todo tu CSS anterior se mantiene) ... */
+
+/* ==========================================================================
+   ESTILOS DEL PODIO Y LISTA DE CONTRIBUYENTES (TOP 10)
+   ========================================================================== */
+
+.contributors-list {
+  padding: 10px;
+  background-color: transparent;
+}
+
+/* --- PODIO (TOP 3) --- */
+
+.podium-container {
+  display: flex;
+  align-items: flex-end; /* Alinea las barras al fondo */
+  justify-content: center;
+  gap: 8px; /* Espacio entre barras */
+  height: 260px; /* Altura total del área del podio */
+  padding-bottom: 10px;
+  margin-top: 10px;
+  margin-bottom: 1.5rem;
+}
+
+.podium-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  flex: 1;
+}
+
+/* Configuración de Alturas y Colores */
+
+/* 1er Puesto (Centro) */
+.podium-step.rank-1 {
+  order: 2; /* Visualmente en el centro */
+  z-index: 10;
+}
+.podium-step.rank-1 .podium-block {
+  height: 130px; /* El más alto */
+  background: linear-gradient(to bottom, #ffd700, #e6c200);
+  box-shadow: 0 0 15px rgba(255, 215, 0, 0.4);
+  border-top: 4px solid #fffacd;
+}
+
+/* 2do Puesto (Izquierda) */
+.podium-step.rank-2 .podium-block {
+  height: 90px;
+  background: linear-gradient(to bottom, #c0c0c0, #a9a9a9);
+  border-top: 4px solid #e8e8e8;
+}
+
+/* 3er Puesto (Derecha) */
+.podium-step.rank-3 .podium-block {
+  height: 60px;
+  background: linear-gradient(to bottom, #cd7f32, #b87333);
+  border-top: 4px solid #deb887;
+}
+
+/* Bloque Físico del Podio */
+.podium-block {
+  width: 100%;
+  border-radius: 8px 8px 0 0;
+  margin-top: 10px;
+  position: relative;
+  transition: transform 0.3s ease;
+  display: flex; /* Para centrar la imagen de la medalla */
+  justify-content: center; /* Para centrar la imagen de la medalla */
+  align-items: center; /* Para centrar la imagen de la medalla */
+  overflow: hidden; /* Asegurar que la medalla no se salga */
+}
+
+.podium-step:hover .podium-block {
+  filter: brightness(1.1);
+}
+
+/* --- ESTILOS DE LA IMAGEN DE LA MEDALLA DENTRO DEL PILAR --- */
+.podium-medal-img {
+  width: 80%; /* Ajusta el tamaño de la medalla */
+  max-width: 60px; /* Limita el ancho máximo */
+  height: auto;
+  object-fit: contain; /* Asegura que la imagen se vea completa */
+  padding-top: 5px; /* Pequeño padding superior para que no toque el borde */
+  opacity: 0.8; /* Ligeramente transparente para que se integre mejor */
+  filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.2));
+}
+
+/* Avatares y Enlaces del Podio */
+.podium-avatar-link {
+  text-decoration: none;
+  display: block;
+  position: relative;
+  transition: transform 0.2s ease;
+}
+
+.podium-avatar-link:hover {
+  transform: translateY(-5px);
+}
+
+.podium-avatar-wrapper {
+  position: relative;
+  margin-bottom: 5px;
+  display: flex;
+  justify-content: center;
+}
+
+.podium-avatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #fff;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+  background-color: #fff;
+}
+
+/* Avatar más grande para el ganador */
+.podium-step.rank-1 .podium-avatar {
+  width: 70px;
+  height: 70px;
+  border-color: #ffd700;
+}
+
+/* Corona */
+.crown-icon {
+  position: absolute;
+  top: -22px;
+  left: 50%;
+  transform: translateX(-50%) rotate(-5deg);
+  color: #ffd700;
+  font-size: 1.8rem;
+  filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.3));
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateX(-50%) rotate(-5deg) translateY(0);
+  }
+  50% {
+    transform: translateX(-50%) rotate(-5deg) translateY(-5px);
+  }
+}
+
+/* Badge de Número (1, 2, 3) */
+.podium-badge {
+  position: absolute;
+  bottom: -5px;
+  background-color: #1a1a2e;
+  color: #fff;
+  font-size: 0.7rem;
+  font-weight: bold;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #fff;
+}
+
+.podium-step.rank-1 .podium-badge {
+  background-color: #ffd700;
+  color: #333;
+  width: 24px;
+  height: 24px;
+  font-size: 0.9rem;
+}
+
+/* Info Podio (Texto) */
+.podium-info {
+  text-align: center;
+  margin-bottom: 2px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 35px;
+}
+
+.podium-name {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #333;
+  text-decoration: none;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 70px;
+}
+
+.podium-step.rank-1 .podium-name {
+  font-size: 1rem;
+  color: #6a11cb;
+}
+
+.podium-likes {
+  font-size: 0.75rem;
+  color: #666;
+}
+
+/* --- LISTA DE MENCIONES HONORÍFICAS (4 - 10) --- */
+
+.contributors-list-container {
+  background-color: #fff;
+  border-radius: 10px;
+  padding: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.contributors-list-title {
+  font-size: 0.9rem;
+  color: #888;
+  margin-bottom: 10px;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 700;
+  border-bottom: 1px solid #f0f0f0;
+  padding-bottom: 5px;
+}
+
+.contributor-list-item {
+  display: flex;
+  align-items: center;
+  padding: 8px 10px;
+  border-radius: 8px;
+  text-decoration: none;
+  margin-bottom: 5px;
+  transition: background-color 0.2s ease;
+}
+
+.contributor-list-item:hover {
+  background-color: #f8f9fa;
+}
+
+.list-rank {
+  font-weight: 700;
+  color: #a0a0b0;
+  width: 20px;
+  text-align: center;
+  margin-right: 10px;
+  font-size: 0.9rem;
+}
+
+.list-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-right: 10px;
+  border: 1px solid #eee;
+}
+
+.list-info {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.list-name {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #333;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.list-likes {
+  font-size: 0.75rem;
+  color: #6a11cb;
+}
+
+/* Responsive */
+@media (max-width: 1200px) {
+  .podium-container {
+    gap: 4px;
+  }
+  .podium-avatar {
+    width: 40px;
+    height: 40px;
+  }
+  .podium-step.rank-1 .podium-avatar {
+    width: 55px;
+    height: 55px;
+  }
+}

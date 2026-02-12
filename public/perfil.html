@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mi Perfil | Schobrain</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+    <link rel="icon" type="image/png" href="assets/img/logoSchobrain.png" />
+    <link rel="stylesheet" href="assets/style.css" />
+    <link rel="stylesheet" href="assets/perfil.css" />
+    <link rel="stylesheet" href="assets/fluid-dropdown.css" />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css"
+    />
+    <script
+      type="text/javascript"
+      src="https://cdn.jsdelivr.net/npm/toastify-js"
+    ></script>
+  </head>
+  <body>
+    <div class="main-container">
+      <header class="main-header">
+        <div class="header-left">
+          <a href="/" class="logo-link">
+            <img
+              src="assets/img/logoSchobrain.png"
+              alt="Logo Schobrain"
+              class="header-logo"
+            />
+            <span class="brand-name">Schobrain</span>
+          </a>
+        </div>
+        <div class="header-center"></div>
+        <div class="header-right">
+          <span class="welcome-user"
+            >Hola, <span id="logged-in-username">Usuario</span></span
+          >
+          <a
+            href="/"
+            class="modal-button secondary"
+            style="
+              text-decoration: none;
+              padding: 0.5rem 1rem;
+              background-color: #f3f4f6;
+              color: #4b5563;
+              border: 1px solid #d1d5db;
+              font-size: 0.9rem;
+            "
+          >
+            Volver al Feed
+          </a>
+        </div>
+      </header>
+
+      <main class="profile-main-area">
+        <aside class="profile-sidebar">
+          <h2>Configuración</h2>
+          <nav class="profile-nav">
+            <a href="#" class="nav-link active" data-section="profile"
+              ><i class="fas fa-user-circle"></i> Mi Perfil</a
+            >
+            <a href="#" class="nav-link" data-section="account"
+              ><i class="fas fa-cog"></i> Cuenta</a
+            >
+            <a href="#" class="nav-link" data-section="favorites"
+              ><i class="fas fa-star"></i> Mis Favoritos</a
+            >
+          </nav>
+        </aside>
+
+        <section id="profile-section" class="profile-content active-section">
+          <div class="profile-card">
+            <div class="profile-banner-container">
+              <img
+                id="bannerUrl"
+                class="profile-banner-img"
+                src=""
+                alt="Banner de perfil"
+              />
+              <button
+                class="edit-banner-btn"
+                id="edit-banner-btn"
+                title="Cambiar portada"
+              >
+                <i class="fas fa-camera"></i>
+              </button>
+              <input
+                type="file"
+                id="banner-input"
+                accept="image/jpeg, image/png, image/gif"
+                style="display: none"
+              />
+            </div>
+            <div class="profile-card-header">
+              <div
+                id="avatar-wrapper"
+                class="avatar-container clickable-avatar"
+              >
+                <img
+                  id="avatarUrl"
+                  src="https://ui-avatars.com/api/?name=S&background=random"
+                  alt="Avatar del usuario"
+                  class="profile-avatar"
+                />
+                <div class="avatar-overlay">
+                  <i class="fas fa-camera"></i> Cambiar
+                </div>
+                <input
+                  type="file"
+                  id="avatar-input"
+                  accept="image/jpeg, image/png, image/gif"
+                  style="display: none"
+                />
+              </div>
+              <div class="user-details">
+                <h1 id="username" class="username-display">@username</h1>
+                <p class="full-name">
+                  <span id="firstName">Nombre</span>
+                  <span id="lastName">Apellido</span>
+                </p>
+                <div class="user-meta">
+                  <span id="role" class="role-badge">Usuario</span>
+                </div>
+              </div>
+              <div class="profile-options-menu">
+                <button class="options-toggle-btn">
+                  <i class="fas fa-ellipsis-v"></i>
+                </button>
+                <div class="options-dropdown profile-dropdown">
+                  <button class="dropdown-item" id="edit-profile-btn">
+                    <i class="fas fa-edit"></i> Editar Perfil
+                  </button>
+                  <button class="dropdown-item" id="logout-btn-perfil">
+                    <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div class="profile-card-body">
+              <div class="info-group">
+                <label>Biografía</label>
+                <p id="biography-display" class="profile-text"></p>
+              </div>
+              <div class="info-group">
+                <label>Fecha de Nacimiento</label>
+                <p id="birthdate-display" class="profile-text"></p>
+              </div>
+            </div>
+          </div>
+
+          <div class="profile-stats-card">
+            <div class="stat-item">
+              <i class="fas fa-question-circle"></i
+              ><span class="stat-label">Preguntas Creadas</span
+              ><span id="article-count-display" class="stat-value">0</span>
+            </div>
+            <div class="stat-item">
+              <i class="fas fa-comment-dots"></i
+              ><span class="stat-label">Respuestas Publicadas</span
+              ><span id="comment-count-display" class="stat-value">0</span>
+            </div>
+          </div>
+
+          <section id="my-content-section">
+            <h2 class="h2CONTENT">Mi Contenido</h2>
+            <div class="favorites-toolbar">
+              <button
+                class="modal-button secondary favorites-filter-btn active"
+                data-filter-type="my-articles"
+                id="filter-my-articles-btn"
+              >
+                <i class="fas fa-question-circle"></i> Mis Preguntas
+              </button>
+              <button
+                class="modal-button secondary favorites-filter-btn"
+                data-filter-type="my-comments"
+                id="filter-my-comments-btn"
+              >
+                <i class="fas fa-comment-dots"></i> Mis Respuestas
+              </button>
+            </div>
+            <div id="my-content-list" class="favorites-list-container">
+              <p>Cargando contenido...</p>
+            </div>
+          </section>
+        </section>
+
+        <section id="account-section" class="profile-content">
+          <div class="account-card">
+            <div class="account-card-header">
+              <h2>Información de la Cuenta</h2>
+              <div class="account-options-menu">
+                <button class="options-toggle-btn account-options-toggle">
+                  <i class="fas fa-ellipsis-v"></i>
+                </button>
+                <div class="options-dropdown account-dropdown">
+                  <button class="dropdown-item" id="edit-account-btn">
+                    <i class="fas fa-user-shield"></i> Editar Cuenta
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div class="account-card-body">
+              <div class="info-group">
+                <label>Correo Electrónico</label>
+                <p id="email-display" class="profile-text"></p>
+              </div>
+              <div class="info-group">
+                <label>Contraseña</label>
+                <p class="profile-text password-display">••••••••</p>
+              </div>
+              <div
+                class="info-group"
+                style="
+                  margin-top: 1.5rem;
+                  border-top: 1px solid #eee;
+                  padding-top: 1rem;
+                "
+              >
+                <label>Verificación Docente</label>
+                <button
+                  id="open-teacher-verification-btn"
+                  class="modal-button secondary"
+                  style="
+                    width: 100%;
+                    margin-top: 0.5rem;
+                    text-align: center;
+                    display: none;
+                  "
+                >
+                  ¿Eres docente? Verifícate aquí
+                </button>
+                <p
+                  id="teacher-rejection-reason"
+                  style="
+                    display: none;
+                    color: #e74c3c;
+                    font-size: 0.9rem;
+                    margin-top: 8px;
+                    background: #fdecea;
+                    padding: 8px;
+                    border-radius: 4px;
+                    border-left: 3px solid #e74c3c;
+                  "
+                ></p>
+              </div>
+            </div>
+          </div>
+          <div class="danger-zone">
+            <h2>Zona de Peligro</h2>
+            <div class="danger-item">
+              <div>
+                <h3>Eliminar esta cuenta</h3>
+                <p>
+                  Una vez que elimines tu cuenta, no hay vuelta atrás. Por
+                  favor, asegúrate.
+                </p>
+              </div>
+              <button
+                id="delete-account-btn"
+                class="modal-button danger danger-zone-button"
+              >
+                Eliminar Cuenta
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <section id="favorites-section" class="profile-content">
+          <h2 class="h2CONTENT">Mis Favoritos</h2>
+          <div class="favorites-toolbar">
+            <button
+              class="modal-button secondary favorites-filter-btn active"
+              data-filter-type="articles"
+              id="filter-articles-btn"
+            >
+              <i class="fas fa-question-circle"></i> Preguntas Favoritas
+            </button>
+            <button
+              class="modal-button secondary favorites-filter-btn"
+              data-filter-type="comments"
+              id="filter-comments-btn"
+            >
+              <i class="fas fa-comment-dots"></i> Respuestas Favoritas
+            </button>
+          </div>
+          <div id="favorites-list" class="favorites-list-container">
+            <p>Cargando favoritos...</p>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <div id="edit-profile-modal" class="modal-overlay">
+      <div class="modal-content">
+        <h2>Editar Perfil</h2>
+        <form id="edit-profile-form" novalidate>
+          <div class="info-group">
+            <label for="modal-username">Nombre de usuario</label
+            ><input
+              type="text"
+              id="modal-username"
+              minlength="3"
+              maxlength="20"
+              required
+            />
+          </div>
+          <div class="info-group">
+            <label for="modal-firstName">Nombre</label
+            ><input
+              type="text"
+              id="modal-firstName"
+              minlength="2"
+              maxlength="50"
+              required
+            />
+          </div>
+          <div class="info-group">
+            <label for="modal-lastName">Apellido</label
+            ><input
+              type="text"
+              id="modal-lastName"
+              minlength="2"
+              maxlength="50"
+              required
+            />
+          </div>
+          <div class="info-group">
+            <label for="modal-biography">Biografía</label
+            ><textarea
+              id="modal-biography"
+              placeholder="Hola, soy un alumno de..."
+              maxlength="500"
+            ></textarea>
+          </div>
+          <div class="info-group">
+            <label for="modal-birthDate">Fecha de nacimiento</label
+            ><input type="date" id="modal-birthDate" />
+          </div>
+          <div class="modal-actions">
+            <button
+              type="button"
+              id="cancel-edit-btn"
+              class="modal-button secondary"
+            >
+              Cancelar
+            </button>
+            <button type="submit" class="modal-button">Guardar Cambios</button>
+          </div>
+        </form>
+      </div>
+    </div>
+    <div id="edit-account-modal" class="modal-overlay">
+      <div class="modal-content rectangular-modal">
+        <h2>Editar Cuenta</h2>
+        <form id="edit-account-form" novalidate>
+          <div class="info-group">
+            <label for="modal-email">Correo Electrónico</label
+            ><input type="email" id="modal-email" required />
+          </div>
+          <hr class="modal-divider" />
+          <p class="password-change-info">
+            Para cambiar tu contraseña, completa los siguientes campos:
+          </p>
+          <div class="info-group">
+            <label for="modal-currentPassword">Contraseña Actual</label
+            ><input
+              type="password"
+              id="modal-currentPassword"
+              placeholder="Escribe tu contraseña actual"
+            /><small>Necesaria si quieres cambiar la contraseña.</small>
+          </div>
+          <div class="info-group">
+            <label for="modal-newPassword">Nueva Contraseña</label
+            ><input
+              type="password"
+              id="modal-newPassword"
+              placeholder="Mínimo 8 caracteres"
+            /><small
+              >Debe incluir mayúsculas, minúsculas, números y símbolos.</small
+            >
+          </div>
+          <div class="info-group">
+            <label for="modal-confirmPassword">Confirmar Nueva Contraseña</label
+            ><input
+              type="password"
+              id="modal-confirmPassword"
+              placeholder="Repite la nueva contraseña"
+            />
+          </div>
+          <div class="modal-actions">
+            <button
+              type="button"
+              id="cancel-edit-account-btn"
+              class="modal-button secondary"
+            >
+              Cancelar
+            </button>
+            <button type="submit" class="modal-button">Guardar Cambios</button>
+          </div>
+        </form>
+      </div>
+    </div>
+    <div id="logout-modal" class="modal-overlay">
+      <div class="modal-content">
+        <h2>¿Seguro que quieres cerrar sesión?</h2>
+        <div class="modal-actions">
+          <button id="cancel-logout" class="modal-button secondary">
+            Cancelar
+          </button>
+          <button id="confirm-logout" class="modal-button danger">
+            Cerrar sesión de todas formas
+          </button>
+        </div>
+      </div>
+    </div>
+    <div id="delete-account-modal" class="modal-overlay">
+      <div class="modal-content">
+        <h2>Confirmar Eliminación de Cuenta</h2>
+        <p class="warning-text">
+          Esta acción es permanente y no se puede deshacer. Se eliminarán todos
+          tus datos.
+        </p>
+        <div class="info-group delete-password-group">
+          <label for="delete-confirm-password"
+            >Ingresa tu contraseña para confirmar:</label
+          >
+          <input type="password" id="delete-confirm-password" required />
+        </div>
+        <div class="modal-actions">
+          <button id="cancel-delete-account-btn" class="modal-button secondary">
+            Cancelar
+          </button>
+          <button id="confirm-delete-account-btn" class="modal-button danger">
+            Sí, eliminar mi cuenta
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div id="edit-question-modal" class="modal-overlay">
+      <div class="modal-content question-modal-content custom-modal">
+        <div class="modal-header">
+          <h2>Editar Pregunta</h2>
+          <button
+            type="button"
+            class="close-modal-button"
+            id="close-edit-modal"
+          >
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <form id="editQuestionForm" novalidate enctype="multipart/form-data">
+          <input type="hidden" id="edit-article-id" name="articleId" />
+          <div class="input-group">
+            <label for="edit-question-content">Describe tu pregunta</label
+            ><textarea
+              id="edit-question-content"
+              name="content"
+              rows="5"
+              minlength="10"
+              required
+            ></textarea>
+            <div class="textarea-toolbar">
+              <button
+                type="button"
+                id="edit-toggle-symbols-btn"
+                class="toolbar-btn"
+                title="Símbolos"
+              >
+                <i class="fas fa-square-root-alt"></i>
+              </button>
+            </div>
+            <div id="edit-math-symbols-panel" class="symbols-panel"></div>
+          </div>
+          <div class="input-group">
+            <label for="edit-tag-select">Tema</label
+            ><select
+              id="edit-tag-select"
+              name="tags"
+              class="custom-select fluid-select-target"
+              required
+            ></select>
+          </div>
+          <div class="input-group">
+            <label>Imágenes Actuales</label>
+            <div id="current-images-preview" class="images-preview-grid"></div>
+          </div>
+          <div class="input-group file-input-group">
+            <label for="edit-image-files" class="file-input-label"
+              >Añadir nuevas imágenes</label
+            ><span id="edit-file-name-display" class="file-name-display"
+              >Ningún archivo seleccionado</span
+            ><input
+              type="file"
+              id="edit-image-files"
+              name="imageFiles"
+              accept="image/jpeg, image/png, image/gif"
+              class="hidden-file-input"
+              multiple
+            />
+          </div>
+          <p class="file-size-info">Hasta 5 imágenes, tamaño máximo 5MB c/u</p>
+          <div class="modal-actions">
+            <button
+              type="button"
+              id="cancel-edit-question"
+              class="modal-button secondary custom-cancel-button"
+            >
+              Cancelar</button
+            ><button type="submit" class="modal-button custom-submit-button">
+              Guardar Cambios
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div id="image-preview-modal" class="modal-overlay">
+      <span class="close-preview-btn">&times;</span
+      ><img
+        class="preview-image"
+        id="preview-image-src"
+        src=""
+        alt="Previsualización de imagen"
+      />
+    </div>
+
+    <div id="delete-comment-confirm-modal" class="modal-overlay">
+      <div class="modal-content">
+        <h2>¿Confirmas la eliminación?</h2>
+        <p class="warning-text-deleteQuestion">
+          Esta acción es permanente y no se puede deshacer. ¿Estás seguro de que
+          quieres eliminar esta respuesta?
+        </p>
+        <div class="modal-actions">
+          <button id="cancel-comment-delete" class="modal-button secondary">
+            Cancelar</button
+          ><button id="confirm-comment-delete" class="modal-button danger">
+            Sí, eliminar
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div id="teacher-verification-modal" class="modal-overlay">
+      <div class="modal-content question-modal-content custom-modal">
+        <div class="modal-header">
+          <h2>Verificación Docente</h2>
+          <button
+            type="button"
+            class="close-modal-button"
+            id="close-teacher-modal"
+          >
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <form id="teacherVerificationForm" enctype="multipart/form-data">
+          <div class="input-group">
+            <label for="teacher-dni">DNI / Cédula</label
+            ><input
+              type="text"
+              id="teacher-dni"
+              name="dni"
+              required
+              placeholder="Ingresa tu número de identificación"
+              class="custom-input"
+              style="
+                width: 100%;
+                padding: 10px;
+                border: 1px solid #ccc;
+                border-radius: 5px;
+              "
+            />
+          </div>
+          <div class="input-group">
+            <label for="teacher-specialty">Especialidad Principal</label
+            ><input
+              type="text"
+              id="teacher-specialty"
+              name="specialty"
+              required
+              placeholder="Ej: Matemáticas, Historia, Física..."
+              class="custom-input"
+              style="
+                width: 100%;
+                padding: 10px;
+                border: 1px solid #ccc;
+                border-radius: 5px;
+              "
+            />
+          </div>
+          <div class="input-group">
+            <label for="teacher-description"
+              >Breve Descripción / Experiencia</label
+            ><textarea
+              id="teacher-description"
+              name="description"
+              rows="3"
+              placeholder="Cuéntanos brevemente sobre tu experiencia docente..."
+              style="
+                width: 100%;
+                padding: 10px;
+                border: 1px solid #ccc;
+                border-radius: 5px;
+              "
+            ></textarea>
+          </div>
+          <div class="input-group file-input-group">
+            <label for="teacher-dni-front" class="file-input-label"
+              ><i class="fas fa-id-card"></i> DNI Frente</label
+            ><span id="teacher-dni-front-display" class="file-name-display"
+              >Requerido</span
+            ><input
+              type="file"
+              id="teacher-dni-front"
+              name="dniFront"
+              accept="image/jpeg, image/png, image/jpg"
+              class="hidden-file-input"
+              required
+            />
+          </div>
+          <div class="input-group file-input-group">
+            <label for="teacher-dni-back" class="file-input-label"
+              ><i class="fas fa-id-card"></i> DNI Reverso</label
+            ><span id="teacher-dni-back-display" class="file-name-display"
+              >Requerido</span
+            ><input
+              type="file"
+              id="teacher-dni-back"
+              name="dniBack"
+              accept="image/jpeg, image/png, image/jpg"
+              class="hidden-file-input"
+              required
+            />
+          </div>
+          <div class="input-group file-input-group">
+            <label for="teacher-docs" class="file-input-label"
+              ><i class="fas fa-cloud-upload-alt"></i> Títulos /
+              Certificados</label
+            ><span id="teacher-file-name-display" class="file-name-display"
+              >Opcional (PDF/IMG)</span
+            ><input
+              type="file"
+              id="teacher-docs"
+              name="documents"
+              accept=".pdf, image/jpeg, image/png, image/jpg"
+              class="hidden-file-input"
+              multiple
+            />
+          </div>
+          <div class="modal-actions">
+            <button
+              type="button"
+              id="cancel-teacher-verification"
+              class="modal-button secondary custom-cancel-button"
+            >
+              Cancelar</button
+            ><button type="submit" class="modal-button custom-submit-button">
+              Enviar Solicitud
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <script type="module" src="/js/perfil/perfil.js"></script>
+    <script type="module" src="/js/article/article.ui.js"></script>
+    <script type="module" src="/js/utils/lightbox.js"></script>
+    <script type="module" src="/js/services/profile.service.js"></script>
+    <script type="module" src="./js/utils/fluid-dropdown.js"></script>
+  </body>
+</html>

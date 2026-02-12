@@ -2,8 +2,10 @@ import { Router } from "express";
 import {
   deleteUser,
   getAllUsers,
+  getPublicUserProfileById,
   getUserById,
   updateUser,
+  getTopContributors,
 } from "../controllers/user.controller.js";
 import { validateToken } from "../middlewares/authMiddleware.js";
 import { authAdmin } from "../middlewares/adminMiddleware.js";
@@ -15,6 +17,12 @@ import {
 import { validator } from "../middlewares/validator.js";
 
 export const routeUser = Router();
+
+// RUTA DEL PODIO (Importante: antes de /:id)
+routeUser.get("/users/top/contributors", getTopContributors);
+
+// Ruta pública de perfil
+routeUser.get("/users/:id/public", getPublicUserProfileById);
 
 routeUser.delete(
   "/users/:id",

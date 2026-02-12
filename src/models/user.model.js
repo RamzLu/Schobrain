@@ -1,10 +1,10 @@
-import { model, Schema } from "mongoose";
+// src/models/user.model.js
+import { model, Schema, Types } from "mongoose"; // Asegúrate de importar Types
 
 const userSchema = new Schema(
   {
     username: {
       type: String,
-      // * username es único
       unique: true,
       required: true,
       minlength: 3,
@@ -13,20 +13,15 @@ const userSchema = new Schema(
     email: {
       type: String,
       unique: true,
-      // * email es único
       required: true,
       match: [/^\S+@\S+\.\S+$/, "Ingrese un email válido."],
     },
     password: {
       type: String,
-      // *la password es obligatoria
-      // TODO: Si se desea mandar un mensaje con validaciones basta con poner el valor del requisito en array []
       required: [true, "La contraseña es obligatoria"],
-      // * debe contener al menos 8 caracteres
       minlength: [8, "La contraseña debe tener al menos 8 caracteres"],
       validate: {
         validator: function (v) {
-          // * Aqui validamos  que contenga al menos una mayúscula, una  minuscula, un numero y un simbolo
           return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/.test(v);
         },
         message:
@@ -37,6 +32,13 @@ const userSchema = new Schema(
       type: String,
       enum: ["admin", "user"],
       default: "user",
+    },
+    // ESTADO DE VERIFICACIÓN DOCENTE
+    // none: No ha solicitado / pending: Solicitó / review: En revisión / verified: Aceptado / rejected: Rechazado
+    teacherStatus: {
+      type: String,
+      enum: ["none", "pending", "review", "verified", "rejected"],
+      default: "none",
     },
     profile: {
       firstName: {
@@ -58,10 +60,30 @@ const userSchema = new Schema(
       avatarUrl: {
         type: String,
       },
-      birthDate: {
+      // === NUEVO CAMPO BANNER ===
+      bannerUrl: {
         type: String,
+        default: "assets/img/pred-banner.png", // Imagen predeterminada
+      },
+      // ==========================
+      birthDate: {
+        type: String, // Cambiado a String para consistencia con el frontend
       },
     },
+    // CAMPO PARA FAVORITOS (PREGUNTAS)
+    favorites: [
+      {
+        type: Types.ObjectId,
+        ref: "Article",
+      },
+    ],
+    // NUEVO CAMPO PARA FAVORITOS (RESPUESTAS/COMMENTS)
+    favoriteComments: [
+      {
+        type: Types.ObjectId,
+        ref: "Comment",
+      },
+    ],
     deleteAt: {
       type: Date,
       default: null,
@@ -78,6 +100,15 @@ userSchema.virtual("articles", {
   localField: "_id",
   foreignField: "author",
 });
+
+// === INICIO DE LA MODIFICACIÓN ===
+// Añadir el virtual populate para los comentarios
+userSchema.virtual("comments", {
+  ref: "Comment",
+  localField: "_id",
+  foreignField: "author",
+});
+// === FIN DE LA MODIFICACIÓN ===
 
 userSchema.pre(/^find/, function (next) {
   this.where({ deleteAt: null });
